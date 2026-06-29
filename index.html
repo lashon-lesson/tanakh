@@ -1,0 +1,3095 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#6366f1">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="תנ״ך לתיכון">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>תנ״ך לתיכון — פלטפורמה דיגיטלית ללימודי תנ״ך</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<style>
+/* ════════════════════════════════════════════════════════════
+   תנ״ך לתיכון — "Colorful Light"
+   Airy light base · vivid gradient unit-cards · energetic, modern
+════════════════════════════════════════════════════════════ */
+:root{
+  --bg:#f5f6fc;
+  --surface:#ffffff;--surface2:#f2f3fb;--surface3:#e8eaf6;
+  --border:rgba(26,29,54,.09);--border2:rgba(26,29,54,.16);--line-soft:rgba(26,29,54,.06);
+  --text:#191c2e;--text-mid:#4a5168;--muted:#7c8298;--subtle:#a9aec5;
+
+  /* brand accent — vivid indigo→violet */
+  --acc:#6366f1;--acc2:#8b5cf6;--acc-dk:#4f46e5;
+  --acc-lt:rgba(99,102,241,.10);--acc-tx:#5b4fd4;
+
+  /* legacy tokens → vivid on light */
+  --blue:#2563eb;--blue-lt:rgba(37,99,235,.10);--blue-dk:#1d4ed8;
+  --green:#059669;--green-lt:rgba(5,150,105,.11);
+  --amber:#d97706;--amber-lt:rgba(217,119,6,.11);
+  --red:#dc2626;--red-lt:rgba(220,38,38,.09);
+  --purple:#7c3aed;--purple-lt:rgba(124,58,237,.10);
+  --gold:#d97706;--gold-lt:rgba(217,119,6,.11);
+  --gold2:#d97706;--gold2-lt:rgba(217,119,6,.11);
+  --teal:#0d9488;--teal-lt:rgba(13,148,136,.10);
+  --indigo:#6366f1;--indigo-lt:rgba(99,102,241,.12);
+  --c70:#7c3aed;--c70-lt:rgba(124,58,237,.10);--c70-dk:#6d28d9;
+
+  --sh1:0 2px 8px rgba(60,64,140,.08);
+  --sh2:0 8px 26px rgba(60,64,140,.14);
+  --sh3:0 20px 52px rgba(40,44,110,.26);
+  --r:13px;--r-lg:18px;--r-xl:24px;--r-pill:999px;
+  --lc:var(--acc);--lc-lt:var(--acc-lt);
+  --display:'Rubik',sans-serif;--sans:'Heebo','Rubik',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-family:var(--sans);background:var(--bg);color:var(--text);-webkit-text-size-adjust:100%;scroll-behavior:smooth;overflow-x:hidden}
+body{
+  line-height:1.6;min-height:100vh;overflow-x:hidden;max-width:100vw;position:relative;
+  background:
+    radial-gradient(700px 460px at 92% -6%,rgba(139,92,246,.12),transparent 60%),
+    radial-gradient(620px 420px at 2% 8%,rgba(37,99,235,.09),transparent 60%),
+    radial-gradient(700px 520px at 100% 108%,rgba(236,72,153,.08),transparent 60%),
+    var(--bg);
+}
+button,input,select,textarea{font-family:inherit}
+a{text-decoration:none;color:inherit}
+
+/* ════ LOGIN ════ */
+#login-screen{position:fixed;inset:0;z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1.5rem;overflow:hidden;
+  background:
+    radial-gradient(720px 480px at 85% -8%,rgba(139,92,246,.20),transparent 58%),
+    radial-gradient(640px 440px at 8% 6%,rgba(37,99,235,.16),transparent 58%),
+    radial-gradient(760px 560px at 100% 110%,rgba(236,72,153,.16),transparent 58%),
+    radial-gradient(560px 460px at 50% 50%,rgba(6,182,212,.08),transparent 60%),
+    #f7f8fd}
+#login-screen::before{content:'';position:absolute;width:560px;height:560px;border-radius:50%;top:-220px;right:-160px;pointer-events:none;background:radial-gradient(circle,rgba(99,102,241,.16) 0%,transparent 64%);animation:orb1 13s ease-in-out infinite alternate}
+#login-screen::after{content:'';position:absolute;width:480px;height:480px;border-radius:50%;bottom:-200px;left:-130px;pointer-events:none;background:radial-gradient(circle,rgba(236,72,153,.14) 0%,transparent 64%);animation:orb2 16s ease-in-out infinite alternate}
+.ls-orb3{position:absolute;width:340px;height:340px;border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;background:radial-gradient(circle,rgba(6,182,212,.10) 0%,transparent 62%);animation:orb3 10s ease-in-out infinite alternate}
+@keyframes orb1{from{transform:scale(1)}to{transform:scale(1.2) translate(-20px,15px)}}
+@keyframes orb2{from{transform:scale(1.1)}to{transform:scale(.82)}}
+@keyframes orb3{from{transform:translate(-50%,-50%) scale(1)}to{transform:translate(-50%,-58%) scale(1.3)}}
+.ls-stars{
+  display:block;position:absolute;inset:0;
+  pointer-events:none;overflow:hidden;
+  opacity:.9;
+}
+#ls-stars span{
+  position:absolute;border-radius:50%;
+  width:2px;height:2px;
+  background:rgba(255,255,255,var(--op,0.8));
+  box-shadow:0 0 14px rgba(99,102,241,.22);
+  mix-blend-mode:screen;
+  animation:lsStarFloat var(--d,4s) cubic-bezier(.2,1,.4,1) infinite alternate;
+}
+@keyframes lsStarFloat{
+  from{transform:translate3d(0,14px,0) scale(.85);opacity:.12}
+  to{transform:translate3d(0,-18px,0) scale(1.18);opacity:1}
+}
+@media(prefers-reduced-motion:reduce){
+  #ls-stars span{animation:none}
+}
+
+.ls-header{position:relative;z-index:1;text-align:center;margin-bottom:2.6rem;animation:fadeDown .7s cubic-bezier(.22,1,.36,1) both}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-22px)}to{opacity:1;transform:translateY(0)}}
+.ls-emblem{width:80px;height:80px;border-radius:24px;margin:0 auto 1.3rem;display:flex;align-items:center;justify-content:center;font-size:2.1rem;
+  background:linear-gradient(135deg,#6366f1,#8b5cf6 50%,#ec4899);
+  box-shadow:0 16px 40px rgba(124,58,237,.34),inset 0 1px 0 rgba(255,255,255,.35);
+  animation:emblemPop .6s cubic-bezier(.34,1.56,.64,1) .1s both}
+@keyframes emblemPop{from{opacity:0;transform:scale(.45)}to{opacity:1;transform:scale(1)}}
+.ls-title{font-family:var(--display);font-weight:900;font-size:clamp(1.9rem,6.2vw,3rem);color:var(--text);line-height:1.12;letter-spacing:-.01em;animation:fadeUp .5s ease .3s both}
+.ls-title em{font-style:normal;background:linear-gradient(100deg,#6366f1,#8b5cf6 45%,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.ls-tagline{font-family:var(--sans);font-size:clamp(.8rem,2vw,.95rem);color:var(--muted);letter-spacing:.04em;margin-top:.7rem;animation:fadeUp .5s ease .42s both}
+.ls-chips{display:flex;gap:.45rem;justify-content:center;flex-wrap:wrap;margin-top:1.1rem;animation:fadeUp .5s ease .52s both}
+.ls-chip{font-family:var(--sans);font-size:.62rem;font-weight:700;letter-spacing:.03em;padding:.3rem .82rem;border-radius:var(--r-pill);border:1px solid var(--border);color:var(--acc-tx);background:rgba(99,102,241,.07)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+.ls-cards{position:relative;z-index:1;width:100%;max-width:410px;display:flex;flex-direction:column;gap:1rem;animation:fadeUp .55s ease .6s both}
+.lc{border-radius:var(--r-xl);padding:1.4rem 1.6rem;cursor:pointer;border:1px solid var(--border);transition:transform .22s cubic-bezier(.34,1.4,.64,1),box-shadow .22s,border-color .2s;text-align:right;-webkit-tap-highlight-color:transparent;outline:none;display:flex;align-items:center;gap:1.1rem;position:relative;overflow:hidden;background:#fff;box-shadow:var(--sh1)}
+.lc::before{content:'';position:absolute;top:0;right:0;bottom:0;width:5px;border-radius:0}
+.lc-student::before{background:linear-gradient(#2563eb,#06b6d4)}
+.lc-teacher::before{background:linear-gradient(#7c3aed,#ec4899)}
+.lc:hover{transform:translateY(-5px)}
+.lc-student:hover{box-shadow:0 18px 44px rgba(37,99,235,.22);border-color:rgba(37,99,235,.3)}
+.lc-teacher:hover{box-shadow:0 18px 44px rgba(124,58,237,.22);border-color:rgba(124,58,237,.3)}
+.lc:active{transform:scale(.98)}
+.lc-icon{width:52px;height:52px;border-radius:16px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:#fff}
+.lc-student .lc-icon{background:linear-gradient(135deg,#2563eb,#06b6d4)}
+.lc-teacher .lc-icon{background:linear-gradient(135deg,#7c3aed,#ec4899)}
+.lc-text{flex:1;text-align:right}
+.lc-label{font-family:var(--display);font-weight:700;font-size:1.18rem;color:var(--text);display:block;margin-bottom:.2rem}
+.lc-desc{font-family:var(--sans);font-size:.74rem;color:var(--muted);display:block}
+.lc-arrow{font-size:1.05rem;color:var(--subtle);transition:transform .2s,color .2s}
+.lc-student:hover .lc-arrow{transform:translateX(-5px);color:#2563eb}
+.lc-teacher:hover .lc-arrow{transform:translateX(-5px);color:#7c3aed}
+
+.ls-tcp{position:relative;z-index:1;width:100%;max-width:410px;margin-top:.6rem;padding:1.5rem 1.6rem;background:#fff;border:1px solid var(--border);border-radius:var(--r-xl);display:none;box-shadow:var(--sh2);animation:slideDown .25s ease}
+.ls-tcp.open{display:block}
+@keyframes slideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+.tcp-row-name{display:none;margin-bottom:.8rem}
+.tcp-row-name.show{display:block}
+.tcp-lbl{display:block;font-family:var(--sans);font-size:.68rem;font-weight:700;color:var(--muted);margin-bottom:.4rem;letter-spacing:.02em}
+.tcp-input{width:100%;padding:.82rem 1rem;border-radius:var(--r);background:var(--surface2);border:1.5px solid var(--border);color:var(--text);font-size:.92rem;outline:none;transition:border-color .15s,box-shadow .15s;min-height:48px}
+.tcp-input::placeholder{color:var(--subtle)}
+.tcp-input:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(99,102,241,.14);background:#fff}
+.tcp-input.ltr{direction:ltr;text-align:right}
+.tcp-input.shake{animation:shake .3s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.tcp-row{display:flex;gap:.55rem;margin-bottom:.55rem}
+.pass-wrap{position:relative;flex:1;min-width:0}
+.pass-eye{position:absolute;left:.5rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:1.05rem;opacity:.5;padding:.25rem;line-height:1;transition:opacity .15s;color:var(--muted);-webkit-tap-highlight-color:transparent}
+.pass-eye:hover,.pass-eye.on{opacity:1}
+.tcp-go{padding:.82rem 1.3rem;border:none;border-radius:var(--r-pill);background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;font-size:.9rem;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;min-height:48px;transition:all .18s;box-shadow:0 6px 18px rgba(99,102,241,.3)}
+.tcp-go:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(99,102,241,.4)}
+.tcp-hint{font-size:.66rem;color:var(--subtle);margin-top:.35rem}
+.tcp-back{margin-top:1rem;background:none;border:none;color:var(--muted);font-size:.76rem;cursor:pointer;padding:.3rem 0;display:block}
+.tcp-back:hover{color:var(--acc)}
+/* ── Student registration panel — inherits .ls-tcp card styling, sits between the cards ── */
+.ls-scp{margin-top:0}
+.scp-head{display:flex;align-items:center;justify-content:center;gap:.55rem;font-family:var(--display);font-weight:700;font-size:1.02rem;color:var(--text);margin-bottom:1.1rem}
+.scp-head-icon{width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:#fff;background:linear-gradient(135deg,#2563eb,#06b6d4)}
+.scp-grades{display:flex;gap:.5rem;margin-bottom:.55rem}
+.scp-grade{flex:1;padding:.62rem;border-radius:var(--r);background:var(--surface2);border:1.5px solid var(--border);color:var(--text);font-family:var(--sans);font-size:1rem;font-weight:700;cursor:pointer;transition:all .14s;-webkit-tap-highlight-color:transparent}
+.scp-grade:hover{border-color:var(--acc);color:var(--acc);background:#fff}
+.scp-grade:active{transform:scale(.96)}
+.scp-grade.active{background:rgba(37,99,235,.1);border-color:#2563eb;color:#2563eb}
+.scp-go{background:linear-gradient(135deg,#2563eb,#06b6d4);box-shadow:0 6px 18px rgba(37,99,235,.3)}
+.scp-go:hover{box-shadow:0 10px 26px rgba(37,99,235,.4)}
+
+/* change-password screen — light + colorful */
+#chpass-screen{background:radial-gradient(640px 440px at 85% -8%,rgba(139,92,246,.18),transparent 58%),radial-gradient(700px 520px at 5% 105%,rgba(236,72,153,.14),transparent 58%),#f7f8fd!important}
+
+/* ════ APP LAYOUT ════ */
+#app{display:none;flex-direction:column;min-height:100vh}
+#app.on{display:flex}
+
+/* ── TOPBAR ── */
+.app-topbar{background:rgba(255,255,255,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--border);height:58px;padding:0 1rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:30;flex-shrink:0;min-width:0;overflow:hidden}
+.at-logo{font-family:var(--display);font-weight:800;font-size:1.22rem;color:var(--text);display:flex;align-items:center;gap:8px;letter-spacing:-.01em}
+.at-logo-pill{font-family:var(--sans);font-size:.6rem;font-weight:800;letter-spacing:.04em;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;padding:3px 10px;border-radius:var(--r-pill)}
+.at-right{display:flex;align-items:center;gap:6px;flex-shrink:0;min-width:0}
+.at-greet{font-family:var(--sans);font-size:.74rem;font-weight:700;color:var(--acc-tx);background:var(--acc-lt);border:1px solid rgba(99,102,241,.2);border-radius:var(--r-pill);padding:.28rem .78rem;white-space:nowrap;display:none;max-width:170px;overflow:hidden;text-overflow:ellipsis}
+.fb-badge{font-size:.68rem;font-weight:700;padding:.24rem .7rem;border-radius:var(--r-pill);background:var(--surface2);color:var(--muted);border:1px solid var(--border);display:none;align-items:center;gap:.35rem}@media(min-width:500px){.fb-badge{display:flex}}
+.fb-badge.ok{color:var(--green);background:var(--green-lt);border-color:rgba(5,150,105,.25)}
+.fb-badge.off{color:var(--amber);background:var(--amber-lt);border-color:rgba(217,119,6,.25)}
+.fb-dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0}
+.btn-cfg{padding:.36rem .8rem;border:1px solid var(--border);border-radius:var(--r-pill);background:var(--surface2);color:var(--text-mid);font-size:.74rem;font-weight:700;cursor:pointer;transition:all .15s}
+.btn-cfg:hover{background:var(--acc-lt);color:var(--acc-tx);border-color:rgba(99,102,241,.4)}
+.btn-topbar-logout{display:flex;align-items:center;gap:.32rem;padding:.36rem .65rem;border:1px solid var(--border);border-radius:var(--r-pill);background:var(--surface2);color:var(--text-mid);font-size:.72rem;font-weight:700;cursor:pointer;transition:all .15s}
+.btn-topbar-logout:hover{background:var(--red-lt);color:var(--red);border-color:rgba(220,38,38,.35)}
+.tl-label{display:none}
+@media(min-width:600px){.tl-label{display:inline}}
+.at-av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#ec4899);color:#fff;font-family:var(--display);font-size:.82rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 10px rgba(124,58,237,.3)}
+
+/* ── TEACHER STRIP ── */
+.t-strip{display:none;background:linear-gradient(135deg,#7c3aed,#ec4899);padding:.45rem 1.1rem;font-size:.74rem;font-weight:700;color:#fff;align-items:center;gap:.55rem;flex-shrink:0}
+.t-strip.on{display:flex}
+.t-strip-dot{width:7px;height:7px;border-radius:50%;background:#fff;opacity:.85;flex-shrink:0}
+
+/* ── HERO ── */
+.app-hero{position:relative;overflow:hidden;flex-shrink:0;display:none;padding:1.6rem 1.3rem 1.4rem;
+  background:linear-gradient(135deg,#5b5bf0 0%,#8b5cf6 48%,#ec4899 110%)}
+.app-hero.on{display:block}
+.app-hero::before{content:'';position:absolute;bottom:-60px;left:-50px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.10);pointer-events:none}
+.app-hero::after{content:'תנ״ך';position:absolute;left:.6rem;top:.2rem;font-family:var(--display);font-weight:900;font-size:4.4rem;line-height:1;color:rgba(255,255,255,.10);pointer-events:none}
+.hero-name{font-family:var(--display);font-weight:800;font-size:1.45rem;color:#fff;margin-bottom:4px;position:relative}
+.hero-sub{font-size:.74rem;color:rgba(255,255,255,.78);margin-bottom:1rem;position:relative;letter-spacing:.02em}
+.hero-stats{display:flex;gap:8px;flex-wrap:wrap;position:relative}
+.h-pill{border-radius:var(--r-pill);padding:5px 13px;font-size:.72rem;font-weight:700;display:flex;align-items:center;gap:5px}
+.h-pill-prog{background:rgba(255,255,255,.20);color:#fff;border:1px solid rgba(255,255,255,.28)}
+.h-pill-streak{background:rgba(255,255,255,.16);color:#fff;border:1px solid rgba(255,255,255,.24)}
+
+/* ── MAIN BODY ── */
+.app-body{flex:1;min-width:0;width:100%;overflow-x:hidden}
+.units-col{padding:1.4rem 1rem 3rem;display:flex;flex-direction:column;gap:0;max-width:780px;margin:0 auto;width:100%}
+@media(min-width:700px){.units-col{padding:2rem 1.6rem 4rem}}
+
+.sec-lbl{font-family:var(--display);font-weight:700;font-size:1.02rem;letter-spacing:-.01em;color:var(--text);margin:.4rem 0 1.05rem;display:flex;align-items:center;gap:.7rem}
+.sec-lbl::before{content:'';width:9px;height:9px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#ec4899);flex-shrink:0}
+.sec-lbl::after{content:'';flex:1;height:1.5px;border-radius:2px;background:linear-gradient(90deg,var(--border2),transparent)}
+
+.uc-scroll{overflow:visible;padding:0 1rem .4rem}
+.uc-row{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+@media(min-width:700px){.uc-scroll{padding:0}.uc-row{display:flex;flex-direction:column;gap:7px}}
+
+/* ── UNIT CARDS (vivid gradient, white text) ── */
+.uc{width:100%;border-radius:var(--r-lg);overflow:hidden;cursor:pointer;transition:transform .18s,box-shadow .18s;-webkit-tap-highlight-color:transparent;position:relative;box-shadow:var(--sh1)}
+.uc::before{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(150deg,rgba(255,255,255,.22),transparent 48%);z-index:0}
+.uc::after{position:absolute;left:.45rem;bottom:-1.5rem;font-family:var(--display);font-weight:900;font-size:6.4rem;line-height:1;color:rgba(255,255,255,.13);pointer-events:none;z-index:0}
+#uc-u1::after{content:'א'}#uc-u2::after{content:'ב'}#uc-u3::after{content:'ג'}#uc-u4::after{content:'ד'}
+#uc-v1::after{content:'א'}#uc-v2::after{content:'ב'}#uc-v3::after{content:'ג'}
+.uc:hover{transform:translateY(-3px);box-shadow:var(--sh2)}
+.uc:active{transform:scale(.97)}
+.uc.sel{box-shadow:0 0 0 3px rgba(99,102,241,.35),var(--sh2)!important;transform:none}
+.uc-inner{padding:.95rem .95rem .85rem;position:relative;z-index:1}
+.uc-em{font-size:26px;line-height:1;margin-bottom:.55rem;filter:drop-shadow(0 2px 5px rgba(0,0,0,.18))}
+.uc-tag{font-family:var(--sans);font-size:.6rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:3px}
+.uc-name{font-family:var(--display);font-weight:700;font-size:1.04rem;color:#fff;line-height:1.2;margin-bottom:.6rem}
+.uc-pb-track{height:4px;background:rgba(255,255,255,.28);border-radius:3px;overflow:hidden;margin-bottom:5px}
+.uc-pb-fill{height:100%;border-radius:3px;background:#fff;transition:width .6s ease}
+.uc-meta{display:flex;justify-content:space-between;align-items:center}
+.uc-done-lbl{font-size:.6rem;font-weight:700;color:rgba(255,255,255,.72);letter-spacing:.03em}
+.uc-pct{font-family:var(--display);font-size:.86rem;font-weight:800;color:#fff}
+.uc-lock-icon{position:absolute;top:9px;left:10px;font-size:13px;opacity:.7;z-index:1;color:#fff}
+
+/* vivid per-unit gradients */
+.u1-grad{background:linear-gradient(140deg,#2563eb,#06b6d4)}
+.u2-grad{background:linear-gradient(140deg,#059669,#10b981)}
+.u3-grad{background:linear-gradient(140deg,#7c3aed,#c026d3)}
+.u4-grad{background:linear-gradient(140deg,#ea580c,#f59e0b)}
+.v1-grad{background:linear-gradient(140deg,#0891b2,#06b6d4)}
+.v2-grad{background:linear-gradient(140deg,#6d28d9,#6366f1)}
+.v3-grad{background:linear-gradient(140deg,#d97706,#f59e0b)}
+
+/* ── LESSON PANEL (white surface) ── */
+.lesson-panel{background:var(--surface);border-radius:0 0 var(--r-lg) var(--r-lg);border:1px solid var(--border);border-top:none;overflow:hidden;width:100%}
+.lp-head{padding:1rem 1.15rem .9rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:11px}
+.lp-dot{width:11px;height:11px;border-radius:50%;flex-shrink:0}
+.lp-info{flex:1;min-width:0}
+.lp-tag{font-size:.6rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+.lp-name{font-family:var(--display);font-weight:700;font-size:1.14rem;color:var(--text)}
+.lp-count{font-size:.66rem;font-weight:700;padding:4px 11px;border-radius:var(--r-pill);background:var(--surface2);color:var(--muted);white-space:nowrap;border:1px solid var(--border)}
+.lp-locked{padding:2.8rem 1.5rem;text-align:center}
+.lp-locked-em{font-size:40px;margin-bottom:.7rem;opacity:.4}
+.lp-locked-t{font-family:var(--display);font-size:1.05rem;font-weight:700;color:var(--text-mid)}
+.lp-locked-s{font-size:.72rem;color:var(--subtle);margin-top:5px}
+
+/* ── LESSON ROWS ── */
+.lr-new{display:flex;align-items:center;gap:11px;padding:.85rem 1.05rem;border-bottom:1px solid var(--line-soft);cursor:pointer;transition:background .13s;min-height:64px;-webkit-tap-highlight-color:transparent;position:relative;background:transparent;min-width:0}
+.lr-new:last-child{border-bottom:none}
+.lr-new:not(.lr-locked):hover{background:var(--acc-lt)}
+.lr-new:not(.lr-locked):active{transform:scale(.99)}
+.lr-new.lr-done{background:linear-gradient(to left,var(--green-lt) 0%,transparent 55%)}
+.lr-new.lr-done:hover{background:linear-gradient(to left,rgba(5,150,105,.16) 0%,var(--acc-lt) 55%)}
+.lr-new.lr-next{background:var(--acc-lt)}
+.lr-new.lr-next:hover{background:rgba(99,102,241,.16)}
+.lr-new.lr-locked{opacity:.42;cursor:default;pointer-events:none}
+.lr-new::before{content:'';position:absolute;top:15px;bottom:15px;right:0;width:3px;border-radius:3px;background:transparent}
+.lr-new.lr-done::before{background:var(--green)}
+.lr-new.lr-next::before{background:linear-gradient(#6366f1,#8b5cf6)}
+.lr-em-wrap{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0;background:var(--surface2);border:1px solid var(--border)}
+.lr-new.lr-done .lr-em-wrap{background:var(--green-lt);border-color:rgba(5,150,105,.25)}
+.lr-new.lr-next .lr-em-wrap{background:rgba(99,102,241,.14);border-color:rgba(99,102,241,.28)}
+.lr-new.lr-locked .lr-em-wrap{background:var(--surface3)}
+.lr-bd{flex:1;min-width:0}
+.lr-short-lbl{font-size:.57rem;font-weight:800;color:var(--acc-tx);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.08rem}
+.lr-title-new{font-family:var(--display);font-size:.95rem;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.lr-desc-new{font-size:.7rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:.08rem}
+.lr-chips-new{display:flex;gap:4px;margin-top:.34rem;flex-wrap:wrap}
+.lr-chip-new{font-size:.57rem;font-weight:700;padding:.16rem .56rem;border-radius:8px}
+.lrc-time{background:var(--surface2);color:var(--text-mid)}
+.lrc-next{background:var(--acc-lt);color:var(--acc-tx)}
+.lrc-done{background:var(--green-lt);color:var(--green)}
+.lrc-lock{background:var(--surface3);color:var(--subtle)}
+.lrc-exam{background:var(--amber-lt);color:var(--amber)}
+.lrc-new{background:var(--green-lt);color:var(--green)}
+.lr-rt{flex-shrink:0;display:flex;align-items:center}
+.lr-check-new{width:23px;height:23px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900}
+.lr-arrow-new{font-size:15px;color:var(--subtle)}
+.lr-new.lr-next .lr-arrow-new{color:var(--acc)}
+
+/* exam row */
+.exam-row-new{display:flex;align-items:center;gap:11px;padding:.95rem 1.15rem;background:linear-gradient(120deg,rgba(217,119,6,.12),rgba(245,158,11,.06));border-top:1px solid rgba(217,119,6,.2);cursor:pointer;transition:background .13s}
+.exam-row-new:hover{background:linear-gradient(120deg,rgba(217,119,6,.2),rgba(245,158,11,.1))}
+.exam-row-new.exam-locked{opacity:.45;pointer-events:none}
+.exam-em-new{font-size:22px}
+.exam-info-new{flex:1}
+.exam-t-new{font-family:var(--display);font-size:.94rem;font-weight:700;color:var(--amber)}
+.exam-s-new{font-size:.7rem;color:var(--muted);margin-top:2px}
+.exam-chip-new{font-size:.72rem;font-weight:800;padding:.28rem .8rem;border-radius:10px;background:rgba(217,119,6,.16);color:var(--amber);white-space:nowrap;border:1px solid rgba(217,119,6,.25)}
+
+/* ── TEACHER PANEL ── */
+.teacher-wrap{padding:1.2rem;background:var(--surface2);border-radius:var(--r-lg);border:1px solid var(--border);margin-bottom:1rem;display:none}
+.teacher-wrap.on{display:block}
+
+/* ── UNIT GRID + INLINE PANEL ── */
+.units-section{margin-bottom:.6rem}
+.uc-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:0}
+@media(min-width:700px){.uc-grid{grid-template-columns:repeat(4,1fr)}}
+.uc-grid-3{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:0}
+@media(min-width:700px){.uc-grid-3{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:699px){.uc-grid-3 .uc:last-child:nth-child(odd){grid-column:1 / -1;max-width:50%;margin:0 auto;width:100%}}
+
+.inline-panel-wrap{overflow:hidden;max-height:0;transition:max-height .42s cubic-bezier(.22,1,.36,1);width:100%}
+.inline-panel-wrap.open{max-height:4000px}
+.inline-panel{background:var(--surface);border-radius:0 0 var(--r-lg) var(--r-lg);border:1px solid var(--border);border-top:none;overflow:hidden;margin-bottom:12px;box-shadow:var(--sh2)}
+
+/* accordion legacy */
+.uc-btn{display:flex;align-items:center;gap:10px;padding:.85rem .95rem;width:100%;border:none;border-radius:14px;cursor:pointer;-webkit-tap-highlight-color:transparent;position:relative}
+.unit-accordion.open .uc-btn{border-radius:14px 14px 0 0}
+.uc-btn .uc-em{font-size:22px;line-height:1;flex-shrink:0}
+.uc-btn .uc-name{font-family:var(--display);font-size:14px;color:#fff;line-height:1.2}
+.unit-accordion{border-radius:var(--r-lg);overflow:hidden;margin-bottom:12px;border:1px solid transparent;transition:border-color .15s}
+.unit-accordion.open{border-color:var(--border2)}
+.uc-btn-inner{padding:.8rem .8rem .7rem;position:relative;display:flex;align-items:center;gap:10px;width:100%}
+.uc-left{display:flex;flex-direction:column;flex:1;min-width:0;text-align:right}
+.uc-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0}
+.uc-chev{font-size:12px;color:rgba(255,255,255,.8);transition:transform .22s cubic-bezier(.34,1.2,.64,1)}
+.unit-accordion.open .uc-chev{transform:rotate(180deg)}
+.uc-lessons-wrap{overflow:hidden;max-height:0;transition:max-height .35s cubic-bezier(.22,1,.36,1)}
+.unit-accordion.open .uc-lessons-wrap{max-height:3000px}
+
+/* ── UNIT FOCUS MODE ── */
+.uc-left-text{display:flex;flex-direction:column}
+.units-section.focused .uc.sel .uc-left-text{flex:1;min-width:0}
+.uc-grid,.uc-grid-3{transition:opacity .2s ease}
+.uc{transition:transform .18s,box-shadow .18s,opacity .18s}
+.units-section.focused .uc-grid,.units-section.focused .uc-grid-3{display:contents}
+.units-section.focused .uc.hidden{display:none}
+.units-section.focused .uc.sel{display:block;width:100%;grid-column:1/-1;border-radius:var(--r-lg) var(--r-lg) 0 0}
+.units-section.focused .uc.sel .uc-inner{display:flex;align-items:center;gap:11px;padding:.85rem 1rem}
+.units-section.focused .uc.sel .uc-pb-track{display:none}
+.units-section.focused .uc.sel .uc-em{font-size:24px;margin-bottom:0;flex-shrink:0}
+.units-section.focused .uc.sel .uc-tag{margin-bottom:1px}
+.units-section.focused .uc.sel .uc-name{font-size:1.1rem;margin-bottom:0}
+.units-section.focused .uc.sel .uc-meta{flex-direction:row;gap:7px;align-items:center}
+.units-section.focused .uc.sel .uc-done-lbl{font-size:.66rem}
+.units-section.focused .uc.sel .uc-pct{font-size:.8rem}
+.uc-back-hint{display:none;font-size:.66rem;font-weight:700;color:rgba(255,255,255,.85);margin-right:auto;align-items:center;gap:4px}
+.units-section.focused .uc.sel .uc-back-hint{display:flex}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;z-index:500;background:rgba(26,29,54,.5);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:1rem}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border-radius:var(--r-xl);box-shadow:var(--sh3);width:100%;max-width:580px;max-height:90vh;overflow-y:auto;border:1px solid var(--border)}
+.modal-hd{padding:1.6rem 1.6rem .6rem;display:flex;align-items:center;justify-content:space-between}
+.modal-hd-title{font-family:var(--display);font-weight:700;font-size:1.18rem;color:var(--text)}
+.modal-close{width:36px;height:36px;border:1px solid var(--border);border-radius:10px;background:var(--surface2);color:var(--text-mid);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.9rem}
+.modal-close:hover{background:var(--red-lt);color:var(--red);border-color:rgba(220,38,38,.35)}
+.modal-tabs{display:flex;border-bottom:1px solid var(--border);padding:0 1.6rem;overflow-x:auto;scrollbar-width:none;scroll-padding-inline:1.6rem}
+.modal-tabs::-webkit-scrollbar{display:none}
+.m-tab{padding:.72rem 1.1rem;border:none;border-bottom:2.5px solid transparent;background:none;font-size:.82rem;font-weight:600;color:var(--muted);cursor:pointer;margin-bottom:-1px;transition:all .14s;white-space:nowrap;flex-shrink:0}
+.m-tab.active{color:var(--acc);border-bottom-color:var(--acc);font-weight:800}
+.m-pane{display:none;padding:1.6rem}
+.m-pane.active{display:block}
+.m-section{font-family:var(--display);font-weight:700;font-size:.84rem;color:var(--acc-tx);letter-spacing:.01em;padding-bottom:.42rem;border-bottom:1px solid var(--border);margin-bottom:.9rem;margin-top:1.4rem}
+.m-section:first-child{margin-top:0}
+.m-field{margin-bottom:1.1rem}
+.m-lbl{display:block;font-size:.74rem;font-weight:700;color:var(--text-mid);margin-bottom:.4rem}
+.m-in{width:100%;padding:.75rem 1rem;border:1.5px solid var(--border);border-radius:var(--r);background:var(--surface2);font-size:.9rem;color:var(--text);outline:none;transition:border-color .15s,box-shadow .15s}
+.m-in:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(99,102,241,.12);background:#fff}
+.m-btn{padding:.75rem 1.5rem;border:none;border-radius:var(--r-pill);background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;font-size:.84rem;font-weight:700;cursor:pointer;transition:all .15s;min-height:44px}
+.m-btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(99,102,241,.3)}
+.ltr{direction:ltr;text-align:right}
+
+/* lock / toggle / roster / summary */
+.lock-item{display:flex;align-items:center;gap:.8rem;padding:.8rem 0;border-bottom:1px solid var(--line-soft)}
+.lock-item:last-child{border-bottom:none}
+.lock-emoji{font-size:1.15rem;flex-shrink:0}
+.lock-info{flex:1;min-width:0}
+.lock-name{font-size:.84rem;font-weight:700;color:var(--text)}
+.lock-meta{font-size:.64rem;color:var(--muted);margin-top:.1rem}
+.lock-toggles{display:flex;flex-direction:column;gap:.4rem;flex-shrink:0;align-items:flex-end}
+.toggle-row{display:flex;align-items:center;gap:.42rem}
+.toggle-label-sm{font-size:.6rem;color:var(--muted);font-weight:600;white-space:nowrap}
+.toggle-wrap{position:relative;display:inline-block;width:40px;height:22px;flex-shrink:0}
+.toggle-wrap input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;inset:0;cursor:pointer;background:var(--surface3);border-radius:var(--r-pill);border:1px solid var(--border);transition:.22s}
+.toggle-slider::before{content:'';position:absolute;width:16px;height:16px;right:2px;bottom:2px;background:var(--muted);border-radius:50%;transition:.22s}
+.toggle-wrap input:checked+.toggle-slider{background:linear-gradient(135deg,#22c55e,#16a34a);border-color:#16a34a}
+.toggle-wrap input:checked+.toggle-slider::before{transform:translateX(-18px);background:#fff}
+.toggle-wrap.answers input:checked+.toggle-slider{background:linear-gradient(135deg,#8b5cf6,#7c3aed);border-color:#7c3aed}
+.roster-class-block{margin-bottom:1.3rem;border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden}
+.roster-class-hd{display:flex;align-items:center;justify-content:space-between;padding:.78rem 1rem;background:var(--surface2);cursor:pointer;user-select:none;gap:.6rem}
+.roster-class-name{font-size:.9rem;font-weight:800;color:var(--text);display:flex;align-items:center;gap:.45rem}
+.roster-class-count{font-size:.68rem;font-weight:700;color:var(--muted);background:var(--surface3);border:1px solid var(--border);border-radius:var(--r-pill);padding:.12rem .6rem}
+.roster-class-body{display:none;padding:.75rem .85rem .9rem}
+.roster-class-body.open{display:block}
+.roster-add-row{display:flex;gap:.5rem;margin-bottom:.7rem}
+.roster-name-inp{flex:1;padding:.62rem .85rem;border:1.5px solid var(--border);border-radius:var(--r);background:var(--surface2);font-size:.84rem;color:var(--text);outline:none;transition:border-color .15s}
+.roster-name-inp:focus{border-color:var(--acc);background:#fff}
+.roster-add-btn{padding:.62rem 1rem;border:none;border-radius:var(--r-pill);background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;font-size:.78rem;font-weight:700;cursor:pointer;white-space:nowrap;transition:transform .13s}
+.roster-add-btn:hover{transform:translateY(-1px)}
+.roster-student-list{display:flex;flex-direction:column;gap:.32rem;max-height:220px;overflow-y:auto}
+.roster-student-item{display:flex;align-items:center;gap:.55rem;padding:.44rem .65rem;border-radius:9px;background:var(--surface2);border:1px solid var(--border);font-size:.8rem;font-weight:600;color:var(--text)}
+.roster-student-item .rs-num{width:20px;text-align:center;font-size:.66rem;color:var(--subtle);flex-shrink:0}
+.roster-student-item .rs-name{flex:1}
+.roster-student-del{background:none;border:none;color:var(--subtle);font-size:.85rem;cursor:pointer;padding:0;line-height:1;transition:color .13s}
+.roster-student-del:hover{color:var(--red)}
+.roster-empty{font-size:.76rem;color:var(--subtle);padding:.4rem .2rem;font-style:italic}
+.roster-paste-hint{font-size:.66rem;color:var(--text-mid);margin-top:.5rem;line-height:1.5;background:var(--acc-lt);border:1px solid rgba(99,102,241,.2);border-radius:9px;padding:.45rem .7rem}
+.unit-summary-block{margin-bottom:1.4rem}
+.unit-summary-hd{font-family:var(--display);font-weight:700;font-size:.95rem;color:var(--text);padding:.62rem .8rem;border-radius:var(--r) var(--r) 0 0;background:var(--surface2);border:1px solid var(--border);border-bottom:none;display:flex;align-items:center;gap:.55rem}
+.unit-summary-body{border:1px solid var(--border);border-radius:0 0 var(--r) var(--r);overflow:hidden}
+.unit-summary-stats{display:flex;gap:0;border-bottom:1px solid var(--border)}
+.uss-cell{flex:1;text-align:center;padding:.6rem .3rem;border-left:1px solid var(--border);font-size:.78rem;font-weight:700}
+.uss-cell:last-child{border-left:none}
+.uss-cell .uss-n{font-family:var(--display);font-size:1.45rem;font-weight:800;display:block}
+.uss-cell.green{background:var(--green-lt);color:var(--green)}
+.uss-cell.yellow{background:var(--amber-lt);color:var(--amber)}
+.uss-cell.red{background:var(--red-lt);color:var(--red)}
+.unit-roster-table{width:100%;border-collapse:collapse;font-size:.76rem;direction:rtl;color:var(--text)}
+.unit-roster-table th{padding:7px 9px;text-align:right;background:var(--surface3);font-weight:800;font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;position:sticky;top:0}
+.unit-roster-table td{padding:7px 9px;border-bottom:1px solid var(--line-soft)}
+.unit-roster-table tr:last-child td{border-bottom:none}
+.unit-roster-table tr:hover td{background:var(--surface2)}
+.urt-status{display:inline-flex;align-items:center;gap:.32rem;font-size:.7rem;font-weight:800;padding:.18rem .65rem;border-radius:var(--r-pill)}
+.urt-status.green{background:var(--green-lt);color:var(--green);border:1px solid rgba(5,150,105,.3)}
+.urt-status.yellow{background:var(--amber-lt);color:var(--amber);border:1px solid rgba(217,119,6,.3)}
+.urt-status.red{background:var(--red-lt);color:var(--red);border:1px solid rgba(220,38,38,.3)}
+.urt-bar{height:6px;background:var(--surface3);border-radius:var(--r-pill);overflow:hidden;width:80px;display:inline-block;vertical-align:middle;border:1px solid var(--border)}
+.urt-bar-fill{height:100%;border-radius:var(--r-pill);transition:width .4s}
+.progress-tabs{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1rem}
+.ptab{padding:.4rem .9rem;border-radius:var(--r-pill);border:1px solid var(--border);background:var(--surface2);font-size:.74rem;font-weight:700;color:var(--muted);cursor:pointer;transition:all .13s;white-space:nowrap}
+.ptab:hover{background:var(--acc-lt);color:var(--acc-tx);border-color:rgba(99,102,241,.4)}
+.ptab.active{background:var(--acc-lt);color:var(--acc-tx);border-color:var(--acc)}
+
+@media(max-width:419px){.at-greet{display:none!important}}
+@media(min-width:420px){.at-greet{display:inline-flex}}
+@media(max-width:380px){.btn-cfg .tl-label{display:none}}
+@media(max-width:380px){.app-topbar{padding:0 .6rem}}
+@media(max-width:380px){.at-right{gap:4px}}
+
+/* toast */
+#toast{position:fixed;bottom:1.7rem;left:50%;transform:translateX(-50%) translateY(14px);background:#191c2e;color:#fff;padding:.65rem 1.5rem;border-radius:var(--r-pill);font-size:.8rem;font-weight:700;box-shadow:var(--sh3);z-index:9999;opacity:0;pointer-events:none;transition:opacity .22s,transform .22s;white-space:nowrap}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+.sb-section-label{font-size:.58rem;font-weight:900;letter-spacing:.07em;text-transform:uppercase;padding:.15rem .6rem;border-radius:var(--r-pill);margin-right:.45rem}
+.sb-section-label.p30{background:var(--blue-lt);color:var(--blue)}
+.sb-section-label.p70{background:var(--c70-lt);color:var(--c70)}
+
+/* ════════════════════════════════════════════════
+   DASHBOARD REDESIGN — sidebar + cards + rings
+════════════════════════════════════════════════ */
+:root{
+  --accent:#6d5ef5;--accent2:#8b5cf6;--accent-soft:#eceaff;
+  --side-bg:#15121f;--side-bg2:#1d1830;--side-line:rgba(255,255,255,.07);
+  --side-txt:#b9b6c9;--side-txt-dim:#7b768e;
+  --dash-bg:#f5f6fb;
+}
+@media(prefers-color-scheme:dark){:root{--accent:#8b7dff;--accent2:#a78bfa;--accent-soft:rgba(139,125,255,.13);--dash-bg:#0c0c12}}
+
+#app{display:none}
+#app.on{display:flex;flex-direction:row;min-height:100vh;background:var(--dash-bg)}
+
+/* ── SIDEBAR (right side, RTL) ── */
+.side{width:236px;flex-shrink:0;background:linear-gradient(185deg,var(--side-bg2),var(--side-bg));
+  position:fixed;top:0;right:0;bottom:0;z-index:40;display:flex;flex-direction:column;
+  padding:1.3rem 1rem 1rem;border-left:1px solid var(--side-line)}
+.side-logo{display:flex;align-items:center;gap:9px;font-family:'Secular One',sans-serif;font-size:1.18rem;color:#fff;padding:.2rem .4rem 1.3rem;letter-spacing:.01em}
+.side-logo .slg-mark{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:1rem;box-shadow:0 4px 14px rgba(109,94,245,.4)}
+.side-nav{display:flex;flex-direction:column;gap:3px;flex:1}
+.side-link{display:flex;align-items:center;gap:11px;padding:.7rem .85rem;border-radius:12px;color:var(--side-txt);font-size:.86rem;font-weight:600;cursor:pointer;transition:all .15s;border:none;background:none;text-align:right;width:100%;position:relative}
+.side-link .sl-ic{font-size:1.05rem;width:22px;text-align:center;flex-shrink:0;opacity:.85}
+.side-link:hover{background:rgba(255,255,255,.05);color:#fff}
+.side-link.active{background:linear-gradient(135deg,rgba(109,94,245,.22),rgba(139,92,246,.14));color:#fff;font-weight:700}
+.side-link.active::before{content:'';position:absolute;right:-1rem;top:50%;transform:translateY(-50%);width:4px;height:60%;border-radius:0 4px 4px 0;background:linear-gradient(var(--accent),var(--accent2))}
+.side-foot{border-top:1px solid var(--side-line);padding-top:.85rem;margin-top:.5rem}
+.side-user{display:flex;align-items:center;gap:9px;padding:.45rem .35rem .7rem}
+.side-user .su-av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:.85rem;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.side-user .su-meta{min-width:0}
+.side-user .su-name{font-size:.8rem;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.side-user .su-role{font-size:.64rem;color:var(--side-txt-dim)}
+.side-fbadge{display:flex;align-items:center;gap:6px;font-size:.66rem;font-weight:700;color:var(--side-txt-dim);padding:.3rem .55rem;margin-bottom:.5rem}
+.side-fbadge .fb-dot{width:6px;height:6px;border-radius:50%;background:#f5a623}
+.side-fbadge.ok{color:#34d875}.side-fbadge.ok .fb-dot{background:#34d875}
+.side-logout{width:100%;display:flex;align-items:center;justify-content:center;gap:7px;padding:.6rem;border:1px solid var(--side-line);border-radius:11px;background:rgba(255,255,255,.04);color:var(--side-txt);font-size:.76rem;font-weight:700;cursor:pointer;transition:all .15s}
+.side-logout:hover{background:rgba(252,128,128,.14);color:#ff9c9c;border-color:rgba(252,128,128,.3)}
+
+/* ── MAIN AREA ── */
+.main-area{flex:1;min-width:0;margin-right:236px;display:flex;flex-direction:column;background:var(--dash-bg)}
+.app-topbar{background:transparent;border-bottom:none;height:auto;padding:1.1rem 1.6rem .2rem;position:static;justify-content:flex-start;overflow:visible}
+.app-topbar .at-logo{display:none}
+.at-right{margin-right:auto;gap:8px}
+.at-av{display:none}
+.tb-greet-dash{font-family:'Secular One',sans-serif;font-size:1.05rem;color:var(--text)}
+.t-strip{margin:0 1.6rem;border-radius:12px;margin-top:.4rem}
+
+/* hide legacy hero */
+.app-hero{display:none!important}
+
+/* ── VIEWS ── */
+.view{padding:.6rem 1.6rem 3rem;animation:viewIn .28s ease}
+@keyframes viewIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.dash-wrap{max-width:1180px;margin:0 auto;width:100%}
+
+/* welcome banner */
+.welcome{background:linear-gradient(120deg,#6a4ef0 0%,#7c5cf6 50%,#9061f9 100%);border-radius:20px;padding:1.7rem 1.9rem;color:#fff;position:relative;overflow:hidden;box-shadow:0 16px 40px rgba(109,94,245,.28)}
+.welcome::after{content:'';position:absolute;left:-40px;bottom:-60px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.08)}
+.welcome::before{content:'';position:absolute;left:90px;top:-50px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.06)}
+.welcome-t{font-family:'Secular One',sans-serif;font-size:1.5rem;position:relative;z-index:1}
+.welcome-s{font-size:.84rem;color:rgba(255,255,255,.78);margin-top:.4rem;position:relative;z-index:1}
+
+/* stat grid */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:16px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.15rem 1.3rem;text-align:center;box-shadow:var(--sh1);transition:transform .15s,box-shadow .15s}
+.stat-card:hover{transform:translateY(-3px);box-shadow:var(--sh2)}
+.stat-num{font-family:'Secular One',sans-serif;font-size:1.9rem;color:var(--text);line-height:1}
+.stat-num.accent{color:var(--accent)}
+.stat-lbl{font-size:.74rem;color:var(--muted);margin-top:.45rem;font-weight:600}
+
+/* mid grid: streak + ring */
+.mid-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.dash-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:1.4rem 1.5rem;box-shadow:var(--sh1)}
+.streak-card{display:flex;flex-direction:column;justify-content:center;text-align:center}
+.streak-top{font-size:.82rem;font-weight:800;color:var(--text-mid);display:flex;align-items:center;justify-content:center;gap:7px}
+.streak-big{font-family:'Secular One',sans-serif;font-size:2.3rem;color:var(--text);margin-top:.3rem;line-height:1}
+.streak-sub{font-size:.78rem;color:var(--muted);margin-top:.35rem}
+.ring-card{display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring{width:140px;height:140px;border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative;background:conic-gradient(var(--accent) calc(var(--p,0)*1%),var(--surface3) 0)}
+.ring::before{content:'';position:absolute;inset:13px;border-radius:50%;background:var(--surface)}
+.ring-val{position:relative;z-index:1;font-family:'Secular One',sans-serif;font-size:1.55rem;color:var(--text)}
+.ring-lbl{font-size:.8rem;font-weight:700;color:var(--muted);margin-top:.8rem}
+
+/* section heading */
+.dash-h{font-family:'Secular One',sans-serif;font-size:1.15rem;color:var(--text);margin:1.8rem 0 .9rem}
+
+/* unit progress bars */
+.up-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.up-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1rem 1.1rem;cursor:pointer;transition:transform .14s,box-shadow .14s,border-color .14s}
+.up-card:hover{transform:translateY(-3px);box-shadow:var(--sh2);border-color:var(--accent)}
+.up-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:.7rem;gap:8px}
+.up-name{font-size:.82rem;font-weight:800;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.up-em{font-size:1.05rem;flex-shrink:0}
+.up-track{height:8px;background:var(--surface3);border-radius:999px;overflow:hidden}
+.up-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .6s cubic-bezier(.22,1,.36,1)}
+.up-meta{display:flex;justify-content:space-between;font-size:.66rem;font-weight:700;color:var(--muted);margin-top:.45rem}
+.up-lock{font-size:.7rem;color:var(--subtle)}
+
+/* recent activity table */
+.recent-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;overflow:hidden;box-shadow:var(--sh1)}
+.recent-hd{font-family:'Secular One',sans-serif;font-size:1.05rem;padding:1.1rem 1.4rem;border-bottom:1px solid var(--border)}
+.recent-tbl{width:100%;border-collapse:collapse;font-size:.82rem;direction:rtl}
+.recent-tbl th{padding:.7rem 1.4rem;text-align:right;font-size:.7rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;background:var(--surface2)}
+.recent-tbl td{padding:.72rem 1.4rem;border-top:1px solid var(--border)}
+.recent-tbl tr:hover td{background:var(--surface2)}
+.rt-score{font-weight:900}
+.recent-empty{padding:2.2rem 1.4rem;text-align:center;color:var(--muted);font-size:.85rem}
+
+/* mobile bottom nav (legacy — now replaced by top strip) */
+.mnav{display:none!important}
+
+/* mobile TOP nav strip (horizontal pills under welcome / at top of each view) */
+.topnav{display:none}
+
+/* exams view list */
+.exam-list{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:10px}
+.exam-card{display:flex;align-items:center;gap:13px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1rem 1.2rem;cursor:pointer;transition:transform .14s,box-shadow .14s}
+.exam-card:hover{transform:translateY(-2px);box-shadow:var(--sh2)}
+.exam-card.locked{opacity:.45;pointer-events:none}
+.exam-card .ec-em{font-size:1.5rem;width:46px;height:46px;border-radius:12px;background:var(--gold-lt);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.exam-card .ec-bd{flex:1;min-width:0}
+.exam-card .ec-t{font-size:.92rem;font-weight:800;color:var(--text)}
+.exam-card .ec-s{font-size:.72rem;color:var(--muted);margin-top:2px}
+
+/* progress detail view */
+.prog-wrap{max-width:1000px;margin:0 auto;width:100%}
+.pd-unit{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:var(--sh1);margin-top:16px}
+.pd-unit-hd{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:1rem 1.3rem;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.pd-unit-title{font-family:'Secular One',sans-serif;font-size:1rem;color:var(--text);display:flex;align-items:center;gap:8px}
+.pd-unit-prog{display:flex;align-items:center;gap:9px}
+.pd-mini-track{width:90px;height:7px;background:var(--surface3);border-radius:999px;overflow:hidden;display:inline-block}
+.pd-mini-fill{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.pd-unit-pct{font-size:.72rem;font-weight:800;color:var(--muted);white-space:nowrap}
+.pd-tbl{width:100%;border-collapse:collapse;font-size:.82rem;direction:rtl}
+.pd-tbl th{padding:.6rem 1.3rem;text-align:right;font-size:.68rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;background:var(--surface2)}
+.pd-tbl td{padding:.68rem 1.3rem;border-top:1px solid var(--border);font-weight:600;color:var(--text)}
+.pd-tbl tr:hover td{background:var(--surface2)}
+.pd-badge{font-size:.66rem;font-weight:800;padding:.16rem .6rem;border-radius:999px;white-space:nowrap}
+.pd-badge.green{background:var(--green-lt);color:var(--green)}
+.pd-badge.blue{background:var(--blue-lt);color:var(--blue)}
+.pd-badge.gray{background:var(--surface3);color:var(--subtle)}
+.pd-badge.gold{background:var(--gold-lt);color:var(--gold)}
+@media(max-width:560px){.pd-tbl th:nth-child(4),.pd-tbl td:nth-child(4){display:none}.pd-tbl th,.pd-tbl td{padding-left:.7rem;padding-right:.7rem}.pd-unit-hd{padding:.85rem .9rem}}
+
+/* badge on progress nav button (new submissions) */
+.nav-badge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:var(--red);color:#fff;font-size:.62rem;font-weight:900;margin-right:auto;margin-left:0}
+.topnav-btn .nav-badge{margin:0 0 0 2px}
+
+/* relocated teacher tracking panel (lives in progress view) */
+#view-progress #tab-progress{display:block;padding:0;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.3rem 1.4rem;box-shadow:var(--sh1)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:860px){
+  .side{display:none}
+  .main-area{margin-right:0}
+  .stat-grid{grid-template-columns:repeat(2,1fr)}
+  .up-grid{grid-template-columns:repeat(2,1fr)}
+  .view{padding:.4rem .9rem 2rem}
+  .app-topbar{padding:.9rem 1rem .2rem}
+  .t-strip{margin:.4rem 1rem 0}
+  .topnav{display:flex;gap:7px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:.55rem 0 .5rem;margin:.7rem 0 .3rem;position:sticky;top:0;z-index:25;background:var(--dash-bg)}
+  .topnav::-webkit-scrollbar{display:none}
+  .topnav-btn{flex:0 0 auto;display:flex;align-items:center;gap:6px;padding:.52rem .95rem;border:1px solid var(--border);border-radius:999px;background:var(--surface);color:var(--muted);font-size:.79rem;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .14s}
+  .topnav-btn .tn-ic{font-size:.95rem}
+  .topnav-btn.active{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-color:transparent;box-shadow:0 4px 14px rgba(109,94,245,.32)}
+}
+@media(max-width:480px){.stat-grid,.up-grid,.mid-grid{grid-template-columns:1fr}.welcome-t{font-size:1.25rem}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="login-screen">
+  <div class="ls-orb3"></div>
+  <div class="ls-stars" id="ls-stars"></div>
+  <div class="ls-header">
+    <div class="ls-emblem">📖</div>
+    <h1 class="ls-title">תנ״ך <em>לתיכון</em></h1>
+    <p class="ls-tagline">לימוד תנ״ך כיתות י׳–י״א</p>
+    <div class="ls-chips">
+      <span class="ls-chip">סיפורי האבות</span>
+      <span class="ls-chip">סיפורי יוסף</span>
+      <span class="ls-chip">התהוות האומה</span>
+      <span class="ls-chip">חוק וחברה</span>
+      <span class="ls-chip">ירמיהו</span>
+      <span class="ls-chip">שיבת ציון</span>
+    </div>
+  </div>
+  <div class="ls-cards" id="ls-cards">
+    <button class="lc lc-student" onclick="doStudentLogin()">
+      <div class="lc-icon">📚</div>
+      <div class="lc-text"><span class="lc-label">כניסת תלמיד/ה</span><span class="lc-desc">גישה לשיעורים ותרגולים</span></div>
+      <span class="lc-arrow">‹</span>
+    </button>
+
+    <!-- STUDENT REGISTRATION PANEL — opens directly under the student card -->
+    <div class="ls-tcp ls-scp" id="scp">
+      <div class="scp-head"><span class="scp-head-icon">📚</span><span>הרשמת תלמיד/ה</span></div>
+      <div style="margin-bottom:.8rem">
+        <label class="tcp-lbl">👤 שם מלא</label>
+        <input class="tcp-input" id="sname" type="text" placeholder="שם פרטי + שם משפחה" autocomplete="name"
+               onkeydown="if(event.key==='Enter')document.getElementById('sclass').focus()">
+      </div>
+      <label class="tcp-lbl">🏫 הכיתה שלי</label>
+      <div class="scp-grades">
+        <button type="button" class="scp-grade" onclick="setGrade('י')">י׳</button>
+        <button type="button" class="scp-grade" onclick="setGrade('יא')">י״א</button>
+      </div>
+      <div class="tcp-row">
+        <input class="tcp-input" id="sclass" type="text" placeholder='לדוגמה: י3 / יא2' maxlength="14"
+               oninput="_markGradeChip(this.value)"
+               onkeydown="if(event.key==='Enter')submitStudentLogin()">
+        <button class="tcp-go scp-go" onclick="submitStudentLogin()">התחל ›</button>
+      </div>
+      <p class="tcp-hint">השם והכיתה ילוו אותך בכל השיעורים — נא להזין שם מלא ומדויק</p>
+      <button class="tcp-back" onclick="hideSCP()">← חזרה</button>
+    </div>
+
+    <button class="lc lc-teacher" onclick="showTCP()">
+      <div class="lc-icon">🎓</div>
+      <div class="lc-text"><span class="lc-label">כניסת מורה</span><span class="lc-desc">ניהול, נעילה ומעקב תלמידים</span></div>
+      <span class="lc-arrow">‹</span>
+    </button>
+  </div>
+  <div class="ls-tcp" id="tcp">
+    <div style="font-size:.7rem;font-weight:800;color:rgba(255,255,255,.45);letter-spacing:.05em;text-transform:uppercase;margin-bottom:.9rem;text-align:center">פרטי כניסה — מורה</div>
+
+    <!-- Teacher name (always shown) -->
+    <div style="margin-bottom:.7rem">
+      <label class="tcp-lbl">👤 שם מלא</label>
+      <input class="tcp-input" id="tname" type="text" placeholder="שם פרטי + שם משפחה" autocomplete="name">
+    </div>
+
+    <!-- WhatsApp -->
+    <div style="margin-bottom:.7rem">
+      <label class="tcp-lbl">💬 וואטסאפ</label>
+      <input class="tcp-input ltr" id="t-wa" type="tel" placeholder="0501234567" autocomplete="tel">
+    </div>
+
+    <!-- Password -->
+    <label class="tcp-lbl">🔑 קוד כניסה למורה</label>
+    <div class="tcp-row">
+      <div class="pass-wrap">
+        <input class="tcp-input ltr" id="tpass" type="password" placeholder="••••" maxlength="24" style="width:100%;padding-left:2.4rem"
+               onkeydown="if(event.key==='Enter')doTeacherLogin()">
+        <button type="button" class="pass-eye" aria-label="הצג או הסתר קוד" onclick="togglePass('tpass',this)">👁</button>
+      </div>
+      <button class="tcp-go" onclick="doTeacherLogin()">כניסה</button>
+    </div>
+    <p class="tcp-hint">קיבלת קוד כניסה ראשוני? הזן אותו כאן</p>
+    <button class="tcp-back" onclick="hideTCP()">← חזרה</button>
+  </div>
+</div>
+
+<!-- CHANGE PASSWORD SCREEN -->
+<div id="chpass-screen" style="display:none;position:fixed;inset:0;z-index:1000;background:linear-gradient(160deg,#04081a 0%,#0a1535 45%,#060e1e 100%);display:none;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1.5rem">
+  <div style="position:relative;z-index:1;width:100%;max-width:400px">
+    <div style="text-align:center;margin-bottom:1.8rem">
+      <div style="font-size:2.2rem;margin-bottom:.6rem">🔐</div>
+      <div style="font-family:'Rubik',sans-serif;font-size:1.5rem;color:var(--text)">ברוכ/ה הבא/ה!</div>
+      <div style="font-size:.78rem;color:var(--muted);margin-top:.4rem">כניסה ראשונה — יש לקבוע סיסמה אישית</div>
+    </div>
+    <div style="background:#fff;border:1px solid var(--border);box-shadow:var(--sh2);border-radius:20px;padding:1.5rem">
+      <div style="margin-bottom:.9rem">
+        <label class="tcp-lbl">🔑 סיסמה חדשה</label>
+        <div class="pass-wrap">
+          <input class="tcp-input ltr" id="cp-pass1" type="password" placeholder="לפחות 8 תווים" maxlength="32" style="width:100%;padding-left:2.4rem"
+                 onkeydown="if(event.key==='Enter')document.getElementById('cp-pass2').focus()">
+          <button type="button" class="pass-eye" aria-label="הצג או הסתר סיסמה" onclick="togglePass('cp-pass1',this)">👁</button>
+        </div>
+      </div>
+      <div style="margin-bottom:.6rem">
+        <label class="tcp-lbl">🔁 אישור סיסמה</label>
+        <div class="pass-wrap">
+          <input class="tcp-input ltr" id="cp-pass2" type="password" placeholder="הקלד/י שוב" maxlength="32" style="width:100%;padding-left:2.4rem"
+                 onkeydown="if(event.key==='Enter')doChangePass()">
+          <button type="button" class="pass-eye" aria-label="הצג או הסתר סיסמה" onclick="togglePass('cp-pass2',this)">👁</button>
+        </div>
+      </div>
+      <div id="cp-rules" style="font-size:.66rem;color:var(--muted);margin-bottom:.9rem;line-height:1.8">
+        <div id="cpr-len">⚪ לפחות 8 תווים</div>
+        <div id="cpr-upper">⚪ אות גדולה באנגלית (A-Z)</div>
+        <div id="cpr-symbol">⚪ סימן אחד לפחות (!@#$%^&*)</div>
+      </div>
+      <button class="tcp-go" style="width:100%;justify-content:center" onclick="doChangePass()">✅ קבע סיסמה והיכנס</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- APP SHELL -->
+<div id="app">
+
+  <!-- ── SIDEBAR (right, RTL) ── -->
+  <aside class="side">
+    <div class="side-logo"><span class="slg-mark">📖</span> תנ״ך לתיכון</div>
+    <nav class="side-nav" id="side-nav">
+      <button class="side-link active" data-view="dash" onclick="navTo('dash')"><span class="sl-ic">🏠</span> דשבורד</button>
+      <button class="side-link" data-view="units" onclick="navTo('units')"><span class="sl-ic">📚</span> יחידות לימוד</button>
+      <button class="side-link" data-view="exams" onclick="navTo('exams')"><span class="sl-ic">📝</span> מבחנים</button>
+      <button class="side-link" data-view="progress" onclick="navTo('progress')"><span class="sl-ic">📊</span> התקדמות</button>
+    </nav>
+    <div class="side-foot">
+      <div class="side-fbadge" id="side-fbadge"><span class="fb-dot"></span><span id="side-fbtext">Firebase</span></div>
+      <div class="side-user">
+        <div class="su-av" id="side-av">ת</div>
+        <div class="su-meta">
+          <div class="su-name" id="side-name">תלמיד/ה</div>
+          <div class="su-role" id="side-role">תלמיד/ה</div>
+        </div>
+      </div>
+      <button class="side-logout" onclick="confirmLogout()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        יציאה / החלפת משתמש
+      </button>
+    </div>
+  </aside>
+
+  <!-- ── MAIN ── -->
+  <div class="main-area">
+
+    <!-- top row (controls + FB badge) -->
+    <div class="app-topbar">
+      <div class="at-logo">תנ״ך לתיכון <span class="at-logo-pill">י׳–י״א</span></div>
+      <div class="at-right">
+        <span id="tb-greet" class="tb-greet-dash">שלום!</span>
+        <span id="fb-badge" class="fb-badge"><span class="fb-dot"></span>Firebase</span>
+        <button class="btn-cfg" id="desk-cfg" onclick="openSettings()" style="display:none">⚙️ הגדרות</button>
+        <button class="btn-topbar-logout" id="desk-logout" onclick="confirmLogout()" style="display:none" title="יציאה">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          <span class="tl-label">יציאה</span>
+        </button>
+        <div class="at-av" id="sb-av">ת</div>
+      </div>
+    </div>
+
+    <!-- TEACHER STRIP -->
+    <div class="t-strip" id="t-strip">
+      <span class="t-strip-dot"></span>
+      <span id="t-strip-text">מצב מורה — נעילות, תשובות ומעקב תלמידים זמינים</span>
+    </div>
+
+    <!-- DASHBOARD VIEW -->
+    <div class="view" id="view-dash">
+      <div class="dash-wrap" id="dash-wrap"><!-- renderDashboard() --></div>
+    </div>
+
+    <!-- UNITS VIEW -->
+    <div class="view" id="view-units" style="display:none">
+      <div id="tnav-units"></div>
+      <div class="units-col" id="units-col"><!-- renderGrid() --></div>
+    </div>
+
+    <!-- EXAMS VIEW -->
+    <div class="view" id="view-exams" style="display:none">
+      <div id="tnav-exams"></div>
+      <h2 class="dash-h" style="max-width:760px;margin:.3rem auto 1rem">📝 מבחני סיכום</h2>
+      <div class="exam-list" id="exam-list"><!-- renderExams() --></div>
+    </div>
+
+    <!-- PROGRESS VIEW (student detailed breakdown) -->
+    <div class="view" id="view-progress" style="display:none">
+      <div id="tnav-progress"></div>
+      <div class="prog-wrap" id="prog-detail"><!-- renderProgressDetail() --></div>
+    </div>
+
+  </div>
+
+  <!-- mobile bottom nav -->
+  <nav class="mnav" id="mnav">
+    <button class="mnav-btn active" data-view="dash" onclick="navTo('dash')"><span class="mn-ic">🏠</span>דשבורד</button>
+    <button class="mnav-btn" data-view="units" onclick="navTo('units')"><span class="mn-ic">📚</span>יחידות</button>
+    <button class="mnav-btn" data-view="exams" onclick="navTo('exams')"><span class="mn-ic">📝</span>מבחנים</button>
+    <button class="mnav-btn" data-view="progress" onclick="navTo('progress')"><span class="mn-ic">📊</span>התקדמות</button>
+    <button class="mnav-btn" id="mnav-settings" onclick="openSettings()" style="display:none"><span class="mn-ic">⚙️</span>הגדרות</button>
+  </nav>
+
+  <!-- hidden compat stubs (referenced by legacy JS) -->
+  <span id="mob-cfg" style="display:none"></span>
+  <span id="mob-logout" style="display:none"></span>
+  <div class="app-hero" id="app-hero" style="display:none"><span id="hero-name"></span><span id="hero-prog"></span></div>
+  <span id="sb-uname" style="display:none"></span>
+  <span id="sb-role" style="display:none"></span>
+  <span id="mob-title-name" style="display:none"></span>
+  <div id="prog-banner" style="display:none">
+    <span class="prog-pct" id="prog-pct">0%</span>
+    <div class="prog-fill" id="prog-fill" style="width:0%"></div>
+    <div class="prog-stats" id="prog-stats"></div>
+  </div>
+  <div id="units-wrap" style="display:none"></div>
+
+</div>
+
+<!-- SETTINGS MODAL -->
+<div class="modal-overlay" id="settings-overlay">
+  <div class="modal">
+    <div class="modal-hd">
+      <span class="modal-hd-title">⚙️ הגדרות מורה</span>
+      <button class="modal-close" onclick="closeSettings()">✕</button>
+    </div>
+    <div class="modal-tabs">
+      <button class="m-tab active" onclick="switchTab('general')">כללי</button>
+      <button class="m-tab" onclick="switchTab('classes')">🏫 כיתות</button>
+      <button class="m-tab" onclick="switchTab('locks')">🔒 נעילות</button>
+      <button class="m-tab" onclick="switchTab('answers')">🔑 תשובות</button>
+      <button class="m-tab" id="m-tab-users" onclick="switchTab('users')" style="display:none">👥 משתמשים</button>
+    </div>
+
+    <!-- General -->
+    <div class="m-pane active" id="tab-general">
+      <!-- Logged-in teacher info -->
+      <div class="m-section">מורה מחובר/ת</div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:.85rem 1rem;margin-bottom:1rem;display:flex;align-items:center;gap:.75rem">
+        <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#ca8a04,#d97706);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:900;flex-shrink:0" id="cfg-teacher-av">מ</div>
+        <div>
+          <div style="font-size:.88rem;font-weight:700;color:var(--text)" id="cfg-teacher-name">—</div>
+          <div style="font-size:.72rem;color:var(--muted)" id="cfg-teacher-contact">—</div>
+        </div>
+      </div>
+      <div class="m-section">פרטי קשר</div>
+      <div style="background:var(--blue-lt);border:1px solid #bfdbfe;border-radius:var(--r);padding:.65rem .9rem;font-size:.76rem;color:var(--blue);margin-bottom:.9rem">
+        💡 מספר הוואטסאפ משמש לשליחת סיכומי הגשות. הפרטים נשמרים ב-Firebase.
+      </div>
+      <div class="m-field">
+        <label class="m-lbl">💬 מספר וואטסאפ</label>
+        <input class="m-in" id="cfg-wa" type="tel" placeholder="0501234567" dir="ltr">
+      </div>
+      <button class="m-btn" onclick="saveGeneral()">💾 שמור ועדכן</button>
+      <div class="m-section">אבטחה</div>
+      <div class="m-field">
+        <label class="m-lbl">🔑 קוד מורה חדש</label>
+        <div class="pass-wrap">
+          <input class="m-in" id="cfg-pass" type="password" dir="ltr" placeholder="מינ׳ 4 תווים" style="padding-left:2.4rem">
+          <button type="button" class="pass-eye" aria-label="הצג או הסתר קוד" onclick="togglePass('cfg-pass',this)">👁</button>
+        </div>
+      </div>
+      <button class="m-btn" onclick="changePass()">🔐 שנה קוד</button>
+      <div class="m-section">Firebase</div>
+      <div id="fb-settings-status" style="font-size:.78rem;color:var(--muted)">בודק…</div>
+    </div>
+
+
+    <!-- My Classes + Roster -->
+    <div class="m-pane" id="tab-classes">
+      <div class="m-section">הכיתות שאני מלמד/ת</div>
+      <div style="background:var(--blue-lt);border:1px solid #bfdbfe;border-radius:var(--r);padding:.7rem .95rem;font-size:.78rem;color:var(--blue);margin-bottom:1rem;line-height:1.6">
+        💡 הוסיפי כיתה ← לאחר מכן פתחי אותה והוסיפי <strong>רשימה שמית של תלמידים</strong>. המעקב יציג את כל תלמידייך לפי ביצוע.
+      </div>
+      <div style="display:flex;gap:.55rem;margin-bottom:1rem">
+        <input class="m-in" id="new-class-inp" type="text"
+               placeholder='לדוגמה: י3 או י"ג'
+               style="flex:1;min-width:0"
+               onkeydown="if(event.key==='Enter')addTeacherClass()">
+        <button class="m-btn" onclick="addTeacherClass()"
+                style="padding:.72rem 1rem;white-space:nowrap;flex-shrink:0">+ הוסף כיתה</button>
+      </div>
+      <div id="roster-blocks"></div>
+      <p id="teacher-classes-empty" style="font-size:.76rem;color:var(--subtle);display:none">לא נוספו כיתות עדיין. הוסיפי כיתה למעלה.</p>
+      <p style="font-size:.65rem;color:var(--subtle);margin-top:.9rem">הכיתות והרשימות השמיות נשמרות ב-Firebase.</p>
+    </div>
+
+    <!-- Lock lessons -->
+    <div class="m-pane" id="tab-locks">
+      <div class="m-section">נעל / פתח גישת תלמידים לשיעורים</div>
+      <div id="lock-list"></div>
+    </div>
+
+    <!-- Show/hide answers per lesson -->
+    <div class="m-pane" id="tab-answers">
+      <div class="m-section">פרסום תשובות לתלמידים</div>
+      <div style="background:var(--purple-lt);border:1.5px solid #ddd6fe;border-radius:var(--r);padding:.88rem 1.05rem;font-size:.82rem;color:var(--text-mid);margin-bottom:1.1rem;line-height:1.6">
+        <strong style="color:var(--purple)">🔑 הסבר:</strong> כשהמתג <strong>כבוי</strong> — תלמידים יראו: <em>"התשובות טרם פורסמו על ידי המורה"</em>. כשהוא <strong>דלוק</strong> — טאב התשובות נפתח. מסונכרן ב-Firebase בזמן-אמת (Firestore: <code style="font-size:.72rem;background:var(--surface3);padding:1px 5px;border-radius:5px">lessons/{id}/showAnswers</code>).
+      </div>
+
+      <div id="answers-control-list"></div>
+    </div>
+
+    <!-- Progress -->
+    <div class="m-pane" id="tab-progress">
+      <div class="m-section">מעקב תלמידים לפי כיתה ויחידה</div>
+      <!-- WhatsApp Summary Button -->
+      <div style="background:linear-gradient(135deg,#dcfce7,#f0fdf4);border:1.5px solid #86efac;border-radius:var(--r-lg);padding:.9rem 1.1rem;margin-bottom:1rem;display:flex;align-items:center;gap:.85rem">
+        <div style="font-size:1.8rem;flex-shrink:0">📲</div>
+        <div style="flex:1">
+          <div style="font-size:.84rem;font-weight:800;color:#15803d;margin-bottom:.18rem">סיכום יומי לוואטסאפ</div>
+          <div style="font-size:.71rem;color:#166534;line-height:1.5">לחץ/י לפתיחת וואטסאפ עם סיכום מוכן — כל הכיתות, מי הגיש ב-24 שעות האחרונות וציונים</div>
+        </div>
+        <button id="wa-summary-btn" onclick="sendWhatsAppSummary()"
+          style="flex-shrink:0;padding:.65rem 1.1rem;border:none;border-radius:var(--r-pill);background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;font-size:.8rem;font-weight:800;cursor:pointer;box-shadow:0 4px 14px rgba(21,128,61,.35);transition:all .18s;white-space:nowrap"
+          onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
+          📲 שלח סיכום
+        </button>
+      </div>
+      <div class="progress-tabs" id="progress-tabs">
+        <button class="ptab active" onclick="switchProgressTab('submissions',this)">📥 הגשות</button>
+        <button class="ptab" onclick="switchProgressTab('unit_summary',this)">📊 סיכום יחידה</button>
+      </div>
+      <div id="progress-view-submissions">
+        <div id="progress-content"><p style="color:var(--muted);font-size:.82rem">פתח את הטאב לטעינה</p></div>
+      </div>
+      <div id="progress-view-unit_summary" style="display:none">
+        <div id="unit-summary-content"><p style="color:var(--muted);font-size:.82rem">טוען סיכום…</p></div>
+      </div>
+    </div>
+
+    <!-- User Management (admin only) -->
+    <div class="m-pane" id="tab-users">
+      <div style="background:var(--indigo-lt);border:1.5px solid rgba(99,102,241,.25);border-radius:var(--r);padding:.85rem 1.05rem;font-size:.8rem;color:var(--text-mid);margin-bottom:1.1rem;line-height:1.6">
+        <strong style="color:var(--indigo)">👥 ניהול מורים:</strong> כאן ניתן להוסיף מורים, לאפס סיסמה למי ששכח, לשנות תפקיד ולהסיר. <strong>אי אפשר לראות סיסמה</strong> — איפוס מייצר קוד כניסה אישי חד-פעמי שהמורה מחליף בכניסה.
+      </div>
+
+      <div class="m-section">הוספת מורה חדש/ה</div>
+      <div style="display:flex;flex-direction:column;gap:.55rem;margin-bottom:.6rem">
+        <input class="m-in" id="new-teacher-name" type="text" placeholder="שם מלא (פרטי + משפחה)">
+        <input class="m-in ltr" id="new-teacher-wa" type="tel" placeholder="וואטסאפ (לא חובה) — 0501234567" dir="ltr">
+      </div>
+      <button class="m-btn" onclick="addNewTeacher()">➕ צור מורה וקוד כניסה</button>
+
+      <div class="m-section">מורים רשומים</div>
+      <div id="users-list"><p style="color:var(--muted);font-size:.82rem">פתח/י את הטאב לטעינה…</p></div>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* ════════════════════════════════════════════════
+   FIREBASE CONFIG — tanakh-project
+════════════════════════════════════════════════ */
+const FB_CFG={
+  apiKey:"AIzaSyA8QKxGi7-72Dm07VgNwLx-fJu7QTPN1Ak",
+  authDomain:"tanakh-project.firebaseapp.com",
+  projectId:"tanakh-project",
+  storageBucket:"tanakh-project.firebasestorage.app",
+  messagingSenderId:"798378782412",
+  appId:"1:798378782412:web:99a44c6771a5afec7d1c69"
+};
+let _db=null,_fbOk=false;
+
+function initFirebase(){
+  try{
+    if(typeof firebase==='undefined') return;
+    if(!firebase.apps.length) firebase.initializeApp(FB_CFG);
+    _db=firebase.firestore();
+    _db.enablePersistence().catch(()=>{});
+    _fbOk=true; setBadge(true);
+  }catch(e){ console.warn('[FB]',e); setBadge(false); }
+}
+function setBadge(ok){
+  const b=document.getElementById('fb-badge');
+  if(!b) return;
+  b.className='fb-badge '+(ok?'ok':'off');
+  b.innerHTML=`<span class="fb-dot"></span>${ok?'☁️ מחובר':'💾 מקומי'}`;
+  const s=document.getElementById('fb-settings-status');
+  if(s) s.textContent=ok?'✅ Firebase מחובר ופעיל':'⚠️ Firebase לא מחובר — שמירה מקומית';
+  const sb=document.getElementById('side-fbadge');
+  if(sb){sb.className='side-fbadge '+(ok?'ok':'');const st=document.getElementById('side-fbtext');if(st)st.textContent=ok?'מחובר ☁️':'מקומי 💾';}
+}
+
+/* ─ Locks ─ */
+function subscribeLocks(){
+  if(!_db) return;
+  _db.collection('tanakh2_config').doc('locks').onSnapshot(doc=>{
+    if(!doc.exists) return;
+    const ov=LS.get('tanakh2_locks',{});
+    Object.assign(ov,doc.data()); LS.set('tanakh2_locks',ov);
+    renderGrid();
+  });
+}
+async function pushLocks(locks){
+  if(!_db) return;
+  try{ await _db.collection('tanakh2_config').doc('locks').set(locks,{merge:true}); }
+  catch(e){ console.warn('[FB locks]',e); }
+}
+
+/* ─ Answers visibility ─
+   Firestore path: lessons/{lessonId}  field: showAnswers (boolean)
+   e.g. lessons/u1_l0  →  { showAnswers: true }
+   Default: hidden (false)
+*/
+function subscribeAnswers(){
+  if(!_db) return;
+  _db.collection('lessons').onSnapshot(snap=>{
+    const av=LS.get('tanakh2_answers_visible',{});
+    // Only update from Firebase if no recent local change (within 3 seconds)
+    const now=Date.now();
+    snap.forEach(doc=>{
+      const lid=doc.id;
+      const val=doc.data()?.showAnswers===true;
+      // Skip if there was a recent local write for this lesson
+      if(window._recentAnswerWrite&&window._recentAnswerWrite[lid]&&(now-window._recentAnswerWrite[lid])<3000) return;
+      av[lid]=val;
+    });
+    LS.set('tanakh2_answers_visible',av);
+    if(document.getElementById('tab-answers')?.classList.contains('active')) buildAnswersControlList();
+  });
+  // Live submission listener — notifies teacher in real-time
+  _db.collection('tanakh2_live').doc('latest').onSnapshot(doc=>{
+    if(!doc.exists||(S.role!=='teacher'&&S.role!=='admin')) return;
+    const d=doc.data();
+    if(!d||!d.studentName) return;
+    // Only notify if this is recent (within last 60 seconds)
+    const ts=d.ts?.toDate?.();
+    if(ts&&(Date.now()-ts.getTime())>60000) return;
+    showLiveSubmissionToast(d);
+    updateProgressBadge();
+    // Reload progress if the standalone teacher view is open
+    if(document.getElementById('view-progress')?.style.display!=='none') loadProgress();
+  });
+}
+
+function showLiveSubmissionToast(d){
+  const score=typeof d.score==='number'?d.score+'%':'✅';
+  const col=typeof d.score==='number'?(d.score>=80?'#15803d':d.score>=60?'#b45309':'#dc2626'):'#15803d';
+  const t=document.getElementById('toast');
+  t.innerHTML=`📬 <strong>${d.studentName}</strong> (כיתה ${d.className||'?'}) הגיש/ה · <strong style="color:${col}">${score}</strong>`;
+  t.classList.add('show');
+  clearTimeout(window._liveToastTimer);
+  window._liveToastTimer=setTimeout(()=>t.classList.remove('show'),5000);
+}
+
+let _newSubmissionsCount=0;
+function updateProgressBadge(){
+  _newSubmissionsCount++;
+  // Badge the "progress" nav buttons (sidebar + mobile top strip)
+  document.querySelectorAll('.side-link[data-view="progress"]').forEach(b=>{
+    if(!b.querySelector('.nav-badge')){
+      const s=document.createElement('span');s.className='nav-badge';b.appendChild(s);
+    }
+    b.querySelector('.nav-badge').textContent=_newSubmissionsCount;
+  });
+}
+function clearProgressBadge(){
+  _newSubmissionsCount=0;
+  document.querySelectorAll('.nav-badge').forEach(s=>s.remove());
+}
+async function pushAnswersVisible(lid,visible){
+  if(!_db) return;
+  try{
+    await _db.collection('lessons').doc(lid).set({showAnswers:visible},{merge:true});
+  }catch(e){ console.warn('[FB answers]',e); }
+}
+function isAnswersVisible(lid){
+  const av=LS.get('tanakh2_answers_visible',{});
+  return av[lid]===true;
+}
+function setAnswersVisible(lid,visible){
+  const av=LS.get('tanakh2_answers_visible',{});
+  av[lid]=visible; LS.set('tanakh2_answers_visible',av);
+  // Mark timestamp so subscribeAnswers won't override this for 3 seconds
+  if(!window._recentAnswerWrite) window._recentAnswerWrite={};
+  window._recentAnswerWrite[lid]=Date.now();
+  pushAnswersVisible(lid,visible);
+}
+
+/* ════════════════════════════════════════════════
+   CURRICULUM DATA
+════════════════════════════════════════════════ */
+const UNITS=[
+  { id:'avot',emoji:'📜',label:'יחידה א׳',title:'סיפורי האבות',color:'#1a56db',colorLt:'#eff4ff',assess:'external',
+    desc:'אברהם, יצחק ויעקב — מסע האמונה, הברית והבחירה בספר בראשית',
+    lessons:[
+      {id:'avot_l1',short:'שיעור 1',emoji:'📖',color:'#1a56db',mins:45,locked:false,isNew:true,
+       title:'לך לך — קריאת אברהם',desc:'בראשית י״ב — העזיבה, ההבטחה והירידה למצרים',file:'avot_lesson1.html'},
+      {id:'avot_l2',short:'שיעור 2',emoji:'📜',color:'#0891b2',mins:45,locked:false,
+       title:'אברהם ולוט — הפרדה ובחירה',desc:'בראשית י״ג — מריבת הרועים והפרדת הדרכים',file:'avot_lesson2.html'},
+      {id:'avot_l3',short:'שיעור 3',emoji:'✡️',color:'#7c3aed',mins:45,locked:false,
+       title:'ברית בין הבתרים',desc:'בראשית ט״ו — ההבטחה לזרע ולארץ',file:'avot_lesson3.html'},
+      {id:'avot_l4',short:'שיעור 4',emoji:'🕯️',color:'#059669',mins:45,locked:false,
+       title:'הגר וישמעאל',desc:'בראשית ט״ז — מתח במשפחה ובשורת המלאך',file:'avot_lesson4.html'},
+      {id:'avot_l5',short:'שיעור 5',emoji:'🔥',color:'#b45309',mins:45,locked:false,
+       title:'ברית המילה',desc:'בראשית י״ז — אות הברית ושינוי השמות',file:'avot_lesson5.html'},
+      {id:'avot_l6',short:'שיעור 6',emoji:'⭐',color:'#be185d',mins:45,locked:false,
+       title:'שלושת המלאכים והבשורה',desc:'בראשית י״ח — הכנסת אורחים ובשורת יצחק',file:'avot_lesson6.html'},
+      {id:'avot_l7',short:'שיעור 7',emoji:'🌿',color:'#0284c7',mins:45,locked:false,
+       title:'הפיכת סדום ועמורה',desc:'בראשית י״ח–י״ט — מיקוח אברהם והצלת לוט',file:'avot_lesson7.html'},
+      {id:'avot_l8',short:'שיעור 8',emoji:'👑',color:'#0f766e',mins:45,locked:false,
+       title:'לידת יצחק וגירוש הגר',desc:'בראשית כ״א — הבן הנולד והשילוח',file:'avot_lesson8.html'},
+      {id:'avot_l9',short:'שיעור 9',emoji:'⚖️',color:'#4f46e5',mins:45,locked:false,
+       title:'עקדת יצחק',desc:'בראשית כ״ב — הניסיון הגדול והאיל',file:'avot_lesson9.html'},
+      {id:'avot_l10',short:'שיעור 10',emoji:'🏛️',color:'#ca8a04',mins:45,locked:false,
+       title:'מציאת אישה ליצחק — רבקה',desc:'בראשית כ״ד — שליחות העבד ומבחן החסד',file:'avot_lesson10.html'},
+      {id:'avot_l11',short:'שיעור 11',emoji:'🕊️',color:'#1a56db',mins:45,locked:false,
+       title:'יעקב ועשו — הבכורה והברכה',desc:'בראשית כ״ה, כ״ז — המכירה והרמייה',file:'avot_lesson11.html'},
+      {id:'avot_l12',short:'שיעור 12',emoji:'📯',color:'#0891b2',mins:45,locked:false,
+       title:'חלום יעקב בבית אל',desc:'בראשית כ״ח — הסולם, הברית והנדר',file:'avot_lesson12.html'},
+      {id:'avot_l13',short:'שיעור 13',emoji:'🌅',color:'#7c3aed',mins:45,locked:false,
+       title:'יעקב אצל לבן — לאה ורחל',desc:'בראשית כ״ט–ל׳ — האהבה, הנישואין והעדרים',file:'avot_lesson13.html'},
+      {id:'avot_l14',short:'שיעור 14',emoji:'💧',color:'#059669',mins:45,locked:false,
+       title:'מאבק יעקב ושינוי השם',desc:'בראשית ל״ב — המאבק בלילה ושם ישראל',file:'avot_lesson14.html'},
+      {id:'avot_l15',short:'שיעור 15',emoji:'🗺️',color:'#b45309',mins:45,locked:false,
+       title:'מפגש יעקב ועשו',desc:'בראשית ל״ג — הפיוס והמתנה',file:'avot_lesson15.html'},
+      {id:'avot_l16',short:'שיעור 16',emoji:'🧭',color:'#be185d',mins:45,locked:false,
+       title:'דינה ושכם — סיכום דמות יעקב',desc:'בראשית ל״ד — האירוע והשלכותיו',file:'avot_lesson16.html'},
+      {id:'avot_exam',short:'מבחן',emoji:'🏆',color:'#ca8a04',mins:90,locked:false,exam:true,
+       title:'מבחן סיכום — סיפורי האבות',desc:'מבחן מסכם לכל נושאי היחידה',file:'avot_exam.html'},
+    ]
+  },
+  { id:'yosef',emoji:'⭐',label:'יחידה ב׳',title:'סיפורי יוסף',color:'#0f766e',colorLt:'#f0fdfa',assess:'external',
+    desc:'מהחלומות אל מצרים — ירידה, מעלה ופיוס במשפחת יעקב',
+    lessons:[
+      {id:'yosef_l1',short:'שיעור 1',emoji:'📖',color:'#1a56db',mins:45,locked:false,
+       title:'יוסף וחלומותיו',desc:'בראשית ל״ז — האהבה, הקנאה והחלומות',file:'yosef_lesson1.html'},
+      {id:'yosef_l2',short:'שיעור 2',emoji:'📜',color:'#0891b2',mins:45,locked:false,
+       title:'מכירת יוסף',desc:'בראשית ל״ז — הבור, המכירה והאבל',file:'yosef_lesson2.html'},
+      {id:'yosef_l3',short:'שיעור 3',emoji:'✡️',color:'#7c3aed',mins:45,locked:false,
+       title:'יהודה ותמר',desc:'בראשית ל״ח — סיפור הביניים ומשמעותו',file:'yosef_lesson3.html'},
+      {id:'yosef_l4',short:'שיעור 4',emoji:'🕯️',color:'#059669',mins:45,locked:false,
+       title:'יוסף בבית פוטיפר',desc:'בראשית ל״ט — הצלחה, ניסיון והאשמת שווא',file:'yosef_lesson4.html'},
+      {id:'yosef_l5',short:'שיעור 5',emoji:'🔥',color:'#b45309',mins:45,locked:false,
+       title:'יוסף ופותר החלומות בכלא',desc:'בראשית מ׳ — שר המשקים ושר האופים',file:'yosef_lesson5.html'},
+      {id:'yosef_l6',short:'שיעור 6',emoji:'⭐',color:'#be185d',mins:45,locked:false,
+       title:'חלומות פרעה ועליית יוסף',desc:'בראשית מ״א — הפתרון והמשנה למלך',file:'yosef_lesson6.html'},
+      {id:'yosef_l7',short:'שיעור 7',emoji:'🌿',color:'#0284c7',mins:45,locked:false,
+       title:'ירידת האחים למצרים',desc:'בראשית מ״ב — המבחן הראשון וזיהוי האחים',file:'yosef_lesson7.html'},
+      {id:'yosef_l8',short:'שיעור 8',emoji:'👑',color:'#0f766e',mins:45,locked:false,
+       title:'בנימין והגביע',desc:'בראשית מ״ג–מ״ד — הירידה השנייה והמלכודת',file:'yosef_lesson8.html'},
+      {id:'yosef_l9',short:'שיעור 9',emoji:'⚖️',color:'#4f46e5',mins:45,locked:false,
+       title:'ההתוודעות — "אני יוסף"',desc:'בראשית מ״ה — הגילוי, המחילה והשליחות',file:'yosef_lesson9.html'},
+      {id:'yosef_l10',short:'שיעור 10',emoji:'🏛️',color:'#ca8a04',mins:45,locked:false,
+       title:'ירידת יעקב למצרים וברכת יעקב',desc:'בראשית מ״ו–נ׳ — האיחוד, הברכות והפרידה',file:'yosef_lesson10.html'},
+      {id:'yosef_exam',short:'מבחן',emoji:'🏆',color:'#ca8a04',mins:90,locked:false,exam:true,
+       title:'מבחן סיכום — סיפורי יוסף',desc:'מבחן מסכם לכל נושאי היחידה',file:'yosef_exam.html'},
+    ]
+  },
+  { id:'umot',emoji:'🔥',label:'יחידה ג׳',title:'סיפור התהוות האומה',color:'#7c3aed',colorLt:'#faf5ff',assess:'external',
+    desc:'משעבוד לחירות — יציאת מצרים, מתן תורה והקמת העם בספר שמות',
+    lessons:[
+      {id:'umot_l1',short:'שיעור 1',emoji:'📖',color:'#1a56db',mins:45,locked:false,
+       title:'ישראל במצרים והשעבוד',desc:'שמות א׳ — הריבוי, הפחד והגזרות',file:'umot_lesson1.html'},
+      {id:'umot_l2',short:'שיעור 2',emoji:'📜',color:'#0891b2',mins:45,locked:false,
+       title:'לידת משה והצלתו',desc:'שמות ב׳ — התיבה, בת פרעה והבריחה למדיין',file:'umot_lesson2.html'},
+      {id:'umot_l3',short:'שיעור 3',emoji:'✡️',color:'#7c3aed',mins:45,locked:false,
+       title:'הסנה הבוער והשליחות',desc:'שמות ג׳–ד׳ — ההתגלות, השם והאותות',file:'umot_lesson3.html'},
+      {id:'umot_l4',short:'שיעור 4',emoji:'🕯️',color:'#059669',mins:45,locked:false,
+       title:'עשר המכות',desc:'שמות ז׳–י״א — מאבק האמונה מול פרעה',file:'umot_lesson4.html'},
+      {id:'umot_l5',short:'שיעור 5',emoji:'🔥',color:'#b45309',mins:45,locked:false,
+       title:'פסח ויציאת מצרים',desc:'שמות י״ב — קרבן הפסח והיציאה בחיפזון',file:'umot_lesson5.html'},
+      {id:'umot_l6',short:'שיעור 6',emoji:'⭐',color:'#be185d',mins:45,locked:false,
+       title:'קריעת ים סוף ושירת הים',desc:'שמות י״ד–ט״ו — ההצלה והשירה',file:'umot_lesson6.html'},
+      {id:'umot_l7',short:'שיעור 7',emoji:'🌿',color:'#0284c7',mins:45,locked:false,
+       title:'מן, שליו ומסה ומריבה',desc:'שמות ט״ז–י״ז — ניסיונות המדבר',file:'umot_lesson7.html'},
+      {id:'umot_l8',short:'שיעור 8',emoji:'👑',color:'#0f766e',mins:45,locked:false,
+       title:'מעמד הר סיני ועשרת הדיברות',desc:'שמות י״ט–כ׳ — ההתגלות והברית',file:'umot_lesson8.html'},
+      {id:'umot_l9',short:'שיעור 9',emoji:'⚖️',color:'#4f46e5',mins:45,locked:false,
+       title:'חטא העגל',desc:'שמות ל״ב — השבר, הבקשה והסליחה',file:'umot_lesson9.html'},
+      {id:'umot_l10',short:'שיעור 10',emoji:'🏛️',color:'#ca8a04',mins:45,locked:false,
+       title:'הקמת המשכן — סיכום',desc:'שמות ל״ה–מ׳ — השראת השכינה בעם',file:'umot_lesson10.html'},
+      {id:'umot_exam',short:'מבחן',emoji:'🏆',color:'#ca8a04',mins:90,locked:false,exam:true,
+       title:'מבחן סיכום — סיפור התהוות האומה',desc:'מבחן מסכם לכל נושאי היחידה',file:'umot_exam.html'},
+    ]
+  },
+  { id:'hok',emoji:'⚖️',label:'יחידה ד׳',title:'חוק וחברה',color:'#ca8a04',colorLt:'#fefce8',assess:'internal',
+    desc:'צדק, משפט והגנה על החלש — ערכים חברתיים בחוקי התורה ובנביאים',
+    lessons:[
+      {id:'hok_l1',short:'שיעור 1',emoji:'📖',color:'#1a56db',mins:45,locked:false,
+       title:'מבוא — חוק וצדק במקרא',desc:'ייחוד המשפט המקראי מול חוקי המזרח הקדום',file:'hok_lesson1.html'},
+      {id:'hok_l2',short:'שיעור 2',emoji:'📜',color:'#0891b2',mins:45,locked:false,
+       title:'עבד עברי ואמה עברייה',desc:'שמות כ״א — זכויות, חירות ושנת השמיטה לעבד',file:'hok_lesson2.html'},
+      {id:'hok_l3',short:'שיעור 3',emoji:'✡️',color:'#7c3aed',mins:45,locked:false,
+       title:'דיני נזיקין ושמירה',desc:'שמות כ״א–כ״ב — אחריות, פיצוי ומידה כנגד מידה',file:'hok_lesson3.html'},
+      {id:'hok_l4',short:'שיעור 4',emoji:'🕯️',color:'#059669',mins:45,locked:false,
+       title:'הגנה על החלש — גר, יתום ואלמנה',desc:'שמות כ״ב–כ״ג — איסור הונאה וצו הדאגה',file:'hok_lesson4.html'},
+      {id:'hok_l5',short:'שיעור 5',emoji:'🔥',color:'#b45309',mins:45,locked:false,
+       title:'שנת השמיטה והיובל',desc:'ויקרא כ״ה — שחרור הארץ, החוב והאדם',file:'hok_lesson5.html'},
+      {id:'hok_l6',short:'שיעור 6',emoji:'⭐',color:'#be185d',mins:45,locked:false,
+       title:'צדק חברתי בנביאים',desc:'עמוס וישעיהו — תוכחה על עוול חברתי',file:'hok_lesson6.html'},
+      {id:'hok_l7',short:'שיעור 7',emoji:'🌿',color:'#0284c7',mins:45,locked:false,
+       title:'סיכום — ערכים חברתיים במשפט המקראי',desc:'אחריות הדדית, חמלה וצדק כיסוד החברה',file:'hok_lesson7.html'},
+      {id:'hok_exam',short:'מבחן',emoji:'🏆',color:'#ca8a04',mins:90,locked:false,exam:true,
+       title:'מבחן סיכום — חוק וחברה',desc:'מבחן מסכם לכל נושאי היחידה',file:'hok_exam.html'},
+    ]
+  },
+  { id:'navi',emoji:'🕊️',label:'יחידה ה׳',title:'נביא ונבואה — ירמיהו',color:'#0891b2',colorLt:'#ecfeff',assess:'internal',
+    desc:'תפקיד הנביא, נבואת אמת מול שקר ודמותו של ירמיהו בערב החורבן',
+    lessons:[
+      {id:'navi_l1',short:'שיעור 1',emoji:'📖',color:'#1a56db',mins:45,locked:false,
+       title:'מהי נבואה — תפקיד הנביא',desc:'שליח ה׳, מבקר חברתי ומנהיג רוחני',file:'navi_lesson1.html'},
+      {id:'navi_l2',short:'שיעור 2',emoji:'📜',color:'#0891b2',mins:45,locked:false,
+       title:'הקדשת ירמיהו לנבואה',desc:'ירמיהו א׳ — הקריאה, ההיסוס והשליחות',file:'navi_lesson2.html'},
+      {id:'navi_l3',short:'שיעור 3',emoji:'✡️',color:'#7c3aed',mins:45,locked:false,
+       title:'תוכחה על עזיבת ה׳',desc:'ירמיהו ב׳ — "אותי עזבו מקור מים חיים"',file:'navi_lesson3.html'},
+      {id:'navi_l4',short:'שיעור 4',emoji:'🕯️',color:'#059669',mins:45,locked:false,
+       title:'נאום המקדש',desc:'ירמיהו ז׳ — ביקורת על ביטחון שווא במקדש',file:'navi_lesson4.html'},
+      {id:'navi_l5',short:'שיעור 5',emoji:'🔥',color:'#b45309',mins:45,locked:false,
+       title:'וידויי ירמיהו',desc:'ירמיהו כ׳ — מצוקת הנביא וקריאת התיגר',file:'navi_lesson5.html'},
+      {id:'navi_l6',short:'שיעור 6',emoji:'⭐',color:'#be185d',mins:45,locked:false,
+       title:'עימות עם נביא השקר חנניה',desc:'ירמיהו כ״ח — אמת מול שקר בנבואה',file:'navi_lesson6.html'},
+      {id:'navi_l7',short:'שיעור 7',emoji:'🌿',color:'#0284c7',mins:45,locked:false,
+       title:'נבואת הנחמה והברית החדשה',desc:'ירמיהו ל״א — תקווה, שיבה וברית מחודשת',file:'navi_lesson7.html'},
+      {id:'navi_l8',short:'שיעור 8',emoji:'👑',color:'#0f766e',mins:45,locked:false,
+       title:'חורבן ירושלים ודמות ירמיהו',desc:'ירמיהו ל״ט, נ״ב — הנפילה והנביא שנותר',file:'navi_lesson8.html'},
+      {id:'navi_l9',short:'שיעור 9',emoji:'⚖️',color:'#4f46e5',mins:45,locked:false,
+       title:'סיכום — נבואת אמת מול נבואת שקר',desc:'מבחני האמת של הנביא לאורך הספר',file:'navi_lesson9.html'},
+      {id:'navi_exam',short:'מבחן',emoji:'🏆',color:'#ca8a04',mins:90,locked:false,exam:true,
+       title:'מבחן סיכום — נביא ונבואה — ירמיהו',desc:'מבחן מסכם לכל נושאי היחידה',file:'navi_exam.html'},
+    ]
+  },
+  { id:'shivat',emoji:'🏛️',label:'יחידה ו׳',title:'שיבת ציון',color:'#be185d',colorLt:'#fdf2f8',assess:'internal',
+    desc:'מהצהרת כורש אל חידוש האומה בארץ — עזרא ונחמיה',
+    lessons:[
+      {id:'shivat_l1',short:'שיעור 1',emoji:'📖',color:'#1a56db',mins:45,locked:false,
+       title:'הצהרת כורש ותחילת השיבה',desc:'עזרא א׳ — ההיתר, הקריאה והעלייה',file:'shivat_lesson1.html'},
+      {id:'shivat_l2',short:'שיעור 2',emoji:'📜',color:'#0891b2',mins:45,locked:false,
+       title:'העולים הראשונים',desc:'עזרא ב׳–ג׳ — רשימת השבים והתקבצותם',file:'shivat_lesson2.html'},
+      {id:'shivat_l3',short:'שיעור 3',emoji:'✡️',color:'#7c3aed',mins:45,locked:false,
+       title:'בניית המזבח וייסוד המקדש',desc:'עזרא ג׳ — חידוש העבודה והנחת היסוד',file:'shivat_lesson3.html'},
+      {id:'shivat_l4',short:'שיעור 4',emoji:'🕯️',color:'#059669',mins:45,locked:false,
+       title:'התנגדות לבנייה ועצירתה',desc:'עזרא ד׳ — האויבים והפסקת המלאכה',file:'shivat_lesson4.html'},
+      {id:'shivat_l5',short:'שיעור 5',emoji:'🔥',color:'#b45309',mins:45,locked:false,
+       title:'חידוש הבנייה והשלמת המקדש',desc:'עזרא ה׳–ו׳ — הנביאים, האישור והחנוכה',file:'shivat_lesson5.html'},
+      {id:'shivat_l6',short:'שיעור 6',emoji:'⭐',color:'#be185d',mins:45,locked:false,
+       title:'עלייתו של עזרא',desc:'עזרא ז׳ — הסופר, התורה והסמכות',file:'shivat_lesson6.html'},
+      {id:'shivat_l7',short:'שיעור 7',emoji:'🌿',color:'#0284c7',mins:45,locked:false,
+       title:'בעיית הנישואין הזרים',desc:'עזרא ט׳–י׳ — המשבר והתיקון',file:'shivat_lesson7.html'},
+      {id:'shivat_l8',short:'שיעור 8',emoji:'👑',color:'#0f766e',mins:45,locked:false,
+       title:'נחמיה ובניית החומה',desc:'נחמיה א׳–ד׳ — היוזמה, הקושי וההתגייסות',file:'shivat_lesson8.html'},
+      {id:'shivat_l9',short:'שיעור 9',emoji:'⚖️',color:'#4f46e5',mins:45,locked:false,
+       title:'קריאת התורה והתחייבות העם',desc:'נחמיה ח׳–י׳ — האמנה וחידוש הברית',file:'shivat_lesson9.html'},
+      {id:'shivat_l10',short:'שיעור 10',emoji:'🏛️',color:'#ca8a04',mins:45,locked:false,
+       title:'סיכום — חידוש האומה בארץ',desc:'בניין רוחני ולאומי אחרי הגלות',file:'shivat_lesson10.html'},
+      {id:'shivat_exam',short:'מבחן',emoji:'🏆',color:'#ca8a04',mins:90,locked:false,exam:true,
+       title:'מבחן סיכום — שיבת ציון',desc:'מבחן מסכם לכל נושאי היחידה',file:'shivat_exam.html'},
+    ]
+  },
+];
+
+/* ════════════════════════════════════════════════
+   חטיבה שנייה — לא בשימוש. נשמר ריק לתאימות הקוד הקיים.
+════════════════════════════════════════════════ */
+const UNITS_70=[];
+const S={role:'',name:'',className:'',prog:{}};
+const LS={
+  get(k,fb=null){try{const v=localStorage.getItem(k);return v!==null?JSON.parse(v):fb}catch{return fb}},
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}},
+  del(k){try{localStorage.removeItem(k)}catch{}}
+};
+const DEFAULT_PASS='1234';
+
+function isLocked(id,base){const ov=LS.get('tanakh2_locks',{});return id in ov?ov[id]:base}
+function setLock(id,locked){
+  const ov=LS.get('tanakh2_locks',{});ov[id]=locked;LS.set('tanakh2_locks',ov);
+  pushLocks(ov);
+}
+
+/* ════════════════════════════════════════════════
+   UTILS
+════════════════════════════════════════════════ */
+let _tt;
+function toast(m){const e=document.getElementById('toast');e.textContent=m;e.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>e.classList.remove('show'),2800)}
+
+async function hashPass(raw){
+  if(!raw) return '';
+  try{
+    const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('tanakh2_'+raw));
+    return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+  }catch{let h=5381;for(let i=0;i<raw.length;i++)h=((h<<5)+h)^raw.charCodeAt(i);return 'fb_'+(h>>>0).toString(16)}
+}
+async function verifyPass(raw){
+  // 1. Check temp password in Firebase
+  if(_db){
+    try{
+      const doc=await _db.collection('tanakh2_config').doc('auth').get();
+      if(doc.exists && doc.data().tempPassword && doc.data().tempPassword===raw) return 'temp';
+    }catch(e){}
+  }
+  // 2. Check personal hashed password in Firebase
+  if(_db && S._pendingName){
+    try{
+      const key=S._pendingName.replace(/\s+/g,'_');
+      const doc=await _db.collection('tanakh2_teachers').doc(key).get();
+      if(doc.exists){
+        // Personal one-time code issued by admin (reset / new teacher)
+        if(doc.data().tempCode && doc.data().tempCode===raw) return 'temp';
+        if(doc.data().passHash){
+          const h=await hashPass(raw);
+          if(h===doc.data().passHash) return 'ok';
+        }
+      }
+    }catch(e){}
+  }
+  // 3. Fallback: local hash (legacy)
+  const s=LS.get('tanakh2_tpass','');
+  if(s) return (await hashPass(raw))===s ? 'ok' : false;
+  return false;
+}
+
+function buildStars(){
+  const c=document.getElementById('ls-stars');if(!c)return;
+  for(let i=0;i<60;i++){
+    const s=document.createElement('span');const sz=Math.random()*2.4+.5;
+    s.style.cssText=`width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--d:${(Math.random()*5+2).toFixed(1)}s;--op:${(Math.random()*.35+.07).toFixed(2)};animation-delay:${(Math.random()*6).toFixed(1)}s`;
+    c.appendChild(s);
+  }
+}
+
+/* ════════════════════════════════════════════════
+   LOGIN
+════════════════════════════════════════════════ */
+function showTCP(){
+  hideSCP();
+  const c=document.getElementById('ls-cards');
+  c.style.opacity='.25'; c.style.pointerEvents='none';
+  // Pre-fill with saved values for returning teachers
+  const savedName=LS.get('tanakh2_tname','');
+  const savedWa=LS.get('tanakh2_teacher_wa','');
+  const nameEl=document.getElementById('tname');
+  const waEl=document.getElementById('t-wa');
+  if(nameEl&&savedName) nameEl.value=savedName;
+  if(waEl&&savedWa) waEl.value=savedWa;
+  document.getElementById('tcp').classList.add('open');
+  setTimeout(()=>{ (savedName?document.getElementById('tpass'):nameEl)?.focus(); },80);
+}
+function hideTCP(){
+  const c=document.getElementById('ls-cards');c.style.opacity='';c.style.pointerEvents='';
+  document.getElementById('tcp').classList.remove('open');
+  document.getElementById('tpass').value='';
+}
+function _dimCards(on){
+  document.querySelectorAll('#ls-cards .lc').forEach(b=>{
+    b.style.opacity=on?'.25':'';
+    b.style.pointerEvents=on?'none':'';
+  });
+}
+function showSCP(){
+  hideTCP();
+  _dimCards(true);
+  const savedName=LS.get('tanakh2_uname','');
+  const savedClass=LS.get('tanakh2_class','');
+  const nameEl=document.getElementById('sname');
+  const classEl=document.getElementById('sclass');
+  if(nameEl&&savedName&&savedName!=='תלמיד/ה') nameEl.value=savedName;
+  if(classEl&&savedClass) classEl.value=savedClass;
+  _markGradeChip(classEl?classEl.value:'');
+  document.getElementById('scp').classList.add('open');
+  setTimeout(()=>{ (nameEl&&nameEl.value?classEl:nameEl)?.focus(); },80);
+}
+function hideSCP(){
+  _dimCards(false);
+  document.getElementById('scp')?.classList.remove('open');
+}
+function setGrade(g){
+  const el=document.getElementById('sclass');
+  if(!el) return;
+  const num=(el.value.match(/\d+/)||[''])[0]; // keep any number already typed
+  el.value=g+num;
+  _markGradeChip(el.value);
+  el.focus();
+}
+function _markGradeChip(val){
+  document.querySelectorAll('.scp-grade').forEach(b=>{
+    b.classList.toggle('active', !!val && val.replace(/\d+/g,'')===b.textContent.replace(/[׳״]/g,''));
+  });
+}
+function submitStudentLogin(){
+  const nameEl=document.getElementById('sname');
+  const classEl=document.getElementById('sclass');
+  const name=(nameEl?.value||'').trim().replace(/\s+/g,' ');
+  const cls=(classEl?.value||'').trim();
+  const shake=el=>{el.classList.add('shake');setTimeout(()=>el.classList.remove('shake'),360);el.focus();};
+  if(!name){shake(nameEl);toast('⚠️ נא להזין שם מלא');return;}
+  if(!/\s/.test(name)){shake(nameEl);toast('⚠️ נא להזין שם פרטי ושם משפחה');return;}
+  if(!cls){shake(classEl);toast('⚠️ נא לבחור / להזין כיתה');return;}
+  LS.set('tanakh2_role','student');
+  LS.set('tanakh2_uname',name);
+  LS.set('tanakh2_class',cls);
+  localStorage.setItem('userRole','student');
+  fadeLogin(()=>enterApp('student',name));
+}
+// legacy alias — now opens the student registration panel
+function doStudentLogin(){ showSCP(); }
+async function doTeacherLogin(){
+  const pi=document.getElementById('tpass');
+  const pass=(pi.value||'').trim();
+  const nameVal=(document.getElementById('tname')?.value||'').trim();
+  const waVal=(document.getElementById('t-wa')?.value||'').replace(/\D/g,'');
+
+  if(!nameVal){document.getElementById('tname')?.focus();toast('⚠️ הזינו שם מלא');return;}
+  if(!pass){pi.classList.add('shake');setTimeout(()=>pi.classList.remove('shake'),360);toast('⚠️ הזינו קוד כניסה');return;}
+
+  // Store pending name for verifyPass
+  S._pendingName=nameVal;
+  const result=await verifyPass(pass);
+  if(!result){toast('❌ קוד שגוי');pi.value='';pi.focus();return;}
+
+  // Fetch role from Firebase
+  let role='teacher';
+  if(_db){
+    try{
+      const key=nameVal.replace(/\s+/g,'_');
+      const doc=await _db.collection('tanakh2_teachers').doc(key).get();
+      if(doc.exists && doc.data().role) role=doc.data().role;
+    }catch(e){}
+  }
+  S._pendingRole=role;
+  S._pendingWa=waVal;
+
+  if(result==='temp'){
+    // First login — show change password screen
+    hideTCP();
+    document.getElementById('login-screen').style.display='none';
+    const cp=document.getElementById('chpass-screen');
+    cp.style.display='flex';
+    document.getElementById('cp-pass1').focus();
+    // Live validation
+    document.getElementById('cp-pass1').addEventListener('input',updateCpRules);
+    return;
+  }
+
+  // Normal login
+  _finalizeTeacherLogin(nameVal,waVal,role);
+}
+
+function updateCpRules(){
+  const v=document.getElementById('cp-pass1').value;
+  const ok=(id,pass)=>{document.getElementById(id).textContent=(pass?'✅':'⚪')+document.getElementById(id).textContent.slice(1)};
+  document.getElementById('cpr-len').textContent=(v.length>=8?'✅':'⚪')+' לפחות 8 תווים';
+  document.getElementById('cpr-upper').textContent=(/[A-Z]/.test(v)?'✅':'⚪')+' אות גדולה באנגלית (A-Z)';
+  document.getElementById('cpr-symbol').textContent=(/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(v)?'✅':'⚪')+' סימן אחד לפחות (!@#$%^&*)';
+}
+
+async function doChangePass(){
+  const p1=(document.getElementById('cp-pass1').value||'').trim();
+  const p2=(document.getElementById('cp-pass2').value||'').trim();
+  if(p1.length<8){toast('⚠️ סיסמה חייבת להיות לפחות 8 תווים');return;}
+  if(!/[A-Z]/.test(p1)){toast('⚠️ חסרה אות גדולה באנגלית');return;}
+  if(!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(p1)){toast('⚠️ חסר סימן (!@#$%^& וכו׳)');return;}
+  if(p1!==p2){toast('⚠️ הסיסמאות אינן תואמות');document.getElementById('cp-pass2').classList.add('shake');setTimeout(()=>document.getElementById('cp-pass2').classList.remove('shake'),360);return;}
+
+  const h=await hashPass(p1);
+  // Save to Firebase
+  if(_db){
+    try{
+      const key=S._pendingName.replace(/\s+/g,'_');
+      await _db.collection('tanakh2_teachers').doc(key).set({passHash:h,tempCode:firebase.firestore.FieldValue.delete(),updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
+    }catch(e){console.warn('[chpass]',e);}
+  }
+  LS.set('tanakh2_tpass',h);
+  document.getElementById('chpass-screen').style.display='none';
+  toast('✅ סיסמה נקבעה בהצלחה!');
+  _finalizeTeacherLogin(S._pendingName,S._pendingWa,S._pendingRole);
+}
+
+function _finalizeTeacherLogin(nameVal,waVal,role){
+  const teacherKey='tanakh2_teacher_'+nameVal.replace(/\s+/g,'_');
+  LS.set(teacherKey,{name:nameVal,wa:waVal,ts:Date.now()});
+  LS.set('tanakh2_tname',nameVal);
+  LS.set('tanakh2_role',role);
+  LS.set('tanakh2_uname',nameVal);
+  LS.set('tanakh2_teacher_wa',waVal);
+  localStorage.setItem('userRole',role);
+  _saveTeacherProfile(nameVal,waVal);
+  S._role_resolved=role;
+  fadeLogin(()=>enterApp(role,nameVal));
+}
+
+async function _saveTeacherProfile(name,wa){
+  if(!_db||!name) return;
+  try{
+    const key=name.replace(/\s+/g,'_');
+    await _db.collection('tanakh2_teachers').doc(key).set({
+      name,wa:wa||'',
+      updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+    },{merge:true});
+  }catch(e){console.warn('[FB teacher]',e);}
+}
+function togglePass(id,btn){
+  const el=document.getElementById(id);
+  if(!el) return;
+  const reveal=el.type==='password';
+  el.type=reveal?'text':'password';
+  if(btn){ btn.textContent=reveal?'🙈':'👁'; btn.classList.toggle('on',reveal); }
+  el.focus();
+}
+function fadeLogin(cb){
+  const ls=document.getElementById('login-screen');
+  ls.style.transition='opacity .4s,transform .4s';ls.style.opacity='0';ls.style.transform='scale(1.04)';
+  setTimeout(cb,430);
+}
+function enterApp(role,name){
+  S.role=role;S.name=name;S.prog=LS.get('tanakh2_prog_'+name,{});
+  S.className=(role==='student')?(LS.get('tanakh2_class','')||''):'';
+  const isTeacher=(role==='teacher'||role==='admin');
+  const isAdmin=role==='admin';
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app').classList.add('on');
+  // Avatar
+  const av=document.getElementById('sb-av');if(av){av.textContent=(name||'?')[0].toUpperCase();}
+  document.getElementById('sb-uname').textContent=name;
+  // Greet pill
+  const greet=document.getElementById('tb-greet');if(greet){greet.textContent='שלום, '+name+' 👋';greet.style.display='inline-flex';}
+  // Sidebar user
+  const sAv=document.getElementById('side-av');if(sAv)sAv.textContent=(name||'?')[0].toUpperCase();
+  const sNm=document.getElementById('side-name');if(sNm)sNm.textContent=name;
+  const sRl=document.getElementById('side-role');if(sRl)sRl.textContent=isAdmin?'מנהל/ת':isTeacher?'מורה':'תלמיד/ה';
+  // Teacher controls
+  document.getElementById('desk-cfg').style.display=isTeacher?'':'none';
+  const dl=document.getElementById('desk-logout');if(dl)dl.style.display='';
+  const sSet=document.getElementById('side-settings');if(sSet)sSet.style.display=isTeacher?'':'none';
+  const mSet=document.getElementById('mnav-settings');if(mSet)mSet.style.display=isTeacher?'':'none';
+  // Teacher strip
+  document.getElementById('t-strip').classList.toggle('on',isTeacher);
+  if(isTeacher){
+    const strip=document.getElementById('t-strip-text');
+    if(strip) strip.textContent=isAdmin?'מצב מנהל — גישה מלאה לכל הכלים':'מצב מורה — נעילות, תשובות ומעקב תלמידים זמינים';
+  }
+  document.getElementById('prog-banner').style.display='none';
+  // Self-heal: re-resolve role from Firebase in case a stale role was cached
+  if(isTeacher && _db && name){
+    const _rk=name.replace(/\s+/g,'_');
+    _db.collection('tanakh2_teachers').doc(_rk).get().then(doc=>{
+      const fresh=doc.exists && doc.data().role;
+      if(fresh && fresh!==S.role){
+        S.role=fresh;
+        LS.set('tanakh2_role',fresh);
+        localStorage.setItem('userRole',fresh);
+        const utab=document.getElementById('m-tab-users');
+        if(utab) utab.style.display=(fresh==='admin')?'':'none';
+        const strip=document.getElementById('t-strip-text');
+        if(strip) strip.textContent=(fresh==='admin')?'מצב מנהל — גישה מלאה לכל הכלים':'מצב מורה — נעילות, תשובות ומעקב תלמידים זמינים';
+        const sRl=document.getElementById('side-role');if(sRl)sRl.textContent=(fresh==='admin')?'מנהל/ת':'מורה';
+      }
+    }).catch(()=>{});
+  }
+  subscribeLocks();
+  subscribeAnswers();
+  renderGrid();
+  renderExams();
+  navTo('dash');
+  {const _ubp=new URLSearchParams(window.location.search),_uid=_ubp.get('unit');
+   if(_uid){setTimeout(()=>{navTo('units');toggleUnit(_uid);
+     const _uel=document.getElementById('uc-'+_uid);
+     if(_uel)_uel.scrollIntoView({behavior:'smooth',block:'start'});},300);}}
+  if(isTeacher){
+    loadTeacherClassesFromFirebase();
+    setTimeout(()=>{
+      if(isTeacher&&getTeacherClasses().length===0){
+        toast('🏫 טיפ: הגדירי כיתות בהגדרות ← "כיתות" כדי לראות הגשות');
+      }
+    },3000);
+  }
+}
+
+/* ════════════════════════════════════════════════
+   VIEW NAVIGATION
+════════════════════════════════════════════════ */
+function mobileNavHTML(active){
+  const items=[['dash','🏠','דשבורד'],['units','📚','יחידות'],['exams','📝','מבחנים'],['progress','📊','התקדמות']];
+  return `<div class="topnav">`+items.map(([v,ic,lbl])=>{
+    const act=(v===active)?' active':'';
+    return `<button class="topnav-btn${act}" onclick="navTo('${v}')"><span class="tn-ic">${ic}</span>${lbl}</button>`;
+  }).join('')+`</div>`;
+}
+function navTo(view){
+  const isT=(S.role==='teacher'||S.role==='admin');
+  const target = view;
+  ['dash','units','exams','progress'].forEach(v=>{
+    const el=document.getElementById('view-'+v);
+    if(el) el.style.display = v===target ? '' : 'none';
+  });
+  document.querySelectorAll('.side-link,.mnav-btn,.topnav-btn').forEach(b=>{
+    b.classList.toggle('active', b.dataset.view===view);
+  });
+  if(target==='dash') renderDashboard();
+  if(target==='exams') renderExams();
+  if(target==='progress'){
+    if(isT){ renderTeacherProgress(); clearProgressBadge(); }
+    else renderProgressDetail();
+  }
+  const tu=document.getElementById('tnav-units');if(tu)tu.innerHTML=mobileNavHTML('units');
+  const te=document.getElementById('tnav-exams');if(te)te.innerHTML=mobileNavHTML('exams');
+  const tp=document.getElementById('tnav-progress');if(tp)tp.innerHTML=mobileNavHTML('progress');
+  document.querySelector('.main-area')?.scrollTo?.({top:0});
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* Move the existing tracking panel (with all its wired IDs) from the
+   settings modal into the standalone progress view — once. Then load data. */
+let _teacherProgMoved=false;
+function renderTeacherProgress(){
+  const host=document.getElementById('prog-detail');
+  const panel=document.getElementById('tab-progress');
+  if(host && panel && !_teacherProgMoved){
+    panel.classList.add('active');               // ensure visible outside modal
+    panel.style.padding='0';
+    host.innerHTML=`<div class="welcome" style="margin-bottom:16px">
+        <div class="welcome-t">📊 מעקב תלמידים</div>
+        <div class="welcome-s">הגשות, סינון לפי כיתה, סיכום יחידה ושליחת סיכום לוואטסאפ</div>
+      </div>`;
+    host.appendChild(panel);
+    _teacherProgMoved=true;
+  }
+  loadProgress();
+}
+
+/* ════════════════════════════════════════════════
+   DASHBOARD — stats overview, streak, success ring,
+   unit progress bars, recent activity
+════════════════════════════════════════════════ */
+function _allUnits(){ return [...UNITS,...UNITS_70]; }
+
+function _computeStats(){
+  const isT=(S.role==='teacher'||S.role==='admin');
+  let total=0, done=0, unitsActive=0, weekCount=0;
+  const scores=[]; const weekAgo=Date.now()-7*864e5;
+  _allUnits().forEach(u=>{
+    let ud=0;
+    u.lessons.forEach(l=>{
+      total++;
+      const p=S.prog[l.id];
+      if(p?.done){ done++; ud++;
+        if(typeof p.score==='number') scores.push(p.score);
+        if(p.ts && p.ts>=weekAgo) weekCount++;
+      }
+    });
+    if(ud>0) unitsActive++;
+  });
+  const overall = total?Math.round(done/total*100):0;
+  const success = scores.length?Math.round(scores.reduce((a,b)=>a+b,0)/scores.length):overall;
+  return {total,done,unitsActive,weekCount,overall,success};
+}
+
+function _computeStreak(){
+  // distinct completion dates (parse he-IL "d.m.yyyy")
+  const dates=new Set();
+  Object.values(S.prog).forEach(p=>{
+    if(!p?.done) return;
+    let d=null;
+    if(p.ts){ d=new Date(p.ts); }
+    else if(p.date){
+      const m=String(p.date).match(/(\d+)\D+(\d+)\D+(\d+)/);
+      if(m) d=new Date(+m[3],+m[2]-1,+m[1]);
+    }
+    if(d&&!isNaN(d)) dates.add(new Date(d.getFullYear(),d.getMonth(),d.getDate()).getTime());
+  });
+  if(!dates.size) return 0;
+  const day=864e5, today=new Date(); const t0=new Date(today.getFullYear(),today.getMonth(),today.getDate()).getTime();
+  // streak must include today or yesterday to be "alive"
+  let cur = dates.has(t0)?t0:(dates.has(t0-day)?t0-day:null);
+  if(cur===null) return 0;
+  let streak=0;
+  while(dates.has(cur)){ streak++; cur-=day; }
+  return streak;
+}
+
+function renderDashboard(){
+  const wrap=document.getElementById('dash-wrap');
+  if(!wrap) return;
+  const isT=(S.role==='teacher'||S.role==='admin');
+  const st=_computeStats();
+  const streak=_computeStreak();
+  const DOT={u1:'#2563eb',u2:'#059669',u3:'#7c3aed',u4:'#ea580c',v1:'#0891b2',v2:'#8b5cf6',v3:'#d97706'};
+
+  // unit progress cards
+  const unitBars=_allUnits().map(u=>{
+    let ud=0,ut=0;
+    u.lessons.forEach(l=>{ut++; if(S.prog[l.id]?.done) ud++;});
+    const pct=ut?Math.round(ud/ut*100):0;
+    const locked=!isT && u.lessons.length>0 && u.lessons.every(l=>isLocked(l.id,l.locked));
+    return `<div class="up-card" onclick="${locked?'':`navTo('units');setTimeout(()=>toggleAccordion('${u.id}'),120)`}" ${locked?'style="opacity:.5;cursor:default"':''}>
+      <div class="up-top">
+        <span class="up-name">${u.title}</span>
+        <span class="up-em">${locked?'🔒':u.emoji}</span>
+      </div>
+      <div class="up-track"><div class="up-fill" style="width:${pct}%"></div></div>
+      <div class="up-meta"><span>${u.label}</span><span>${ud}/${ut} · ${pct}%</span></div>
+    </div>`;
+  }).join('');
+
+  // recent activity (last 5 done, newest first)
+  const recent=Object.entries(S.prog)
+    .filter(([id,p])=>p?.done)
+    .map(([id,p])=>{
+      const l=_allUnits().flatMap(u=>u.lessons).find(x=>x.id===id);
+      return {id, title:l?l.title:id, score:p.score, date:p.date||'—', ts:p.ts||0};
+    })
+    .sort((a,b)=>b.ts-a.ts)
+    .slice(0,6);
+
+  const recentRows = recent.length
+    ? recent.map(r=>{
+        const col = typeof r.score==='number' ? (r.score>=80?'var(--green)':r.score>=60?'var(--amber)':'var(--red)') : 'var(--green)';
+        const sc = typeof r.score==='number' ? r.score : '✅';
+        return `<tr>
+          <td style="font-weight:700">${r.title}</td>
+          <td><span class="rt-score" style="color:${col}">${sc}${typeof r.score==='number'?'':''}</span></td>
+          <td style="color:var(--muted)">${r.date}</td>
+        </tr>`;
+      }).join('')
+    : `<tr><td colspan="3" class="recent-empty">עדיין לא הושלמו שיעורים — בחר/י "יחידות לימוד" כדי להתחיל 🚀</td></tr>`;
+
+  const welcomeName = isT ? S.name : S.name;
+  wrap.innerHTML=`
+    <div class="welcome">
+      <div class="welcome-t">ברוך/ה הבא/ה, ${welcomeName}! 👋</div>
+      <div class="welcome-s">פלטפורמת לימודי תנ״ך לתיכון — המשך/י מהמקום שבו עצרת</div>
+    </div>
+
+    ${mobileNavHTML('dash')}
+
+    <h2 class="dash-h">יחידות לימוד</h2>
+    <div class="up-grid">${unitBars}</div>
+
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-num">${st.weekCount}</div><div class="stat-lbl">תרגילים השבוע</div></div>
+      <div class="stat-card"><div class="stat-num">${st.unitsActive}</div><div class="stat-lbl">יחידות פעילות</div></div>
+      <div class="stat-card"><div class="stat-num">${st.done}</div><div class="stat-lbl">שיעורים שהושלמו</div></div>
+      <div class="stat-card"><div class="stat-num accent">${st.overall}%</div><div class="stat-lbl">התקדמות כללית</div></div>
+    </div>
+
+    <div class="mid-grid">
+      <div class="dash-card streak-card">
+        <div class="streak-top">🔥 רצף למידה</div>
+        <div class="streak-big">${streak} ${streak===1?'יום':'ימים'}</div>
+        <div class="streak-sub">${streak>0?'המשך/י כך!':'התחל/י רצף היום!'}</div>
+      </div>
+      <div class="dash-card ring-card">
+        <div class="ring" style="--p:${st.success}"><span class="ring-val">${st.success}%</span></div>
+        <div class="ring-lbl">מדד הצלחה</div>
+      </div>
+    </div>
+
+    <h2 class="dash-h">פעילות אחרונה</h2>
+    <div class="recent-card">
+      <div class="recent-hd">📋 השיעורים האחרונים שלך</div>
+      <table class="recent-tbl">
+        <thead><tr><th>שיעור</th><th>ציון</th><th>תאריך</th></tr></thead>
+        <tbody>${recentRows}</tbody>
+      </table>
+    </div>`;
+
+  // legacy hero stubs
+  const hp=document.getElementById('hero-prog');if(hp)hp.textContent=`${st.done}/${st.total}`;
+  const fill=document.getElementById('prog-fill');if(fill)fill.style.width=st.overall+'%';
+  const pctEl=document.getElementById('prog-pct');if(pctEl)pctEl.textContent=st.overall+'%';
+}
+
+/* ════════════════════════════════════════════════
+   EXAMS VIEW
+════════════════════════════════════════════════ */
+function renderExams(){
+  const el=document.getElementById('exam-list');
+  if(!el) return;
+  const isT=(S.role==='teacher'||S.role==='admin');
+  const exams=[];
+  _allUnits().forEach(u=>u.lessons.filter(l=>l.exam).forEach(l=>exams.push({u,l})));
+  el.innerHTML=exams.map(({u,l})=>{
+    const locked=isLocked(l.id,l.locked)&&!isT;
+    const done=!!S.prog[l.id]?.done;
+    const sc=S.prog[l.id]?.score;
+    const meta=locked?'🔒 ננעל — יפתח לאחר השלמת היחידה'
+      :done?(typeof sc==='number'?`✅ הושלם · ציון ${sc}%`:'✅ הושלם')
+      :`${l.mins} דקות · מבחן מסכם`;
+    return `<div class="exam-card${locked?' locked':''}" ${locked?'':`onclick="openLesson('${l.id}','${l.file||''}','${u.id}')"`}>
+      <div class="ec-em">${locked?'🔒':'🏆'}</div>
+      <div class="ec-bd">
+        <div class="ec-t">${l.title}</div>
+        <div class="ec-s">${u.emoji} ${u.label} — ${u.title} · ${meta}</div>
+      </div>
+      <span style="font-size:1.1rem;color:var(--subtle)">${locked?'':'‹'}</span>
+    </div>`;
+  }).join('') || '<p style="text-align:center;color:var(--muted)">אין מבחנים זמינים.</p>';
+}
+
+/* ════════════════════════════════════════════════
+   PROGRESS VIEW (student) — full per-lesson breakdown
+════════════════════════════════════════════════ */
+function renderProgressDetail(){
+  const el=document.getElementById('prog-detail');
+  if(!el) return;
+  const isT=(S.role==='teacher'||S.role==='admin');
+  const st=_computeStats();
+
+  let html=`
+    <div class="welcome" style="margin-bottom:16px">
+      <div class="welcome-t">📊 ההתקדמות שלי</div>
+      <div class="welcome-s">פירוט מלא לכל שיעור — מה הושלם, ציון ותאריך</div>
+    </div>
+    <div class="stat-grid" style="margin-top:0">
+      <div class="stat-card"><div class="stat-num">${st.done}</div><div class="stat-lbl">שיעורים שהושלמו</div></div>
+      <div class="stat-card"><div class="stat-num">${st.total-st.done}</div><div class="stat-lbl">נותרו</div></div>
+      <div class="stat-card"><div class="stat-num accent">${st.overall}%</div><div class="stat-lbl">התקדמות כללית</div></div>
+      <div class="stat-card"><div class="stat-num accent">${st.success}%</div><div class="stat-lbl">מדד הצלחה</div></div>
+    </div>`;
+
+  _allUnits().forEach(u=>{
+    let ud=0,ut=0;
+    u.lessons.forEach(l=>{ut++; if(S.prog[l.id]?.done) ud++;});
+    const pct=ut?Math.round(ud/ut*100):0;
+    const rows=u.lessons.map(l=>{
+      const p=S.prog[l.id];
+      const done=!!p?.done;
+      const locked=isLocked(l.id,l.locked)&&!isT;
+      let status,scoreCell;
+      if(done){
+        const col=typeof p.score==='number'?(p.score>=80?'var(--green)':p.score>=60?'var(--amber)':'var(--red)'):'var(--green)';
+        status=`<span class="pd-badge green">✓ הושלם</span>`;
+        scoreCell=typeof p.score==='number'?`<span style="font-weight:900;color:${col}">${p.score}%</span>`:'<span style="color:var(--green)">✅</span>';
+      } else if(locked){
+        status=`<span class="pd-badge gray">🔒 נעול</span>`; scoreCell='—';
+      } else {
+        status=`<span class="pd-badge blue">▢ טרם בוצע</span>`; scoreCell='—';
+      }
+      const clickable=!locked;
+      return `<tr ${clickable?`onclick="openLesson('${l.id}','${l.file||''}','${u.id}')" style="cursor:pointer"`:''}>
+        <td><span style="margin-left:.4rem">${l.emoji}</span>${l.title}${l.exam?' <span class="pd-badge gold">מבחן</span>':''}</td>
+        <td>${status}</td>
+        <td style="text-align:center">${scoreCell}</td>
+        <td style="color:var(--muted);white-space:nowrap">${done?(p.date||'—'):'—'}</td>
+      </tr>`;
+    }).join('');
+
+    html+=`
+      <div class="pd-unit" style="border-top:3px solid ${u.color}">
+        <div class="pd-unit-hd">
+          <div class="pd-unit-title"><span>${u.emoji}</span> ${u.label} — ${u.title}</div>
+          <div class="pd-unit-prog">
+            <span class="pd-mini-track"><span class="pd-mini-fill" style="width:${pct}%"></span></span>
+            <span class="pd-unit-pct">${ud}/${ut} · ${pct}%</span>
+          </div>
+        </div>
+        <table class="pd-tbl">
+          <thead><tr><th>שיעור</th><th>סטטוס</th><th style="text-align:center">ציון</th><th>תאריך</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>`;
+  });
+
+  el.innerHTML=html;
+}
+
+/* ════════════════════════════════════════════════
+   RENDER GRID
+════════════════════════════════════════════════ */
+function renderGrid(){
+  const col=document.getElementById('units-col');
+  if(!col) return;
+  const isT=(S.role==='teacher'||S.role==='admin');
+  let totalOpen=0,totalDone=0;
+  const DOT={u1:'#2563eb',u2:'#059669',u3:'#7c3aed',u4:'#ea580c',v1:'#0891b2',v2:'#8b5cf6',v3:'#d97706'};
+  const GRAD={avot:'u1-grad',yosef:'u2-grad',umot:'u3-grad',hok:'u4-grad',navi:'v1-grad',shivat:'v2-grad'};
+
+  function buildSection(units, secLabel, gridClass){
+    // Build the grid of colored cards
+    const cards = units.map(unit=>{
+      let ud=0, ut=0;
+      unit.lessons.forEach(l=>{ut++; if(S.prog[l.id]?.done) ud++;});
+      const pct = ut ? Math.round(ud/ut*100) : 0;
+      totalOpen+=ut; totalDone+=ud;
+      const locked = !isT && unit.lessons.length>0 && unit.lessons.every(l=>isLocked(l.id,l.locked));
+      return `<div class="uc ${GRAD[unit.id]||''}" id="uc-${unit.id}"
+          onclick="toggleAccordion('${unit.id}')"
+          style="${locked?'opacity:.5':''}">
+        <div class="uc-inner">
+          ${locked?'<div class="uc-lock-icon">🔒</div>':''}
+          <div class="uc-em">${unit.emoji}</div>
+          <div class="uc-left-text">
+            <div class="uc-tag">${unit.label}</div>
+            <div class="uc-name">${unit.title}</div>
+          </div>
+          <div class="uc-pb-track"><div class="uc-pb-fill" style="width:${pct}%"></div></div>
+          <div class="uc-meta">
+            <div class="uc-done-lbl">${ud}/${ut}</div>
+            <div class="uc-pct">${pct}%</div>
+          </div>
+          <div class="uc-back-hint">← חזרה</div>
+        </div>
+      </div>`;
+    }).join('');
+
+    // One shared inline panel per section (opens below the grid)
+    const panelIds = units.map(u=>'lp-'+u.id).join(',');
+    const panelHtml = units.map(u=>
+      `<div class="inline-panel" id="lp-${u.id}" style="display:none"></div>`
+    ).join('');
+
+    return `
+      ${secLabel?`<div class="sec-lbl">${secLabel}</div>`:``}
+      <div class="units-section" id="section-${units[0].id}">
+        <div class="${gridClass}">${cards}</div>
+        <div class="inline-panel-wrap" id="ipw-${units[0].id}">
+          ${panelHtml}
+        </div>
+      </div>`;
+  }
+
+  let html='';
+  html += buildSection(UNITS, '', 'uc-grid-3');
+  col.innerHTML = html;
+
+  // Hero stats
+  if(S.role==='student'){
+    const pct=totalOpen?Math.round(totalDone/totalOpen*100):0;
+    const hp=document.getElementById('hero-prog');
+    if(hp) hp.textContent=`${totalDone} / ${totalOpen} שיעורים הושלמו · ${pct}%`;
+    const fill=document.getElementById('prog-fill');if(fill)fill.style.width=pct+'%';
+    const pctEl=document.getElementById('prog-pct');if(pctEl)pctEl.textContent=pct+'%';
+  }
+}
+
+
+function toggleAccordion(uid){
+  const allUnits=[...UNITS,...UNITS_70];
+  const unit=allUnits.find(u=>u.id===uid); if(!unit) return;
+  const isT=(S.role==='teacher'||S.role==='admin');
+  if(!isT && unit.lessons.every(l=>isLocked(l.id,l.locked))) return;
+
+  const in30=UNITS.find(u=>u.id===uid);
+  const sectionUnits=in30?UNITS:UNITS_70;
+  const sectionFirstId=sectionUnits[0].id;
+  const ipw=document.getElementById('ipw-'+sectionFirstId);
+  const sectionEl=ipw&&ipw.closest('.units-section');
+
+  // Is this unit already focused?
+  const alreadyFocused=sectionEl&&sectionEl.classList.contains('focused')&&
+    document.getElementById('lp-'+uid)?.style.display!=='none';
+
+  // ── CLOSE / reset ──────────────────────────────────────────────────────────
+  document.querySelectorAll('.inline-panel-wrap').forEach(w=>w.classList.remove('open'));
+  document.querySelectorAll('.inline-panel').forEach(p=>p.style.display='none');
+  document.querySelectorAll('.units-section').forEach(s=>s.classList.remove('focused'));
+  document.querySelectorAll('.uc').forEach(c=>{
+    c.classList.remove('sel','hidden');
+  });
+
+  if(alreadyFocused) return; // clicked same card → just close
+
+  // ── OPEN / focus ──────────────────────────────────────────────────────────
+  // Hide other cards in same section, keep selected
+  sectionUnits.forEach(u=>{
+    const card=document.getElementById('uc-'+u.id);
+    if(!card) return;
+    if(u.id===uid) card.classList.add('sel');
+    else card.classList.add('hidden');
+  });
+
+  // Mark section as focused
+  if(sectionEl) sectionEl.classList.add('focused');
+
+  // Open panel
+  if(ipw) ipw.classList.add('open');
+  const panel=document.getElementById('lp-'+uid);
+  if(panel){ panel.style.display='block'; renderLessonPanel(uid); }
+
+  // Scroll card into view
+  setTimeout(()=>{
+    const card=document.getElementById('uc-'+uid);
+    if(card) card.scrollIntoView({behavior:'smooth',block:'start'});
+  },60);
+}
+
+
+function renderLessonPanel(uid){
+  const ALL=[...UNITS,...UNITS_70];
+  const unit=ALL.find(u=>u.id===uid); if(!unit) return;
+  const isT=(S.role==='teacher'||S.role==='admin');
+  const DOT={u1:'#2563eb',u2:'#059669',u3:'#7c3aed',u4:'#ea580c',v1:'#0891b2',v2:'#8b5cf6',v3:'#d97706'};
+  const panel=document.getElementById('lp-'+uid); if(!panel) return;
+
+  const allLocked=!isT && unit.lessons.length>0 && unit.lessons.every(l=>isLocked(l.id,l.locked));
+  if(allLocked){
+    panel.innerHTML=`<div class="lp-locked"><div class="lp-locked-em">🔒</div><div class="lp-locked-t">${unit.title}</div><div class="lp-locked-s">יחידה זו נעולה כרגע</div></div>`;
+    return;
+  }
+
+  let hasNext=false;
+  let rows='';
+  unit.lessons.forEach(l=>{
+    if(l.exam) return; // exam shown separately as the colorful row below
+    const locked=isLocked(l.id,l.locked)&&!isT;
+    const done=!!S.prog[l.id]?.done;
+    const isNext=!done&&!locked&&!hasNext;
+    if(isNext) hasNext=true;
+    let cls='lr-new';
+    let right='';
+    let chips=`<span class="lr-chip-new lrc-time">⏱ ${l.mins} דק׳</span>`;
+    if(done){cls+=' lr-done';chips+=`<span class="lr-chip-new lrc-done">✓ הושלם</span>`;right='<div class="lr-check-new">✓</div>';}
+    else if(isNext){cls+=' lr-next';chips+=`<span class="lr-chip-new lrc-next">▶ הבא</span>`;right='<span class="lr-arrow-new">‹</span>';}
+    else if(locked){cls+=' lr-locked';chips+=`<span class="lr-chip-new lrc-lock">🔒 נעול</span>`;right='<span style="font-size:12px;opacity:.4">🔒</span>';}
+    else{right='<span class="lr-arrow-new">‹</span>';}
+    if(l.exam) chips+=`<span class="lr-chip-new lrc-exam">📝 מבחן</span>`;
+    if(l.isNew) chips+=`<span class="lr-chip-new lrc-new">✨ חדש</span>`;
+    const clickAttr=locked?'':` onclick="openLesson('${l.id}','${l.file||''}','${uid}')"`;
+    rows+=`<div class="${cls}"${clickAttr}>
+      <div class="lr-em-wrap">${l.emoji}</div>
+      <div class="lr-bd">
+        <div class="lr-short-lbl">${l.short}</div>
+        <div class="lr-title-new">${l.title}</div>
+        <div class="lr-desc-new">${l.desc||''}</div>
+        <div class="lr-chips-new">${chips}</div>
+      </div>
+      <div class="lr-rt">${right}</div>
+    </div>`;
+  });
+
+  const examL=unit.lessons.find(l=>l.exam);
+  const examHtml=examL?(()=>{
+    const el=(isLocked(examL.id,examL.locked)&&!isT);
+    const ec=el?'':` onclick="openLesson('${examL.id}','${examL.file||''}','${uid}')"`;
+    return `<div class="exam-row-new${el?' exam-locked':''}"${ec}>
+      <div class="exam-em-new">🏆</div>
+      <div class="exam-info-new">
+        <div class="exam-t-new">${examL.title}</div>
+        <div class="exam-s-new">${el?'יפתח לאחר השלמת השיעורים':examL.mins+' דקות · מבחן מסכם'}</div>
+      </div>
+      ${el?'<span style="opacity:.3;font-size:16px">🔒</span>':`<span class="exam-chip-new">${examL.mins} דק׳</span>`}
+    </div>`;
+  })():'';
+
+  const teacherChip=isT?`<div style="font-size:.65rem;font-weight:800;padding:.18rem .65rem;border-radius:8px;background:rgba(202,138,4,.12);color:var(--amber);border:1px solid rgba(202,138,4,.2)">🎓 מצב מורה</div>`:'';
+  panel.innerHTML=`
+    <div class="lp-head">
+      <div class="lp-dot" style="background:${DOT[uid]||'#6366f1'}"></div>
+      <div class="lp-info">
+        <div class="lp-tag">${unit.label}</div>
+        <div class="lp-name">${unit.title}</div>
+      </div>
+      <div style="display:flex;gap:6px;align-items:center">${teacherChip}<div class="lp-count">${unit.lessons.length} שיעורים</div></div>
+    </div>
+    <div>${rows}</div>
+    ${examHtml}`;
+}
+
+/* compat stubs */
+function selectUnit(uid){ toggleAccordion(uid); }
+function scrollToUnit(uid){ toggleAccordion(uid); }
+function scrollPanel(){}
+
+
+/* scrollToUnit — sidebar nav compat */
+function scrollToUnit(uid){ selectUnit(uid); }
+
+const ALL_UNITS=[...UNITS,...UNITS_70];
+function toggleUnit(uid){ selectUnit(uid); }
+function closeAllUnits(){ window.scrollTo({top:0,behavior:'smooth'}); }
+function scrollToUnit(uid){
+  document.getElementById('unit-'+uid)?.scrollIntoView({behavior:'smooth',block:'start'});
+  const ul=document.getElementById('ul-'+uid),uh=document.getElementById('uh-'+uid);
+  if(ul&&!ul.classList.contains('open')){ul.classList.add('open');uh?.classList.add('open')}
+}
+
+/* ════════════════════════════════════════════════
+   OPEN LESSON — pass answers_visible flag via URL
+════════════════════════════════════════════════ */
+function openLesson(lid,file,uid){
+  if(!file){toast('🚧 שיעור זה בפיתוח');return}
+  const backUrl=uid?'index.html?unit='+uid:'index.html';
+  const isStaff=(S.role==='teacher'||S.role==='admin');
+  const params=new URLSearchParams({
+    student:S.name,
+    role: isStaff?'teacher':S.role,
+    class:S.className||'',
+    back:backUrl,
+    answers_visible: isStaff ? '1' : (isAnswersVisible(lid) ? '1' : '0')
+  });
+  window.location.href=file+'?'+params.toString();
+}
+
+/* ════════════════════════════════════════════════
+   MOBILE SIDEBAR
+════════════════════════════════════════════════ */
+function openSidebar(){} 
+function closeSidebar(){}
+
+/* ════════════════════════════════════════════════
+   SETTINGS
+════════════════════════════════════════════════ */
+function openSettings(){
+  const wa=LS.get('tanakh2_teacher_wa','')||'';
+  document.getElementById('cfg-wa').value=wa;
+  // Populate teacher info card
+  const av=document.getElementById('cfg-teacher-av');
+  const nm=document.getElementById('cfg-teacher-name');
+  const ct=document.getElementById('cfg-teacher-contact');
+  if(av) av.textContent=(S.name||'מ')[0].toUpperCase();
+  if(nm) nm.textContent=S.name||'—';
+  if(ct) ct.textContent=wa?('💬 0'+wa.replace(/^972/,'')):'לא הוזן מספר וואטסאפ';
+  // User-management tab visible to admin only
+  const utab=document.getElementById('m-tab-users');
+  if(utab) utab.style.display=(S.role==='admin')?'':'none';
+  buildLockList();buildAnswersControlList();switchTab('general');
+  document.getElementById('settings-overlay').classList.add('open');document.body.style.overflow='hidden';
+}
+function closeSettings(){document.getElementById('settings-overlay').classList.remove('open');document.body.style.overflow=''}
+function switchTab(t){
+  ['general','classes','locks','answers','users'].forEach(x=>{document.getElementById('tab-'+x)?.classList.toggle('active',x===t)});
+  document.querySelectorAll('.m-tab').forEach((b,i)=>b.classList.toggle('active',['general','classes','locks','answers','users'][i]===t));
+  if(t==='answers')buildAnswersControlList();
+  if(t==='classes')renderRosterAll();
+  if(t==='users'){loadUsersList();document.getElementById('m-tab-users')?.scrollIntoView({inline:'center',block:'nearest'});}
+}
+function saveGeneral(){
+  const wa=(document.getElementById('cfg-wa').value||'').replace(/\D/g,'');
+  if(!wa){toast('⚠️ הזינו מספר וואטסאפ');return}
+  LS.set('tanakh2_teacher_wa',wa);
+  _saveTeacherProfile(S.name,wa);
+  toast('✅ נשמר ועודכן ב-Firebase!');
+}
+async function changePass(){
+  const np=(document.getElementById('cfg-pass').value||'').trim();
+  if(np.length<8){toast('⚠️ סיסמה חייבת להיות לפחות 8 תווים');return;}
+  if(!/[A-Z]/.test(np)){toast('⚠️ חסרה אות גדולה באנגלית');return;}
+  if(!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(np)){toast('⚠️ חסר סימן (!@#$%^& וכו׳)');return;}
+  const h=await hashPass(np);
+  LS.set('tanakh2_tpass',h);
+  if(_db){
+    try{
+      const key=S.name.replace(/\s+/g,'_');
+      await _db.collection('tanakh2_teachers').doc(key).set({passHash:h,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
+    }catch(e){}
+  }
+  document.getElementById('cfg-pass').value='';
+  toast('🔐 קוד שונה ונשמר ב-Firebase!');
+}
+
+/* ════════════════════════════════════════════════
+   WHATSAPP DAILY SUMMARY
+════════════════════════════════════════════════ */
+async function sendWhatsAppSummary(){
+  const btn = document.getElementById('wa-summary-btn');
+  if(btn){ btn.textContent='⏳ מייצר סיכום…'; btn.disabled=true; }
+
+  const myClasses = getTeacherClasses();
+  const now = new Date();
+  const todayStr = now.toLocaleDateString('he-IL');
+  const dayNames = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
+  const dayName = dayNames[now.getDay()];
+  const timeStr = now.getHours()+':'+(String(now.getMinutes()).padStart(2,'0'));
+
+  // Fetch all submissions from Firebase
+  let allDocs = [];
+  if(_db){
+    try{
+      // Get last 24h submissions
+      const since = new Date(Date.now() - 24*60*60*1000);
+      const snap = await _db.collection('tanakh2_submissions')
+        .orderBy('ts','desc').limit(500).get();
+      allDocs = snap.docs
+        .map(d=>({...d.data(),_id:d.id}))
+        .filter(d=>{
+          const ts = d.ts?.toDate?.();
+          return ts && ts >= since;
+        });
+    }catch(e){ console.warn('[WA summary]',e); }
+  }
+
+  // Filter to my classes
+  const myDocs = myClasses.length
+    ? allDocs.filter(d=>myClasses.includes(d.className||''))
+    : allDocs;
+
+  // Build message
+  let msg = `📊 *סיכום הגשות — תנ״ך לתיכון*\n`;
+  msg += `📅 יום ${dayName} | ${todayStr} | ${timeStr}\n`;
+  msg += `━━━━━━━━━━━━━━━\n`;
+
+  if(myClasses.length===0){
+    msg += `אין כיתות מוגדרות. הגדר/י כיתות בהגדרות.\n`;
+  } else {
+    let grandTotal = 0;
+    let grandScores = [];
+
+    myClasses.forEach(cls=>{
+      const roster = getRoster(cls);
+      const classDocs = myDocs.filter(d=>(d.className||'')=== cls);
+      const submitterNames = [...new Set(classDocs.map(d=>d.studentName).filter(Boolean))];
+      const notSubmitted = roster.filter(n=>!submitterNames.includes(n));
+
+      msg += `\n🏫 *כיתה ${cls}*`;
+      if(roster.length) msg += ` — ${roster.length} תלמידים`;
+      msg += `\n━━━━━━━━━━━━━━━\n`;
+
+      if(classDocs.length===0){
+        msg += `⏳ לא הוגשו עבודות היום\n`;
+      } else {
+        msg += `✅ הגישו (${classDocs.length}):\n`;
+        classDocs.forEach(d=>{
+          const score = typeof d.score==='number' ? ` | ${d.score}%` : '';
+          const unit = d.lessonTitle || d.lessonId || '—';
+          msg += `• ${d.studentName||'—'} — ${unit}${score}\n`;
+          if(typeof d.score==='number') grandScores.push(d.score);
+        });
+        grandTotal += classDocs.length;
+      }
+
+      if(notSubmitted.length>0){
+        msg += `\n⏳ לא הגישו (${notSubmitted.length}):\n`;
+        // Show up to 8 names to keep message manageable
+        const show = notSubmitted.slice(0,8);
+        show.forEach(n=>{ msg += `• ${n}\n`; });
+        if(notSubmitted.length>8) msg += `• ועוד ${notSubmitted.length-8} נוספים…\n`;
+      }
+    });
+
+    msg += `\n━━━━━━━━━━━━━━━\n`;
+    msg += `📈 *סה״כ היום:* ${grandTotal} הגשות`;
+    if(grandScores.length){
+      const avg = Math.round(grandScores.reduce((a,b)=>a+b,0)/grandScores.length);
+      msg += ` | ממוצע: ${avg}%`;
+    }
+    msg += `\n_נשלח מפלטפורמת תנ״ך לתיכון_`;
+  }
+
+  if(btn){ btn.textContent='📲 שלח סיכום לוואטסאפ'; btn.disabled=false; }
+
+  // Open WhatsApp
+  const wa = LS.get('tanakh2_teacher_wa','');
+  const encoded = encodeURIComponent(msg);
+  if(wa){
+    // Send to self (teacher's own number)
+    const num = wa.startsWith('972') ? wa : '972'+wa.replace(/^0/,'');
+    window.open(`https://wa.me/${num}?text=${encoded}`, '_blank');
+  } else {
+    // No number saved — open generic WhatsApp
+    window.open(`https://wa.me/?text=${encoded}`, '_blank');
+    toast('💡 הגדר/י מספר וואטסאפ בהגדרות לשליחה ישירה לעצמך');
+  }
+}
+
+/* Lock list */
+function buildLockList(){
+  const list=document.getElementById('lock-list');if(!list)return;
+  let html='';
+  function renderLockGroup(units, groupLabel){
+    let out=`<div style="margin:1rem 0 .35rem;font-size:.7rem;font-weight:900;color:var(--subtle);text-transform:uppercase;letter-spacing:.07em;display:flex;align-items:center;gap:.5rem">${groupLabel}</div>`;
+    units.forEach(unit=>{
+      out+=`<div style="margin:.6rem 0 .2rem;font-size:.64rem;font-weight:800;color:var(--muted);letter-spacing:.04em">${unit.emoji} ${unit.label} — ${unit.title}</div>`;
+      unit.lessons.forEach(l=>{
+        const locked=isLocked(l.id,l.locked);
+        out+=`<div class="lock-item">
+          <span class="lock-emoji">${l.emoji}</span>
+          <div class="lock-info"><div class="lock-name">${l.title}</div><div class="lock-meta">${unit.label} · ${l.short}</div></div>
+          <label class="toggle-wrap">
+            <input type="checkbox" ${!locked?'checked':''}
+              onchange="setLock('${l.id}',!this.checked);renderGrid();buildLockList();toast(this.checked?'🔓 שיעור נפתח':'🔒 שיעור ננעל')">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>`;
+      });
+    });
+    return out;
+  }
+  html+=renderLockGroup(UNITS,'📖 יחידות התנ״ך');
+  list.innerHTML=html;
+}
+
+/* ─ Dedicated Lesson 0 answers toggle ─ */
+function toggleL0Answers(checked){
+  setAnswersVisible('u1_l0',checked);
+  buildAnswersControlList();
+  const status=document.getElementById('l0-answers-status');
+  if(status) status.textContent=checked?'✅ תשובות גלויות לתלמידים':'🔒 תשובות מוסתרות';
+  if(status) status.style.color=checked?'var(--green)':'var(--muted)';
+  toast(checked?'🔓 תשובות שיעור 0 פורסמו לתלמידים':'🔒 תשובות שיעור 0 הוסתרו');
+}
+/* Answers visibility list */
+function buildAnswersControlList(){
+  const list=document.getElementById('answers-control-list');if(!list)return;
+  let html='';
+  function renderAnswersGroup(units, groupLabel){
+    let out=`<div style="margin:1rem 0 .35rem;font-size:.7rem;font-weight:900;color:var(--subtle);text-transform:uppercase;letter-spacing:.07em">${groupLabel}</div>`;
+    units.forEach(unit=>{
+      unit.lessons.forEach(l=>{
+        const vis=isAnswersVisible(l.id);
+        out+=`<div class="lock-item">
+          <span class="lock-emoji">${l.emoji}</span>
+          <div class="lock-info">
+            <div class="lock-name">${l.title}</div>
+            <div class="lock-meta" style="color:${vis?'var(--green)':'var(--muted)'}">${vis?'✅ תשובות גלויות':'🔒 מוסתרות'}</div>
+          </div>
+          <label class="toggle-wrap answers">
+            <input type="checkbox" ${vis?'checked':''}
+              onchange="setAnswersVisible('${l.id}',this.checked);buildAnswersControlList();toast(this.checked?'🔓 תשובות גלויות':'🔒 תשובות הוסתרו')">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>`;
+      });
+    });
+    return out;
+  }
+  html+=renderAnswersGroup(UNITS,'📖 יחידות התנ״ך');
+  list.innerHTML=html;
+}
+
+/* Progress */
+function loadProgress(){
+  const el=document.getElementById('progress-content');if(!el)return;
+  el.innerHTML='<p style="color:var(--muted);font-size:.82rem">⏳ טוען הגשות מ-Firebase…</p>';
+
+  // Try Firestore first (real submissions with class data)
+  if(_db){
+    _db.collection('tanakh2_submissions')
+      .orderBy('ts','desc')
+      .limit(200)
+      .get()
+      .then(snap=>{
+        if(snap.empty){
+          _loadProgressLocal(el); // fallback to localStorage
+          return;
+        }
+        _renderSubmissions(el, snap.docs.map(d=>({id:d.id,...d.data()})));
+      })
+      .catch(()=>_loadProgressLocal(el));
+  } else {
+    _loadProgressLocal(el);
+  }
+}
+
+/* ── "Seen" submissions: hide locally, data stays in Firebase ── */
+function getSeenSubmissions(){ return LS.get('tanakh2_seen_submissions',{})||{}; }
+function markSeen(id){
+  if(!id) return;
+  const seen=getSeenSubmissions();
+  seen[id]=Date.now();
+  LS.set('tanakh2_seen_submissions',seen);
+  loadProgress();
+}
+function unmarkSeen(id){
+  if(!id) return;
+  const seen=getSeenSubmissions();
+  delete seen[id];
+  LS.set('tanakh2_seen_submissions',seen);
+  loadProgress();
+  toast('↩ הסימון בוטל — ההגשה תוצג שוב');
+}
+function markAllSeen(){
+  const el=document.getElementById('progress-content');
+  const docs=el?._rawDocs||[];
+  if(!docs.length){ toast('אין הגשות לסמן'); return; }
+  const seen=getSeenSubmissions();
+  // mark only what the teacher currently has access to (their classes, currently visible)
+  const myClasses=getTeacherClasses();
+  let n=0;
+  docs.forEach(d=>{
+    if(myClasses.length && !myClasses.includes(d.className||'')) return;
+    if(!seen[d.id]){ seen[d.id]=Date.now(); n++; }
+  });
+  LS.set('tanakh2_seen_submissions',seen);
+  if(el) el._showSeen=false;
+  loadProgress();
+  toast(n?`✓ ${n} הגשות סומנו כנצפו והוסתרו`:'הכל כבר סומן כנצפה');
+}
+function showAllSubmissions(){
+  const el=document.getElementById('progress-content');
+  if(el) el._showSeen=true;
+  loadProgress();
+  toast('👁 מציג את כל ההגשות (כולל נצפו)');
+}
+function showOnlyNew(){
+  const el=document.getElementById('progress-content');
+  if(el) el._showSeen=false;
+  loadProgress();
+}
+
+function _renderSubmissions(el, docs){
+  if(!docs.length){el.innerHTML='<p style="color:var(--muted);font-size:.82rem">לא נמצאו הגשות.</p>';return}
+
+  // Hide submissions the teacher already marked as "seen" (stored locally; Firebase untouched)
+  const seen=getSeenSubmissions();
+  const showAll=!!el._showSeen;
+  const visibleDocs = showAll ? docs : docs.filter(d=>!seen[d.id]);
+  const seenHidden = docs.length - visibleDocs.length;
+
+  // Filter by teacher's classes — show only submissions from MY classes
+  const myClasses=getTeacherClasses();
+  const hasClassFilter=myClasses.length>0;
+  const myDocs=hasClassFilter
+    ? visibleDocs.filter(d=>myClasses.includes(d.className||''))
+    : visibleDocs;
+
+  // Group by class (from filtered set)
+  const byClass={};
+  myDocs.forEach(d=>{
+    const cls=d.className||'כיתה לא ידועה';
+    if(!byClass[cls]) byClass[cls]=[];
+    byClass[cls].push(d);
+  });
+  const sortedClasses=Object.keys(byClass).sort((a,b)=>a.localeCompare(b,'he'));
+
+  // Banner: explain filtering
+  const hiddenCount=docs.length-myDocs.length;
+  const filterBanner=hasClassFilter&&hiddenCount>0
+    ? `<div style="background:var(--amber-lt);border:1px solid #fde68a;border-radius:var(--r);padding:.45rem .85rem;font-size:.72rem;color:var(--amber);margin-bottom:.75rem">
+        🏫 מוצגות הגשות מ-${myClasses.join(', ')} בלבד (${myDocs.length} מתוך ${docs.length}).
+        <span style="color:var(--muted)">להוספת כיתות ← טאב "כיתות"</span>
+      </div>`
+    : (hasClassFilter&&!myDocs.length
+        ? `<div style="background:var(--amber-lt);border:1px solid #fde68a;border-radius:var(--r);padding:.45rem .85rem;font-size:.72rem;color:var(--amber);margin-bottom:.75rem">
+            🏫 אין הגשות מכיתותייך (${myClasses.join(', ')}) עדיין.
+          </div>`
+        : '');
+
+  let html=filterBanner;
+
+  if(myDocs.length===0){
+    el.innerHTML=html+'<p style="color:var(--muted);font-size:.82rem">לא נמצאו הגשות לכיתות שלך.</p>';return;
+  }
+
+  html+=`
+  <!-- Filter bar -->
+  <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.9rem;align-items:center">
+    <span style="font-size:.7rem;font-weight:700;color:var(--muted)">סנן לפי כיתה:</span>
+    <button onclick="filterClass('all',this)" class="cls-filter-btn active" data-cls="all"
+      style="font-size:.68rem;font-weight:700;padding:.2rem .7rem;border-radius:var(--r-pill);border:1.5px solid var(--lc,var(--blue));background:var(--blue-lt);color:var(--blue);cursor:pointer">
+      הכל (${myDocs.length})
+    </button>
+    ${sortedClasses.map(c=>`
+    <button onclick="filterClass('${c}',this)" class="cls-filter-btn" data-cls="${c}"
+      style="font-size:.68rem;font-weight:700;padding:.2rem .7rem;border-radius:var(--r-pill);border:1.5px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer">
+      ${c} (${byClass[c].length})
+    </button>`).join('')}
+  </div>
+  <div id="submissions-table-wrap" style="overflow-x:auto;max-height:380px;overflow-y:auto">`;
+
+  html+=buildSubmissionsTable(myDocs, showAll);
+  const seenLine = seenHidden>0
+    ? ` | <span style="color:var(--amber)">${seenHidden} מסומנות כנצפו ומוסתרות</span>`
+    : '';
+  const seenBtns = showAll
+    ? `<button onclick="showOnlyNew()" style="margin-right:.5rem;background:none;border:none;color:var(--blue);font-size:.65rem;cursor:pointer;text-decoration:underline">🔕 הצג רק חדשות</button>`
+    : `<button onclick="markAllSeen()" style="margin-right:.5rem;background:none;border:none;color:var(--green);font-size:.65rem;font-weight:700;cursor:pointer;text-decoration:underline">✓ סמן הכל כנצפה</button>`
+      + (seenHidden>0?`<button onclick="showAllSubmissions()" style="margin-right:.5rem;background:none;border:none;color:var(--muted);font-size:.65rem;cursor:pointer;text-decoration:underline">👁 הצג הכל</button>`:'');
+  html+=`</div>
+  <p style="font-size:.65rem;color:var(--muted);margin-top:.5rem">
+    סה״כ ${myDocs.length} הגשות${showAll?' (כולל נצפו)':''} | ${sortedClasses.length} כיתות | מקור: Firebase${seenLine}
+    <br>
+    <span style="display:inline-flex;gap:0;flex-wrap:wrap;margin-top:.3rem">
+      <button onclick="loadProgress()" style="background:none;border:none;color:var(--blue);font-size:.65rem;cursor:pointer;text-decoration:underline">🔄 רענן</button>
+      ${seenBtns}
+    </span>
+  </p>`;
+
+  el.innerHTML=html;
+  el._allDocs=myDocs;            // currently visible (post-seen-filter) docs for class filtering
+  el._rawDocs=docs;              // all docs from Firebase, for marking seen
+}
+
+function buildSubmissionsTable(docs, showSeenMode){
+  if(!docs.length) return '<p style="color:var(--muted);font-size:.82rem;padding:.5rem">אין הגשות לכיתה זו.</p>';
+  const seen=getSeenSubmissions();
+  let rows='';
+  docs.forEach((d,i)=>{
+    const col=typeof d.score==='number'
+      ?(d.score>=80?'var(--green)':d.score>=60?'var(--amber)':'var(--red)')
+      :'var(--muted)';
+    const scoreDisplay=typeof d.score==='number'
+      ?`<span style="font-weight:800;color:${col}">${d.score}%</span>`
+      :`<span style="color:var(--green);font-weight:700">✅</span>`;
+    const timeDisplay=d.submissionTime?` ${d.submissionTime}`:'';
+    const isSeen=!!seen[d.id];
+    const actionCell = showSeenMode && isSeen
+      ? `<button onclick="unmarkSeen('${d.id}')" title="בטל סימון" style="border:1px solid var(--border);border-radius:var(--r-pill);background:var(--surface2);color:var(--muted);font-size:.64rem;font-weight:700;padding:.18rem .55rem;cursor:pointer;white-space:nowrap">↩ בטל</button>`
+      : `<button onclick="markSeen('${d.id}')" title="סמן כנצפה" style="border:1px solid #bbf7d0;border-radius:var(--r-pill);background:var(--green-lt);color:var(--green);font-size:.64rem;font-weight:800;padding:.18rem .55rem;cursor:pointer;white-space:nowrap">✓ נצפה</button>`;
+    rows+=`<tr style="border-bottom:1px solid var(--border);${isSeen?'opacity:.55;':''}${i%2?'background:var(--surface2)':''}" data-cls="${d.className||''}">
+      <td style="padding:7px 8px;font-weight:700;white-space:nowrap">${d.studentName||'—'}</td>
+      <td style="padding:7px 8px">
+        <span style="font-size:.68rem;font-weight:800;padding:.16rem .52rem;border-radius:var(--r-pill);background:var(--blue-lt);color:var(--blue);border:1px solid #bfdbfe">${d.className||'—'}</span>
+      </td>
+      <td style="padding:7px 8px;font-size:.7rem">${d.lessonTitle||d.lessonId||'—'}</td>
+      <td style="padding:7px 8px;font-size:.7rem;white-space:nowrap">${d.submissionDate||d.date||'—'}${timeDisplay}</td>
+      <td style="padding:7px 8px">${scoreDisplay}</td>
+      <td style="padding:7px 8px;text-align:center">
+        ${typeof d.correct==='number'?`<span style="font-size:.72rem;font-weight:800;color:var(--green)">✓ ${d.correct}</span>`:'—'}
+      </td>
+      <td style="padding:7px 8px;text-align:center">
+        ${typeof d.wrong==='number'?`<span style="font-size:.72rem;font-weight:800;color:var(--red)">✗ ${d.wrong}</span>`:'—'}
+      </td>
+      <td style="padding:7px 8px;text-align:center">${actionCell}</td>
+    </tr>`;
+  });
+  return `<table style="width:100%;border-collapse:collapse;font-size:.74rem;direction:rtl;min-width:560px">
+    <thead><tr style="background:var(--surface3);position:sticky;top:0;z-index:1">
+      <th style="padding:7px 8px;text-align:right">שם תלמיד/ה</th>
+      <th style="padding:7px 8px;text-align:right">כיתה</th>
+      <th style="padding:7px 8px;text-align:right">שיעור</th>
+      <th style="padding:7px 8px;text-align:right">תאריך הגשה</th>
+      <th style="padding:7px 8px;text-align:right">ציון</th>
+      <th style="padding:7px 8px;text-align:center;color:var(--green)">✓ נכון</th>
+      <th style="padding:7px 8px;text-align:center;color:var(--red)">✗ שגוי</th>
+      <th style="padding:7px 8px;text-align:center">סימון</th>
+    </tr></thead>
+    <tbody>${rows}</tbody>
+  </table>`;
+}
+
+// Client-side class filter (no re-fetch)
+function filterClass(cls,btn){
+  // Update button styles
+  document.querySelectorAll('.cls-filter-btn').forEach(b=>{
+    const isActive=b===btn;
+    b.style.background=isActive?'var(--blue-lt)':'var(--surface2)';
+    b.style.color=isActive?'var(--blue)':'var(--muted)';
+    b.style.borderColor=isActive?'var(--blue)':'var(--border)';
+  });
+  const el=document.getElementById('progress-content');
+  const wrap=document.getElementById('submissions-table-wrap');
+  if(!wrap||!el._allDocs) return;
+  const filtered=cls==='all'?el._allDocs:el._allDocs.filter(d=>(d.className||'')==cls);
+  wrap.innerHTML=buildSubmissionsTable(filtered, !!el._showSeen);
+}
+
+function _loadProgressLocal(el){
+  // Fallback: read from localStorage tanakh2_prog_* keys
+  const keys=Object.keys(localStorage).filter(k=>k.startsWith('tanakh2_prog_'));
+  if(!keys.length){el.innerHTML='<p style="color:var(--muted);font-size:.82rem">אין הגשות שמורות.</p>';return}
+  let rows='',total=0;
+  keys.forEach(key=>{
+    const student=key.replace('tanakh2_prog_','');
+    let prog={};try{prog=JSON.parse(localStorage.getItem(key))||{}}catch{}
+    Object.keys(prog).forEach(lid=>{
+      const d=prog[lid];if(!d?.done)return;
+      const lname=ALL_UNITS.flatMap(u=>u.lessons).find(l=>l.id===lid)?.title||lid;
+      const perf=typeof d.score==='number'
+        ?`<span style="font-weight:800;color:${d.score>=80?'var(--green)':d.score>=60?'var(--amber)':'var(--red)'}">${d.score}%</span>`
+        :`<span style="color:var(--green);font-weight:700">✅</span>`;
+      rows+=`<tr style="border-bottom:1px solid var(--border);${total%2?'background:var(--surface2)':''}">
+        <td style="padding:6px 8px;font-weight:700">${student}</td>
+        <td style="padding:6px 8px;font-size:.7rem">${d.className||'—'}</td>
+        <td style="padding:6px 8px">${lname}</td>
+        <td style="padding:6px 8px">${d.date||'—'}</td>
+        <td style="padding:6px 8px">${perf}</td></tr>`;
+      total++;
+    });
+  });
+  if(!total){el.innerHTML='<p style="color:var(--muted);font-size:.82rem">לא נמצאו הגשות.</p>';return}
+  el.innerHTML=`<div style="font-size:.68rem;color:var(--amber);margin-bottom:.5rem;background:var(--amber-lt);border:1px solid #fde68a;border-radius:var(--r);padding:.4rem .75rem">⚠️ מקור: מקומי בלבד (Firebase לא מחובר)</div>
+  <div style="overflow-x:auto;max-height:340px;overflow-y:auto"><table style="width:100%;border-collapse:collapse;font-size:.74rem;direction:rtl">
+    <thead><tr style="background:var(--surface3)">
+      <th style="padding:7px 8px;text-align:right">תלמיד/ה</th>
+      <th style="padding:7px 8px;text-align:right">כיתה</th>
+      <th style="padding:7px 8px;text-align:right">שיעור</th>
+      <th style="padding:7px 8px;text-align:right">תאריך</th>
+      <th style="padding:7px 8px;text-align:right">ציון</th>
+    </tr></thead><tbody>${rows}</tbody></table></div>
+  <p style="font-size:.65rem;color:var(--muted);margin-top:.4rem">סה״כ ${total} הגשות | ${keys.length} תלמידים | מקור: מקומי</p>`;
+}
+
+/* ════════════════════════════════════════════════
+   LOGOUT & INIT
+════════════════════════════════════════════════ */
+/* ── Confirm + Logout ── */
+function confirmLogout(){
+  // Lightweight inline confirm using toast-style overlay
+  const existing=document.getElementById('logout-confirm-overlay');
+  if(existing){existing.remove();return;}
+  const ov=document.createElement('div');
+  ov.id='logout-confirm-overlay';
+  ov.style.cssText='position:fixed;inset:0;z-index:800;background:rgba(0,0,0,.52);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:1.5rem;animation:fadeInOv .18s ease';
+  ov.innerHTML=`
+  <style>@keyframes fadeInOv{from{opacity:0}to{opacity:1}}@keyframes cardPop{from{opacity:0;transform:scale(.92) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}</style>
+  <div style="background:var(--surface);border-radius:var(--r-xl);box-shadow:var(--sh3);padding:1.8rem 1.6rem;text-align:center;max-width:320px;width:100%;border:1px solid var(--border);animation:cardPop .22s cubic-bezier(.34,1.56,.64,1)">
+    <div style="font-size:2.4rem;margin-bottom:.65rem">👋</div>
+    <div style="font-family:'Rubik',sans-serif;font-size:1rem;color:var(--text);margin-bottom:.4rem">יציאה / החלפת משתמש</div>
+    <div style="font-size:.82rem;color:var(--muted);margin-bottom:1.4rem;line-height:1.55">בטוח שברצונך לצאת?<br>תחזור למסך הכניסה.</div>
+    <div style="display:flex;gap:.65rem">
+      <button onclick="document.getElementById('logout-confirm-overlay').remove()"
+        style="flex:1;padding:.72rem;border:1.5px solid var(--border);border-radius:var(--r-pill);background:var(--surface2);color:var(--muted);font-size:.84rem;font-weight:700;cursor:pointer">
+        ביטול
+      </button>
+      <button onclick="document.getElementById('logout-confirm-overlay').remove();doLogout()"
+        style="flex:1;padding:.72rem;border:none;border-radius:var(--r-pill);background:var(--red);color:#fff;font-size:.84rem;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(220,38,38,.28)">
+        🚪 יציאה
+      </button>
+    </div>
+  </div>`;
+  ov.addEventListener('click',e=>{if(e.target===ov)ov.remove();});
+  document.body.appendChild(ov);
+}
+function doLogout(){
+  LS.del('tanakh2_role');LS.del('tanakh2_uname');localStorage.removeItem('userRole');
+  document.getElementById('app').classList.remove('on');
+  const ls=document.getElementById('login-screen');ls.style.display='';ls.style.opacity='1';ls.style.transform='';
+  S.role='';S.name='';S.prog={};hideTCP();
+}
+window.addEventListener('message',e=>{
+  if(e.data?.type==='lessonDone'&&e.data.lid){
+    S.prog[e.data.lid]={done:true,score:e.data.score??null,date:new Date().toLocaleDateString('he-IL'),ts:Date.now()};
+    LS.set('tanakh2_prog_'+S.name,S.prog);
+    renderGrid();renderDashboard();renderExams();toast('✅ שיעור הושלם!');
+  }
+});
+function initApp(){
+  buildStars();initFirebase();
+  const r=LS.get('tanakh2_role',''),n=LS.get('tanakh2_uname','');
+  const c=LS.get('tanakh2_class','');
+  // Students must have a recorded full name + class; otherwise stay on the login for registration
+  if(r==='student'&&(!n||n==='תלמיד/ה'||!c)){ return; }
+  if(r&&n){document.getElementById('login-screen').style.display='none';enterApp(r,n);return}
+  const lr=localStorage.getItem('userRole');
+  if(lr==='teacher'){const ln=LS.get('tanakh_uname','')||'מורה';document.getElementById('login-screen').style.display='none';enterApp(lr,ln)}
+}
+initApp();
+
+/* ════════════════════════════════════════════════
+   TEACHER CLASSES + ROSTER
+   Firestore: tanakh2_teachers/{name}/classes: [...]
+             tanakh2_teachers/{name}/roster/{cls}: {students:[...]}
+════════════════════════════════════════════════ */
+function getTeacherClasses(){
+  return LS.get('tanakh2_teacher_classes',[]) || [];
+}
+function _saveTeacherClasses(arr){
+  LS.set('tanakh2_teacher_classes', arr);
+  if(_db && S.name){
+    const key = S.name.replace(/\s+/g,'_');
+    _db.collection('tanakh2_teachers').doc(key)
+       .set({classes: arr},{merge:true}).catch(()=>{});
+  }
+}
+
+/* ── Roster (per-class student list) ── */
+function getRoster(cls){
+  const all = LS.get('tanakh2_roster',{}) || {};
+  return all[cls] || [];
+}
+function setRoster(cls, students){
+  const all = LS.get('tanakh2_roster',{}) || {};
+  all[cls] = students;
+  LS.set('tanakh2_roster', all);
+  // Push to Firebase
+  if(_db && S.name){
+    const key = S.name.replace(/\s+/g,'_');
+    _db.collection('tanakh2_teachers').doc(key)
+       .set({roster: all},{merge:true}).catch(()=>{});
+  }
+}
+function addStudentToClass(cls){
+  const inp = document.getElementById('roster-inp-'+_cid(cls));
+  const raw = (inp?.value||'').trim();
+  if(!raw){ toast('⚠️ הזיני שם תלמיד/ה'); return; }
+  // Support multi-line paste (one name per line)
+  const names = raw.split(/[\n,]+/).map(n=>n.trim()).filter(Boolean);
+  const arr = getRoster(cls);
+  let added = 0;
+  names.forEach(n=>{
+    if(!arr.includes(n)){ arr.push(n); added++; }
+  });
+  if(!added){ toast('השמות כבר ברשימה'); inp.value=''; return; }
+  setRoster(cls, arr);
+  inp.value='';
+  renderRosterBlock(cls);
+  toast('✅ נוסף' + (names.length>1?' '+added+' תלמידים':': '+names[0]));
+}
+function removeStudentFromClass(cls, name){
+  const arr = getRoster(cls).filter(n=>n!==name);
+  setRoster(cls, arr);
+  renderRosterBlock(cls);
+  toast('🗑️ '+name+' הוסר/ה');
+}
+
+function _cid(cls){ return cls.replace(/[^א-תa-zA-Z0-9]/g,'_'); }
+
+function addTeacherClass(){
+  const inp = document.getElementById('new-class-inp');
+  const val = (inp?.value||'').trim();
+  if(!val){ toast('⚠️ הזיני שם כיתה'); return; }
+  const arr = getTeacherClasses();
+  if(arr.includes(val)){ toast('הכיתה כבר ברשימה'); inp.value=''; return; }
+  arr.push(val);
+  _saveTeacherClasses(arr);
+  inp.value = '';
+  renderRosterAll();
+  toast('✅ כיתה ' + val + ' נוספה — פתחי אותה להוספת תלמידים');
+}
+function removeTeacherClass(cls){
+  const arr = getTeacherClasses().filter(c=>c!==cls);
+  _saveTeacherClasses(arr);
+  renderRosterAll();
+  toast('🗑️ כיתה ' + cls + ' הוסרה');
+}
+
+function renderRosterBlock(cls){
+  const block = document.getElementById('rblock-'+_cid(cls));
+  if(!block) return;
+  const students = getRoster(cls);
+  const body = block.querySelector('.roster-class-body');
+  if(!body) return;
+  body.innerHTML = `
+    <div class="roster-add-row">
+      <input class="roster-name-inp" id="roster-inp-${_cid(cls)}"
+        type="text" placeholder="שם תלמיד/ה (אפשר להדביק כמה שורות)"
+        onkeydown="if(event.key==='Enter')addStudentToClass('${cls}')">
+      <button class="roster-add-btn" onclick="addStudentToClass('${cls}')">+ הוסף</button>
+    </div>
+    <p class="roster-paste-hint">💡 ניתן להדביק רשימה שלמה (שם בכל שורה) ולחץ הוסף</p>
+    <div class="roster-student-list">
+      ${students.length===0
+        ? '<div class="roster-empty">אין תלמידים ברשימה עדיין.</div>'
+        : students.map((n,i)=>`
+          <div class="roster-student-item">
+            <span class="rs-num">${i+1}</span>
+            <span class="rs-name">${n}</span>
+            <button class="roster-student-del" onclick="removeStudentFromClass('${cls}','${n.replace(/'/g,"\\'")}')">✕</button>
+          </div>`).join('')
+      }
+    </div>`;
+}
+
+function renderRosterAll(){
+  const classes = getTeacherClasses();
+  const empty = document.getElementById('teacher-classes-empty');
+  const wrap = document.getElementById('roster-blocks');
+  if(!wrap) return;
+  if(classes.length===0){
+    wrap.innerHTML='';
+    if(empty) empty.style.display='';
+    return;
+  }
+  if(empty) empty.style.display='none';
+  // Keep existing blocks, add new ones
+  classes.forEach(cls=>{
+    const cid = _cid(cls);
+    if(!document.getElementById('rblock-'+cid)){
+      const students = getRoster(cls);
+      const div = document.createElement('div');
+      div.className='roster-class-block';
+      div.id='rblock-'+cid;
+      div.innerHTML=`
+        <div class="roster-class-hd" onclick="toggleRosterBlock('${cls}')">
+          <span class="roster-class-name">🏫 ${cls}<span class="roster-class-count" id="rcount-${cid}">${students.length} תלמידים</span></span>
+          <div style="display:flex;gap:.5rem;align-items:center">
+            <button onclick="event.stopPropagation();removeTeacherClass('${cls}')" style="background:none;border:none;cursor:pointer;color:var(--subtle);font-size:.75rem;padding:.1rem .4rem;border-radius:6px;transition:all .13s" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--subtle)'">🗑️ הסר</button>
+            <span id="rchev-${cid}" style="font-size:.68rem;color:var(--subtle);transition:transform .2s">▼</span>
+          </div>
+        </div>
+        <div class="roster-class-body" id="rbody-${cid}"></div>`;
+      wrap.appendChild(div);
+    }
+    // Update count badge
+    const cnt = document.getElementById('rcount-'+cid);
+    if(cnt) cnt.textContent = getRoster(cls).length + ' תלמידים';
+    renderRosterBlock(cls);
+  });
+  // Remove blocks for deleted classes
+  wrap.querySelectorAll('.roster-class-block').forEach(b=>{
+    const cls = classes.find(c=>_cid(c)===b.id.replace('rblock-',''));
+    if(!cls) b.remove();
+  });
+}
+function toggleRosterBlock(cls){
+  const cid = _cid(cls);
+  const body = document.getElementById('rbody-'+cid);
+  const chev = document.getElementById('rchev-'+cid);
+  if(!body) return;
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open',!isOpen);
+  if(chev) chev.style.transform = isOpen ? '' : 'rotate(180deg)';
+}
+
+function loadTeacherClassesFromFirebase(){
+  if(!_db || !S.name) return;
+  const key = S.name.replace(/\s+/g,'_');
+  _db.collection('tanakh2_teachers').doc(key).get().then(doc=>{
+    if(!doc.exists) return;
+    const data = doc.data();
+    if(data.classes) LS.set('tanakh2_teacher_classes', data.classes);
+    if(data.roster)  LS.set('tanakh2_roster', data.roster);
+    renderRosterAll();
+  }).catch(()=>{});
+}
+
+/* ════════════════════════════════════════════════
+   PROGRESS TAB — sub-views
+════════════════════════════════════════════════ */
+function switchProgressTab(view, btn){
+  ['submissions','unit_summary'].forEach(v=>{
+    const el=document.getElementById('progress-view-'+v);
+    if(el) el.style.display = v===view ? '' : 'none';
+  });
+  document.querySelectorAll('.ptab').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  if(view==='unit_summary') loadUnitSummary();
+}
+
+/* ════════════════════════════════════════════════
+   UNIT SUMMARY — per-unit roster status
+════════════════════════════════════════════════ */
+async function loadUnitSummary(){
+  const el = document.getElementById('unit-summary-content');
+  if(!el) return;
+  el.innerHTML = '<p style="color:var(--muted);font-size:.82rem">⏳ טוען נתונים…</p>';
+
+  // Fetch all submissions from Firebase
+  let submissions = [];
+  if(_db){
+    try{
+      const snap = await _db.collection('tanakh2_submissions').orderBy('ts','desc').limit(500).get();
+      submissions = snap.docs.map(d=>({...d.data()}));
+    }catch(e){ console.warn('[summary]',e); }
+  }
+
+  const myClasses = getTeacherClasses();
+  if(!myClasses.length){
+    el.innerHTML='<div style="background:var(--amber-lt);border:1px solid #fde68a;border-radius:var(--r);padding:.65rem .9rem;font-size:.78rem;color:var(--amber)">🏫 הגדירי כיתות תחילה בטאב "כיתות" כדי לראות את הסיכום.</div>';
+    return;
+  }
+
+  // Build: for each unit, for each class, map student→set of lessonIds completed
+  let html = '';
+  ALL_UNITS.forEach(unit=>{
+    const lessonCount = unit.lessons.length;
+    const lessonIds = unit.lessons.map(l=>l.id);
+
+    html += `<div class="unit-summary-block">
+      <div class="unit-summary-hd" style="border-top:3px solid ${unit.color}">${unit.emoji} ${unit.label} — ${unit.title} <span style="font-size:.68rem;color:var(--muted);font-weight:400">(${lessonCount} שיעורים)</span></div>
+      <div class="unit-summary-body">`;
+
+    // Per class
+    myClasses.forEach(cls=>{
+      const roster = getRoster(cls);
+
+      // Build completion map: studentName → Set of lessonIds done in this unit
+      const doneMap = {}; // name→Set
+      submissions
+        .filter(d=>(d.className||'')=== cls && lessonIds.includes(d.lessonId))
+        .forEach(d=>{
+          if(!doneMap[d.studentName]) doneMap[d.studentName]=new Set();
+          doneMap[d.studentName].add(d.lessonId);
+        });
+
+      // Roster students + any submitters not in roster
+      const allNames = [...new Set([...roster, ...Object.keys(doneMap)])];
+      if(!allNames.length){
+        html += `<div style="padding:.55rem .85rem;font-size:.74rem;color:var(--subtle);border-bottom:1px solid var(--border)">📋 ${cls} — אין תלמידים ברשימה</div>`;
+        return;
+      }
+
+      // Count stats
+      let green=0, yellow=0, red=0;
+      allNames.forEach(name=>{
+        const done = doneMap[name]?.size || 0;
+        if(done===lessonCount) green++;
+        else if(done>0) yellow++;
+        else red++;
+      });
+
+      html += `
+        <div style="padding:.55rem .85rem .35rem;font-size:.76rem;font-weight:800;color:var(--blue);background:var(--blue-lt);border-bottom:1px solid var(--border)">🏫 כיתה ${cls} — ${allNames.length} תלמידים</div>
+        <div class="unit-summary-stats">
+          <div class="uss-cell green"><span class="uss-n">${green}</span>ביצעו הכל ✅</div>
+          <div class="uss-cell yellow"><span class="uss-n">${yellow}</span>ביצעו חלק 🟡</div>
+          <div class="uss-cell red"><span class="uss-n">${red}</span>לא ביצעו ❌</div>
+        </div>
+        <div style="overflow-x:auto;max-height:260px;overflow-y:auto">
+        <table class="unit-roster-table">
+          <thead><tr>
+            <th>#</th><th>שם תלמיד/ה</th><th>שיעורים שבוצעו</th><th>התקדמות</th><th>סטטוס</th>
+          </tr></thead>
+          <tbody>`;
+
+      allNames.forEach((name,i)=>{
+        const done = doneMap[name]?.size || 0;
+        const pct = Math.round(done/lessonCount*100);
+        let statusClass, statusLabel;
+        if(done===lessonCount){ statusClass='green'; statusLabel='ביצע/ה הכל ✅'; }
+        else if(done>0){ statusClass='yellow'; statusLabel=`${done}/${lessonCount} שיעורים 🟡`; }
+        else { statusClass='red'; statusLabel='לא ביצע/ה ❌'; }
+
+        const barColor = done===lessonCount ? '#15803d' : done>0 ? '#ca8a04' : '#dc2626';
+        html += `<tr>
+          <td style="color:var(--subtle);font-size:.68rem">${i+1}</td>
+          <td style="font-weight:700">${name}</td>
+          <td style="text-align:center;font-weight:700">${done} / ${lessonCount}</td>
+          <td>
+            <span class="urt-bar"><span class="urt-bar-fill" style="width:${pct}%;background:${barColor}"></span></span>
+            <span style="font-size:.68rem;color:var(--muted);margin-right:.4rem">${pct}%</span>
+          </td>
+          <td><span class="urt-status ${statusClass}">${statusLabel}</span></td>
+        </tr>`;
+      });
+
+      html += `</tbody></table></div>`;
+    });
+
+    html += `</div></div>`;
+  });
+
+  el.innerHTML = html || '<p style="color:var(--muted)">לא נמצאו נתונים.</p>';
+}
+
+/* ════════════════════════════════════════════════
+   ADMIN — USER MANAGEMENT
+   Firestore: tanakh2_teachers/{name_key}
+   Never exposes passwords — only reset (issue personal one-time code),
+   change role, add, and remove.
+════════════════════════════════════════════════ */
+function _genTempCode(){
+  // Readable, easy to type: 2 capital letters + 4 digits (no ambiguous chars)
+  const L='ABCDEFGHJKLMNPQRSTUVWXYZ';
+  const a=L[Math.floor(Math.random()*L.length)];
+  const b=L[Math.floor(Math.random()*L.length)];
+  const n=Math.floor(1000+Math.random()*9000);
+  return a+b+n;
+}
+
+async function loadUsersList(){
+  const el=document.getElementById('users-list');
+  if(!el) return;
+  if(!_db){ el.innerHTML='<div style="background:var(--amber-lt);border:1px solid #fde68a;border-radius:var(--r);padding:.6rem .9rem;font-size:.78rem;color:var(--amber)">⚠️ Firebase לא מחובר — ניהול משתמשים לא זמין כעת.</div>'; return; }
+  el.innerHTML='<p style="color:var(--muted);font-size:.82rem">⏳ טוען מורים…</p>';
+  try{
+    const snap=await _db.collection('tanakh2_teachers').get();
+    const teachers=snap.docs.map(d=>({key:d.id,...d.data()}))
+      .sort((a,b)=>(a.name||'').localeCompare(b.name||'','he'));
+    if(!teachers.length){ el.innerHTML='<p style="color:var(--subtle);font-size:.8rem;font-style:italic">אין מורים רשומים עדיין. הוסף/י מורה למעלה.</p>'; return; }
+
+    let html='';
+    teachers.forEach(t=>{
+      const isAdmin=t.role==='admin';
+      const isMe=t.name===S.name;
+      const hasPass=!!t.passHash;
+      const pendingCode=t.tempCode?`<div style="font-size:.66rem;color:var(--amber);margin-top:.25rem">⏳ קוד כניסה ממתין: <strong style="font-family:monospace;letter-spacing:.05em">${t.tempCode}</strong></div>`:'';
+      const statusBadge=hasPass
+        ? '<span style="font-size:.62rem;font-weight:700;padding:.12rem .5rem;border-radius:var(--r-pill);background:var(--green-lt);color:var(--green)">🔑 סיסמה פעילה</span>'
+        : (t.tempCode
+            ? '<span style="font-size:.62rem;font-weight:700;padding:.12rem .5rem;border-radius:var(--r-pill);background:var(--amber-lt);color:var(--amber)">⏳ ממתין לכניסה</span>'
+            : '<span style="font-size:.62rem;font-weight:700;padding:.12rem .5rem;border-radius:var(--r-pill);background:var(--surface3);color:var(--muted)">— ללא סיסמה</span>');
+      const roleBadge=isAdmin
+        ? '<span style="font-size:.62rem;font-weight:800;padding:.12rem .5rem;border-radius:var(--r-pill);background:var(--purple-lt);color:var(--purple)">🛡️ מנהל</span>'
+        : '<span style="font-size:.62rem;font-weight:700;padding:.12rem .5rem;border-radius:var(--r-pill);background:var(--indigo-lt);color:var(--indigo)">🎓 מורה</span>';
+      const safeName=(t.name||'').replace(/'/g,"\\'");
+      html+=`<div style="border:1.5px solid var(--border);border-radius:var(--r);padding:.7rem .85rem;margin-bottom:.6rem;background:var(--surface2)">
+        <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.5rem">
+          <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#a78bfa);color:#fff;font-size:.8rem;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0">${(t.name||'?')[0].toUpperCase()}</div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:.85rem;font-weight:700;color:var(--text)">${t.name||'—'}${isMe?' <span style="font-size:.6rem;color:var(--muted)">(את/ה)</span>':''}</div>
+            <div style="font-size:.68rem;color:var(--muted)">${t.wa?('💬 0'+String(t.wa).replace(/^972/,'')):'ללא וואטסאפ'}</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:.25rem;align-items:flex-end">${roleBadge}${statusBadge}</div>
+        </div>
+        ${pendingCode}
+        <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.55rem">
+          <button onclick="resetTeacherPassword('${t.key}','${safeName}')" style="flex:1;min-width:90px;font-size:.7rem;font-weight:700;padding:.45rem .6rem;border:1.5px solid rgba(180,83,9,.3);border-radius:var(--r-pill);background:var(--amber-lt);color:var(--amber);cursor:pointer">🔄 אפס סיסמה</button>
+          <button onclick="changeTeacherRole('${t.key}','${safeName}','${isAdmin?'teacher':'admin'}')" ${isMe?'disabled style="flex:1;min-width:90px;font-size:.7rem;padding:.45rem .6rem;border:1.5px solid var(--border);border-radius:var(--r-pill);background:var(--surface3);color:var(--subtle);cursor:not-allowed"':'style="flex:1;min-width:90px;font-size:.7rem;font-weight:700;padding:.45rem .6rem;border:1.5px solid rgba(99,102,241,.3);border-radius:var(--r-pill);background:var(--indigo-lt);color:var(--indigo);cursor:pointer"'}>${isAdmin?'⬇️ הפוך למורה':'⬆️ הפוך למנהל'}</button>
+          <button onclick="removeTeacher('${t.key}','${safeName}')" ${isMe?'disabled style="font-size:.7rem;padding:.45rem .7rem;border:1.5px solid var(--border);border-radius:var(--r-pill);background:var(--surface3);color:var(--subtle);cursor:not-allowed"':'style="font-size:.7rem;font-weight:700;padding:.45rem .7rem;border:1.5px solid rgba(220,38,38,.3);border-radius:var(--r-pill);background:var(--red-lt);color:var(--red);cursor:pointer"'}>🗑️</button>
+        </div>
+      </div>`;
+    });
+    el.innerHTML=html;
+  }catch(e){
+    console.warn('[users]',e);
+    el.innerHTML='<div style="background:var(--red-lt);border:1px solid #fecaca;border-radius:var(--r);padding:.6rem .9rem;font-size:.78rem;color:var(--red)">❌ שגיאה בטעינה. ייתכן שחוקי ה-Firebase חוסמים קריאה לקולקשן tanakh2_teachers.</div>';
+  }
+}
+
+function _showCodeDialog(title,name,code){
+  const ov=document.createElement('div');
+  ov.style.cssText='position:fixed;inset:0;z-index:900;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:1.5rem';
+  ov.innerHTML=`
+  <div style="background:var(--surface);border-radius:var(--r-xl);box-shadow:var(--sh3);padding:1.7rem 1.5rem;max-width:340px;width:100%;border:1px solid var(--border);text-align:center">
+    <div style="font-size:2.2rem;margin-bottom:.5rem">🔑</div>
+    <div style="font-family:var(--display),'Secular One',sans-serif;font-size:1rem;color:var(--text);margin-bottom:.3rem">${title}</div>
+    <div style="font-size:.8rem;color:var(--muted);margin-bottom:1rem">עבור <strong>${name}</strong></div>
+    <div style="font-family:monospace;font-size:1.8rem;font-weight:900;letter-spacing:.15em;color:var(--indigo);background:var(--indigo-lt);border:2px dashed rgba(99,102,241,.4);border-radius:var(--r);padding:.7rem;margin-bottom:.5rem">${code}</div>
+    <div style="font-size:.72rem;color:var(--muted);line-height:1.55;margin-bottom:1.1rem">המורה מזין/ה את הקוד הזה בשדה הסיסמה בכניסה — ואז קובע/ת סיסמה אישית חדשה. הקוד חד-פעמי ויפוג לאחר השימוש.</div>
+    <div style="display:flex;gap:.5rem">
+      <button onclick="navigator.clipboard?.writeText('${code}').then(()=>toast('📋 הקוד הועתק'));" style="flex:1;padding:.6rem;border:1.5px solid var(--border);border-radius:var(--r-pill);background:var(--surface2);color:var(--text-mid);font-size:.78rem;font-weight:700;cursor:pointer">📋 העתק</button>
+      <button onclick="this.closest('div[style*=fixed]').remove()" style="flex:1;padding:.6rem;border:none;border-radius:var(--r-pill);background:var(--acc,#2563eb);color:#fff;font-size:.78rem;font-weight:700;cursor:pointer">סגור</button>
+    </div>
+  </div>`;
+  ov.addEventListener('click',e=>{if(e.target===ov)ov.remove();});
+  document.body.appendChild(ov);
+}
+
+async function resetTeacherPassword(key,name){
+  if(!_db){toast('⚠️ Firebase לא מחובר');return;}
+  if(!confirm(`לאפס סיסמה ל-${name}?\nהסיסמה הנוכחית תימחק וייווצר קוד כניסה אישי חדש.`)) return;
+  const code=_genTempCode();
+  try{
+    await _db.collection('tanakh2_teachers').doc(key).set({
+      tempCode:code,
+      passHash:firebase.firestore.FieldValue.delete(),
+      updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+    },{merge:true});
+    _showCodeDialog('קוד כניסה חדש',name,code);
+    loadUsersList();
+  }catch(e){ console.warn('[reset]',e); toast('❌ האיפוס נכשל — בדוק/י חוקי Firebase'); }
+}
+
+async function addNewTeacher(){
+  if(!_db){toast('⚠️ Firebase לא מחובר');return;}
+  const name=(document.getElementById('new-teacher-name')?.value||'').trim();
+  const wa=(document.getElementById('new-teacher-wa')?.value||'').replace(/\D/g,'');
+  if(!name){toast('⚠️ הזינו שם מלא');return;}
+  const key=name.replace(/\s+/g,'_');
+  try{
+    const existing=await _db.collection('tanakh2_teachers').doc(key).get();
+    if(existing.exists){toast('⚠️ כבר קיים מורה בשם הזה');return;}
+    const code=_genTempCode();
+    await _db.collection('tanakh2_teachers').doc(key).set({
+      name, wa:wa||'', role:'teacher', tempCode:code,
+      createdAt:firebase.firestore.FieldValue.serverTimestamp(),
+      updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+    },{merge:true});
+    document.getElementById('new-teacher-name').value='';
+    document.getElementById('new-teacher-wa').value='';
+    _showCodeDialog('מורה נוצר/ה — קוד כניסה',name,code);
+    loadUsersList();
+  }catch(e){ console.warn('[addteacher]',e); toast('❌ היצירה נכשלה — בדוק/י חוקי Firebase'); }
+}
+
+async function changeTeacherRole(key,name,newRole){
+  if(!_db){toast('⚠️ Firebase לא מחובר');return;}
+  const label=newRole==='admin'?'מנהל':'מורה';
+  if(!confirm(`לשנות את התפקיד של ${name} ל${label}?`)) return;
+  try{
+    await _db.collection('tanakh2_teachers').doc(key).set({
+      role:newRole, updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+    },{merge:true});
+    toast('✅ '+name+' כעת '+label);
+    loadUsersList();
+  }catch(e){ console.warn('[role]',e); toast('❌ העדכון נכשל'); }
+}
+
+async function removeTeacher(key,name){
+  if(!_db){toast('⚠️ Firebase לא מחובר');return;}
+  if(!confirm(`להסיר את ${name} לצמיתות?\nהמורה לא יוכל/תוכל להתחבר עוד. פעולה זו אינה הפיכה.`)) return;
+  try{
+    await _db.collection('tanakh2_teachers').doc(key).delete();
+    toast('🗑️ '+name+' הוסר/ה');
+    loadUsersList();
+  }catch(e){ console.warn('[remove]',e); toast('❌ ההסרה נכשלה'); }
+}
+
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/Lesson-2.0/sw.js')
+      .then(r => console.log('SW registered:', r.scope))
+      .catch(e => console.warn('SW failed:', e));
+  });
+}
+</script>
+</body>
+</html>
