@@ -3085,7 +3085,7 @@ async function removeTeacher(key,name){
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/Lesson-2.0/sw.js')
+    navigator.serviceWorker.register('/tanakh/sw.js')
       .then(r => console.log('SW registered:', r.scope))
       .catch(e => console.warn('SW failed:', e));
   });
