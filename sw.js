@@ -1,6 +1,7 @@
-const CACHE_NAME = 'tanakh-v1';
-const BASE = '/tanakh/';
 
+const CACHE_NAME = 'tanakh-v2';
+const BASE = '/tanakh/';
+ 
 // קבצים לשמירה במטמון לשימוש offline
 // כרגע נשמרת רק מעטפת האפליקציה (index + manifest), כי קובצי השיעורים עדיין לא קיימים.
 // cache.addAll הוא אטומי — קובץ אחד חסר (404) מפיל את כל ההתקנה. לכן מוסיפים שיעורים רק
@@ -12,7 +13,7 @@ const PRECACHE = [
   // גופנים
   'https://fonts.googleapis.com/css2?family=Secular+One&family=Heebo:wght@300;400;500;600;700;800;900&display=swap'
 ];
-
+ 
 // התקנה — שמירת קבצים במטמון
 self.addEventListener('install', event => {
   event.waitUntil(
@@ -21,7 +22,7 @@ self.addEventListener('install', event => {
       .then(() => self.skipWaiting())
   );
 });
-
+ 
 // הפעלה — מחיקת מטמון ישן
 self.addEventListener('activate', event => {
   event.waitUntil(
@@ -30,7 +31,7 @@ self.addEventListener('activate', event => {
     ).then(() => self.clients.claim())
   );
 });
-
+ 
 // בקשות — network first, אחר כך cache
 self.addEventListener('fetch', event => {
   // לא מטפלים בבקשות Firebase
@@ -39,7 +40,7 @@ self.addEventListener('fetch', event => {
       event.request.url.includes('googleapis.com/identitytoolkit')) {
     return;
   }
-
+ 
   event.respondWith(
     fetch(event.request)
       .then(response => {
@@ -57,3 +58,4 @@ self.addEventListener('fetch', event => {
       })
   );
 });
+ 
