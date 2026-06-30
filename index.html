@@ -1296,6 +1296,11 @@ const LS={
 };
 const DEFAULT_PASS='1234';
 
+/* Owner admins — always treated as admin regardless of Firebase role.
+   Add the full login name(s) here. Matching is exact (after trimming). */
+const OWNER_ADMINS=['ליאור אלמוסלינוס','אפרת נחמנוביץ'];
+function isOwnerAdmin(name){ return OWNER_ADMINS.includes((name||'').trim()); }
+
 function isLocked(id,base){const ov=LS.get('tanakh2_locks',{});return id in ov?ov[id]:base}
 function setLock(id,locked){
   const ov=LS.get('tanakh2_locks',{});ov[id]=locked;LS.set('tanakh2_locks',ov);
@@ -1537,6 +1542,7 @@ function fadeLogin(cb){
   setTimeout(cb,430);
 }
 function enterApp(role,name){
+  if(isOwnerAdmin(name)) role='admin'; // owner is always admin
   S.role=role;S.name=name;S.prog=LS.get('tanakh2_prog_'+name,{});
   S.className=(role==='student')?(LS.get('tanakh2_class','')||''):'';
   const isTeacher=(role==='teacher'||role==='admin');
@@ -1569,7 +1575,7 @@ function enterApp(role,name){
     const _rk=name.replace(/\s+/g,'_');
     _db.collection('tanakh2_teachers').doc(_rk).get().then(doc=>{
       const fresh=doc.exists && doc.data().role;
-      if(fresh && fresh!==S.role){
+      if(fresh && fresh!==S.role && !isOwnerAdmin(name)){
         S.role=fresh;
         LS.set('tanakh2_role',fresh);
         localStorage.setItem('userRole',fresh);
@@ -2136,7 +2142,7 @@ function openSettings(){
   if(ct) ct.textContent=wa?('💬 0'+wa.replace(/^972/,'')):'לא הוזן מספר וואטסאפ';
   // User-management tab visible to admin only
   const utab=document.getElementById('m-tab-users');
-  if(utab) utab.style.display=(S.role==='admin')?'':'none';
+  if(utab) utab.style.display=(S.role==='admin'||isOwnerAdmin(S.name))?'':'none';
   buildLockList();buildAnswersControlList();switchTab('general');
   document.getElementById('settings-overlay').classList.add('open');document.body.style.overflow='hidden';
 }
