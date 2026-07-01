@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>מבחן מסכם — סיפורי יוסף | תנ״ך לתיכון</title>
+<link href="https://fonts.googleapis.com/css2?family=Secular+One&family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<style>
+:root{
+  --bg:#f0f2f7;--surface:#fff;--surface2:#f8f9fb;--surface3:#eef0f5;
+  --border:#e4e7ef;--text:#0d1424;--text-mid:#3d4660;--muted:#6b7594;--subtle:#9aa3be;
+  --green:#15803d;--green-lt:#f0fdf4;--amber:#b45309;--amber-lt:#fffbeb;
+  --red:#dc2626;--red-lt:#fef2f2;--blue:#1a56db;--blue-lt:#eff4ff;
+  --rose:#be185d;--rose-lt:#fff1f2;--purple:#7c3aed;--purple-lt:#faf5ff;
+  --gold:#ca8a04;--gold-lt:#fefce8;
+  --lc:#0891b2;--lc-lt:#ecfeff;--lc-dk:#065f46;
+  --sh1:0 1px 3px rgba(13,20,36,.06);--sh2:0 4px 20px rgba(13,20,36,.08);--sh3:0 12px 40px rgba(13,20,36,.12);
+  --r:14px;--r-lg:20px;--r-xl:26px;--r-pill:999px;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#0b0f17;--surface:#131924;--surface2:#192030;--surface3:#1f2840;
+  --border:#252f47;--text:#d8dfe8;--text-mid:#a0adc5;--muted:#7a8aaa;--subtle:#50607e;
+  --green:#34d875;--green-lt:#0c2618;--amber:#f5a623;--amber-lt:#28200c;
+  --red:#fc8080;--red-lt:#281414;--blue:#4d8aff;--blue-lt:#162040;
+  --rose:#fb7185;--rose-lt:#1f0a0f;--purple:#b09dfa;--purple-lt:#1a1432;
+  --gold:#f5a623;--gold-lt:#28200c;
+  --lc:#34d4c2;--lc-lt:#0c221e;--lc-dk:#5eead4;
+  --sh1:0 1px 3px rgba(0,0,0,.3);--sh2:0 4px 20px rgba(0,0,0,.4);--sh3:0 12px 40px rgba(0,0,0,.5);
+}}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{line-height:1.65;min-height:100vh}
+button,input,select,textarea{font-family:inherit}
+.topbar{position:sticky;top:0;z-index:100;background:var(--surface);border-bottom:1px solid var(--border);padding:.62rem 1.1rem;display:flex;align-items:center;gap:.55rem;min-height:54px;box-shadow:var(--sh1)}
+.btn-back{width:40px;height:40px;border:1.5px solid var(--border);border-radius:11px;background:var(--surface2);font-size:1.05rem;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .14s;flex-shrink:0}
+.btn-back:hover{background:var(--surface3);color:var(--text)}
+.topbar-info{flex:1;min-width:0}
+.topbar-title{font-family:'Secular One',sans-serif;font-size:.9rem;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.topbar-sub{font-size:.6rem;color:var(--subtle);margin-top:.04rem}
+.topbar-actions{display:flex;gap:.38rem;flex-shrink:0;align-items:center}
+.t-chip{font-size:.62rem;font-weight:700;padding:.2rem .68rem;border-radius:var(--r-pill);border:1px solid var(--border);background:var(--surface2);color:var(--muted)}
+.t-chip.lc{color:var(--lc);background:var(--lc-lt);border-color:var(--lc)}
+.t-chip.teacher{color:var(--gold);background:var(--gold-lt);border-color:#fde68a;display:none}
+.btn-print{display:inline-flex;align-items:center;gap:.32rem;padding:.32rem .85rem;border:1.5px solid var(--border);border-radius:var(--r-pill);background:var(--surface2);font-size:.68rem;font-weight:700;color:var(--muted);cursor:pointer;transition:all .14s;white-space:nowrap;min-height:36px}
+.btn-print:hover{background:var(--lc-lt);color:var(--lc);border-color:var(--lc)}
+.tabs-bar{background:var(--surface);border-bottom:1px solid var(--border);display:flex;padding:0 1.1rem;overflow-x:auto;scrollbar-width:none;position:sticky;top:54px;z-index:90}
+.tabs-bar::-webkit-scrollbar{display:none}
+.tab-btn{padding:.68rem 1.2rem;border:none;border-bottom:2.5px solid transparent;background:none;font-size:.82rem;font-weight:600;color:var(--muted);cursor:pointer;white-space:nowrap;min-height:46px;margin-bottom:-1px;flex-shrink:0;transition:color .14s}
+.tab-btn:hover{color:var(--lc)}
+.tab-btn.active{color:var(--lc);border-bottom-color:var(--lc);font-weight:800}
+.tab-pane{display:none}.tab-pane.active{display:block;animation:fadeIn .18s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.lesson-wrap{max-width:800px;margin:0 auto;padding:1.5rem 1.2rem 5rem;width:100%}
+.lesson-hero{background:linear-gradient(135deg,var(--lc-lt) 0%,var(--surface) 68%);border:1px solid var(--border);border-radius:var(--r-xl);padding:1.8rem 1.6rem 1.6rem;margin-bottom:1.8rem;position:relative;overflow:hidden;box-shadow:var(--sh1)}
+.lesson-hero::before{content:'';position:absolute;top:0;right:0;bottom:0;width:5px;background:var(--lc);opacity:.75;border-radius:0 var(--r-xl) var(--r-xl) 0}
+.hero-badge{display:inline-flex;align-items:center;gap:.35rem;font-size:.62rem;font-weight:800;color:var(--lc);text-transform:uppercase;letter-spacing:.07em;background:var(--lc-lt);border:1.5px solid var(--lc);border-radius:var(--r-pill);padding:.22rem .8rem;margin-bottom:.9rem;opacity:.88}
+.hero-emoji{font-size:2.6rem;margin-bottom:.55rem;display:block;line-height:1}
+.hero-title{font-family:'Secular One',sans-serif;font-size:clamp(1.35rem,4vw,1.75rem);color:var(--text);line-height:1.18;margin-bottom:.4rem}
+.hero-desc{font-size:.84rem;color:var(--muted);line-height:1.65;max-width:580px}
+.hero-meta{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;margin-top:1rem}
+.hero-chip{font-size:.63rem;font-weight:700;padding:.22rem .72rem;border-radius:var(--r-pill);border:1px solid var(--border);background:var(--surface);color:var(--muted)}
+.hero-chip.lc{color:var(--lc);background:var(--lc-lt);border-color:var(--lc)}
+.hero-chip.green{color:var(--green);background:var(--green-lt);border-color:#bbf7d0}
+.section-hd{font-family:'Secular One',sans-serif;font-size:1.08rem;color:var(--lc);display:flex;align-items:center;gap:.55rem;margin:2.2rem 0 1rem;padding-bottom:.48rem;border-bottom:2px solid var(--lc-lt)}
+.sn{width:28px;height:28px;border-radius:50%;background:var(--lc);color:#fff;font-size:.75rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:900}
+.sn-icon{font-size:1.3rem;flex-shrink:0;line-height:1}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.3rem 1.4rem;box-shadow:var(--sh1);margin-bottom:1rem}
+.card p{font-size:.9rem;line-height:1.78;color:var(--text-mid)}.card p+p{margin-top:.65rem}
+.card ul{padding-right:1.3rem;margin-top:.42rem}
+.card li{font-size:.9rem;line-height:1.78;color:var(--text-mid);margin-bottom:.22rem}
+.card li strong{color:var(--text)}
+.box{border-radius:var(--r);padding:1rem 1.2rem;font-size:.86rem;line-height:1.72;color:var(--text-mid);margin-bottom:1rem}
+.box strong{font-weight:800}
+.box-lc{background:var(--lc-lt);border:1.5px solid #99f6e4}.box-lc strong{color:var(--lc)}
+.box-amber{background:var(--amber-lt);border:1.5px solid #fde68a}.box-amber strong{color:var(--amber)}
+.box-green{background:var(--green-lt);border:1.5px solid #bbf7d0}.box-green strong{color:var(--green)}
+.box-blue{background:var(--blue-lt);border:1.5px solid #bfdbfe}.box-blue strong{color:var(--blue)}
+.box-purple{background:var(--purple-lt);border:1.5px solid #ddd6fe}.box-purple strong{color:var(--purple)}
+.box-rose{background:var(--rose-lt);border:1.5px solid #fecdd3}.box-rose strong{color:var(--rose)}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:1rem}
+@media(max-width:600px){.grid3{grid-template-columns:1fr}}
+.mini-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:1rem 1.1rem}
+.mini-title{font-size:.78rem;font-weight:800;margin-bottom:.42rem}
+.mini-body{font-size:.8rem;color:var(--text-mid);line-height:1.64}
+.steps-wrap{background:linear-gradient(135deg,var(--lc-lt) 0%,var(--surface2) 100%);border:1.5px solid #99f6e4;border-radius:var(--r-lg);padding:1.4rem 1.5rem;margin-bottom:1rem}
+.steps-title{font-family:'Secular One',sans-serif;font-size:.94rem;color:var(--lc);margin-bottom:1rem}
+.step-item{display:flex;align-items:flex-start;gap:.65rem;font-size:.86rem;color:var(--text-mid);line-height:1.55;margin-bottom:.68rem}
+.step-num{width:26px;height:26px;border-radius:50%;background:var(--lc);color:#fff;font-size:.7rem;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:.1rem}
+.cmp-table{width:100%;border-collapse:collapse;font-size:.82rem;margin-bottom:1rem;border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--sh1)}
+.cmp-table th{padding:.68rem .9rem;text-align:right;font-weight:800;font-size:.76rem}
+.cmp-table th:first-child{background:var(--lc);color:#fff}
+.cmp-table th.col-b{background:var(--lc-dk);color:#fff}
+.cmp-table th.col-c{background:#374151;color:#fff}
+.cmp-table th.col-d{background:#1e293b;color:#fff}
+.cmp-table td{padding:.62rem .9rem;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.58}
+.cmp-table tr:last-child td{border-bottom:none}
+.cmp-table tr:nth-child(even) td{background:var(--surface2)}
+.cmp-table tr:nth-child(odd) td{background:var(--surface)}
+.cmp-table .row-label{font-weight:700;color:var(--lc);background:var(--lc-lt)!important;white-space:nowrap}
+
+/* ── SPEECH MODE PANELS ── */
+.speech-panel{border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--sh2);margin-bottom:1.3rem}
+.sp-head{padding:.9rem 1.3rem;font-family:'Secular One',sans-serif;font-size:.9rem;color:#fff;display:flex;align-items:center;gap:.5rem}
+.sp-body{background:var(--surface);border:1px solid var(--border);border-top:none;padding:1.1rem 1.3rem}
+.sp-original{background:var(--surface2);border-radius:var(--r);padding:.85rem 1.05rem;font-size:.9rem;color:var(--text-mid);line-height:1.72;margin-bottom:.85rem;border-right:4px solid var(--lc)}
+.sp-original .quote-marks{font-size:1.1rem;color:var(--lc);font-weight:900}
+.sp-features{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.75rem}
+.sp-feat{font-size:.65rem;font-weight:700;padding:.22rem .68rem;border-radius:var(--r-pill);border:1.5px solid}
+.sp-rules{font-size:.83rem;color:var(--text-mid);line-height:1.7}
+.sp-rules li{margin-bottom:.28rem}
+.sp-rules strong{color:var(--text)}
+/* colors per type */
+.direct .sp-head{background:#0f766e}
+.direct .sp-feat{background:var(--lc-lt);color:#0f766e;border-color:#99f6e4}
+.indirect .sp-head{background:#1a56db}
+.indirect .sp-feat{background:var(--blue-lt);color:#1a56db;border-color:#bfdbfe}
+.free .sp-head{background:#7c3aed}
+.free .sp-feat{background:var(--purple-lt);color:#7c3aed;border-color:#ddd6fe}
+
+/* ── TRANSFORMATION ARROWS ── */
+.transform-wrap{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-xl);padding:1.3rem 1.4rem;margin-bottom:1.1rem;box-shadow:var(--sh1)}
+.tr-title{font-family:'Secular One',sans-serif;font-size:.85rem;color:var(--lc);margin-bottom:1rem;display:flex;align-items:center;gap:.4rem}
+.tr-row{display:flex;flex-direction:column;gap:.5rem;margin-bottom:.9rem}
+.tr-row:last-child{margin-bottom:0}
+.tr-from,.tr-to{padding:.65rem 1rem;border-radius:var(--r);font-size:.87rem;line-height:1.62;color:var(--text-mid)}
+.tr-from{background:var(--lc-lt);border:1.5px solid #99f6e4;border-right:4px solid var(--lc)}
+.tr-from .tr-label{font-size:.62rem;font-weight:800;color:var(--lc);margin-bottom:.28rem;letter-spacing:.04em}
+.tr-to{background:var(--blue-lt);border:1.5px solid #bfdbfe;border-right:4px solid #1a56db}
+.tr-to .tr-label{font-size:.62rem;font-weight:800;color:#1a56db;margin-bottom:.28rem;letter-spacing:.04em}
+.tr-free{background:var(--purple-lt);border:1.5px solid #ddd6fe;border-right:4px solid #7c3aed}
+.tr-free .tr-label{font-size:.62rem;font-weight:800;color:#7c3aed;margin-bottom:.28rem;letter-spacing:.04em}
+.tr-arrow{font-size:1rem;color:var(--muted);text-align:center;padding:.1rem 0}
+.change-badge{display:inline-flex;align-items:center;gap:.25rem;font-size:.62rem;font-weight:700;padding:.16rem .55rem;border-radius:var(--r-pill);background:var(--amber-lt);color:var(--amber);border:1px solid #fde68a;margin-right:.25rem}
+
+/* reading */
+.reading-text-box{background:var(--surface);border:2px solid var(--lc);border-radius:var(--r-xl);padding:1.5rem 1.6rem;margin-bottom:1.8rem;box-shadow:var(--sh2);position:relative}
+.reading-text-box::before{content:'📄 טקסט לניתוח';position:absolute;top:-12px;right:1.4rem;background:var(--lc);color:#fff;font-size:.65rem;font-weight:800;padding:.22rem .85rem;border-radius:var(--r-pill);letter-spacing:.04em}
+.rt-title{font-family:'Secular One',sans-serif;font-size:1.05rem;color:var(--text);margin-bottom:.28rem}
+.rt-body{font-size:.88rem;line-height:1.88;color:var(--text-mid)}
+.rt-body p{margin-bottom:.85rem}.rt-body p:last-child{margin-bottom:0}
+.rt-body strong{color:var(--lc);font-weight:800}
+/* quiz */
+.quiz-header{background:linear-gradient(135deg,var(--lc-lt) 0%,var(--surface2) 100%);border:1px solid #99f6e4;border-radius:var(--r-lg);padding:1.25rem 1.4rem;margin-bottom:1.5rem}
+.quiz-hd-title{font-family:'Secular One',sans-serif;font-size:.97rem;color:var(--lc);margin-bottom:.32rem}
+.quiz-hd-desc{font-size:.82rem;color:var(--muted)}
+.quiz-prog-bar{height:5px;background:var(--surface3);border-radius:var(--r-pill);overflow:hidden;margin-top:.8rem;border:1px solid var(--border)}
+.quiz-prog-fill{height:100%;background:linear-gradient(90deg,var(--lc),#34d4c2);border-radius:var(--r-pill);transition:width .38s ease}
+.quiz-prog-row{display:flex;justify-content:space-between;margin-top:.38rem;font-size:.7rem;color:var(--muted)}
+.q-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.3rem 1.4rem;margin-bottom:1.25rem;box-shadow:var(--sh1);transition:border-color .2s}
+.q-card.ok{border-color:#bbf7d0}.q-card.wrong{border-color:#fca5a5}
+.q-num{font-size:.66rem;font-weight:800;color:var(--subtle);margin-bottom:.55rem;text-transform:uppercase;letter-spacing:.06em;display:flex;align-items:center;gap:.4rem;flex-wrap:wrap}
+.q-type-badge{font-size:.56rem;font-weight:700;padding:.14rem .52rem;border-radius:var(--r-pill);background:var(--surface3);color:var(--muted);border:1px solid var(--border)}
+.q-text{font-size:.94rem;font-weight:700;color:var(--text);line-height:1.52;margin-bottom:1.05rem}
+.q-excerpt{background:var(--surface2);border:1px solid var(--border);border-right:3px solid var(--lc);border-radius:var(--r);padding:.75rem 1rem;font-size:.86rem;line-height:1.75;color:var(--text-mid);margin-bottom:.85rem;font-style:italic}
+.mc-wrap{display:flex;flex-direction:column;gap:.42rem}
+.mc-btn{width:100%;text-align:right;padding:.78rem 1rem;border:1.5px solid var(--border);border-radius:var(--r);background:var(--surface2);font-size:.86rem;color:var(--text-mid);cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:.68rem;min-height:50px}
+.mc-btn:hover:not(:disabled){border-color:var(--lc);background:var(--lc-lt);color:var(--lc)}
+.mc-btn.sel{border-color:var(--lc);background:var(--lc-lt);color:var(--lc);font-weight:700}
+.mc-btn.correct{border-color:var(--green)!important;background:var(--green-lt)!important;color:var(--green)!important;font-weight:700}
+.mc-btn.wrong{border-color:var(--red)!important;background:var(--red-lt)!important;color:var(--red)!important;font-weight:700}
+.mc-btn:disabled{cursor:default}
+.mc-letter{width:24px;height:24px;border-radius:50%;background:var(--surface3);color:var(--muted);font-size:.7rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.mc-btn.sel .mc-letter{background:var(--lc);color:#fff}
+.mc-btn.correct .mc-letter{background:var(--green);color:#fff}
+.mc-btn.wrong .mc-letter{background:var(--red);color:#fff}
+.tf-row{display:flex;gap:.68rem}
+.tf-btn{flex:1;padding:.8rem;border:1.5px solid var(--border);border-radius:var(--r);background:var(--surface2);font-size:.9rem;font-weight:700;cursor:pointer;transition:all .15s;min-height:54px}
+.tf-btn:hover:not(:disabled){border-color:var(--lc);background:var(--lc-lt);color:var(--lc)}
+.tf-btn.sel{border-color:var(--lc);background:var(--lc-lt);color:var(--lc)}
+.tf-btn.correct{border-color:var(--green)!important;background:var(--green-lt)!important;color:var(--green)!important}
+.tf-btn.wrong{border-color:var(--red)!important;background:var(--red-lt)!important;color:var(--red)!important}
+.tf-btn:disabled{cursor:default}
+.sort-list{display:flex;flex-direction:column;gap:.42rem;margin-bottom:.55rem}
+.sort-item{display:flex;align-items:center;gap:.68rem;padding:.74rem 1rem;border:1.5px solid var(--border);border-radius:var(--r);background:var(--surface2);cursor:grab;transition:all .15s;user-select:none}
+.sort-item:active{cursor:grabbing}
+.sort-item.dragging{opacity:.45}
+.sort-item.drag-over{border-color:var(--lc);background:var(--lc-lt)}
+.sort-handle{font-size:1.1rem;color:var(--muted);flex-shrink:0}
+.sort-text{font-size:.86rem;color:var(--text-mid);flex:1}
+.sort-note{font-size:.7rem;color:var(--muted);margin-bottom:.32rem}
+.q-feedback{margin-top:.72rem;padding:.8rem 1.05rem;border-radius:var(--r);font-size:.83rem;font-weight:600;line-height:1.58;display:none;border-right:3px solid transparent}
+.q-feedback.show{display:block}
+.q-feedback.ok{background:var(--green-lt);color:var(--green);border-color:var(--green)}
+.q-feedback.wrong{background:var(--red-lt);color:var(--red);border-color:var(--red)}
+.results-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);padding:2.2rem 1.8rem;text-align:center;box-shadow:var(--sh2);margin-top:1.5rem}
+.results-emoji{font-size:4rem;margin-bottom:.8rem;display:block}
+.results-score{font-family:'Secular One',sans-serif;font-size:3.4rem;font-weight:800;margin-bottom:.3rem;display:block}
+.results-label{font-size:.9rem;color:var(--muted);margin-bottom:1.5rem;display:block}
+.results-bar{height:10px;background:var(--surface3);border-radius:var(--r-pill);overflow:hidden;margin-bottom:1.6rem;border:1px solid var(--border)}
+.results-bar-fill{height:100%;border-radius:var(--r-pill);transition:width 1.2s cubic-bezier(.22,1,.36,1)}
+.btn-submit{padding:.85rem 2rem;border:none;border-radius:var(--r-pill);background:var(--lc);color:#fff;font-size:.9rem;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(8,145,178,.25);transition:all .15s;min-height:48px}
+.btn-submit:hover{background:var(--lc-dk);transform:translateY(-1px)}
+.btn-reset{padding:.82rem 1.6rem;border:1.5px solid var(--border);border-radius:var(--r-pill);background:var(--surface2);color:var(--muted);font-size:.86rem;font-weight:700;cursor:pointer;transition:all .15s;min-height:48px}
+.btn-send{padding:.82rem 1.8rem;border:none;border-radius:var(--r-pill);background:var(--green);color:#fff;font-size:.86rem;font-weight:700;cursor:pointer;transition:all .15s;min-height:48px}
+.answers-locked{background:var(--surface);border:2px dashed var(--border);border-radius:var(--r-xl);padding:2.5rem 2rem;text-align:center;margin-top:.5rem}
+.answer-row{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.05rem 1.2rem;margin-bottom:.78rem}
+.ans-num{font-size:.66rem;color:var(--subtle);margin-bottom:.35rem;display:flex;align-items:center;gap:.4rem}
+.ans-q{font-size:.88rem;font-weight:700;color:var(--text);margin-bottom:.5rem;line-height:1.45}
+.ans-correct{background:var(--green-lt);border:1.5px solid #bbf7d0;border-radius:9px;padding:.55rem .95rem;font-size:.82rem;color:var(--green);font-weight:700;margin-bottom:.42rem}
+.ans-explain{font-size:.78rem;color:var(--muted);line-height:1.58;border-right:3px solid var(--border);padding-right:.78rem;margin-top:.4rem}
+/* gate */
+#student-gate{background:var(--surface);border:2px solid var(--lc);border-radius:var(--r-xl);padding:0;margin-bottom:1.5rem;box-shadow:var(--sh2);overflow:hidden}
+#student-gate.hidden{display:none}
+.gate-header{background:linear-gradient(135deg,var(--lc-lt) 0%,var(--surface2) 100%);padding:1.4rem 1.5rem 1.2rem;text-align:center;border-bottom:1px solid var(--border)}
+.gate-icon{font-size:2.4rem;display:block;margin-bottom:.55rem}
+.gate-title{font-family:'Secular One',sans-serif;font-size:1.08rem;color:var(--text);margin-bottom:.28rem}
+.gate-desc{font-size:.8rem;color:var(--muted)}
+.gate-body{padding:1.3rem 1.5rem 1.5rem;display:flex;flex-direction:column;gap:.9rem}
+.gate-field label{display:block;font-size:.72rem;font-weight:800;color:var(--muted);margin-bottom:.38rem}
+.gate-input{width:100%;padding:.82rem 1rem;border:1.5px solid var(--border);border-radius:var(--r);background:var(--surface2);font-size:.92rem;color:var(--text);outline:none;transition:border-color .15s;min-height:50px}
+.gate-input::placeholder{color:var(--subtle)}
+.gate-input:focus{border-color:var(--lc);box-shadow:0 0 0 3px rgba(8,145,178,.25)}
+.gate-input.err{border-color:var(--red)}
+.gate-select{width:100%;padding:.82rem 1rem;border:1.5px solid var(--border);border-radius:var(--r);background:var(--surface2);font-size:.92rem;color:var(--text);outline:none;transition:border-color .15s;min-height:50px;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7594' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:left 1rem center}
+.gate-select:focus{border-color:var(--lc);box-shadow:0 0 0 3px rgba(8,145,178,.25)}
+.gate-select.err{border-color:var(--red)}
+.gate-err-msg{font-size:.7rem;color:var(--red);margin-top:.26rem;display:none}
+.gate-err-msg.show{display:block}
+.gate-date-display{padding:.78rem 1rem;background:var(--surface3);border:1.5px solid var(--border);border-radius:var(--r);font-size:.88rem;color:var(--muted)}
+.gate-btn{width:100%;padding:.88rem;border:none;border-radius:var(--r-pill);background:var(--lc);color:#fff;font-size:.92rem;font-weight:700;cursor:pointer;min-height:52px;box-shadow:0 4px 18px rgba(8,145,178,.25);transition:all .15s;display:flex;align-items:center;justify-content:center;gap:.45rem}
+.gate-btn:hover{background:var(--lc-dk);transform:translateY(-1px)}
+#gate-confirmed{display:none;background:var(--lc-lt);border:2px solid #99f6e4;border-radius:var(--r-xl);padding:1rem 1.3rem;margin-bottom:1.5rem;align-items:center;gap:.85rem}
+#gate-confirmed.show{display:flex}
+#gate-confirmed.hidden{display:none!important}
+.gc-avatar{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#0f766e,#065f46);color:#fff;font-size:1.1rem;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.gc-info{flex:1;min-width:0}
+.gc-name{font-size:.92rem;font-weight:800;color:var(--lc)}
+.gc-meta{font-size:.74rem;color:var(--text-mid);margin-top:.15rem}
+.gc-change{font-size:.68rem;font-weight:700;color:var(--muted);cursor:pointer;text-decoration:underline;background:none;border:none;padding:0;margin-top:.22rem;display:block}
+#toast{position:fixed;bottom:1.6rem;left:50%;transform:translateX(-50%) translateY(14px);background:var(--text);color:var(--bg);padding:.58rem 1.4rem;border-radius:var(--r-pill);font-size:.78rem;font-weight:700;box-shadow:var(--sh3);z-index:9999;opacity:0;pointer-events:none;transition:opacity .22s,transform .22s;white-space:nowrap}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media print{.topbar,.tabs-bar,.btn-print,.btn-submit,.btn-reset,.btn-send,#submit-row,#results-container,#toast,#student-gate,#gate-confirmed,.sort-handle{display:none!important}body{background:#fff;color:#000;font-size:10pt;line-height:1.5}html{background:#fff}.tab-pane{display:block!important}.lesson-wrap{padding:.5cm 1cm;max-width:100%}.lesson-hero,.card,.q-card,.reading-text-box,.answer-row,.cmp-table,.speech-panel,.transform-wrap{box-shadow:none;break-inside:avoid}.q-feedback{display:block!important}.mc-btn.correct{display:flex!important}.print-header{display:block!important;text-align:center;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:2px solid #0f766e}.print-header h1{font-size:16pt;color:#0f766e}.print-header p{font-size:10pt;color:#555}#pane-theory{page-break-after:always}#pane-practice{page-break-after:always}@page{margin:1.5cm;size:A4}}
+.print-header{display:none}
+
+/* open q */
+.open-wrap{margin-bottom:.5rem}
+.open-textarea{width:100%;min-height:100px;padding:.8rem 1rem;border:1.5px solid var(--border);border-radius:var(--r,8px);background:var(--surface2,#f8fafc);font-family:'Heebo',sans-serif;font-size:.88rem;color:var(--text,#0d1424);line-height:1.7;resize:vertical;outline:none;transition:border-color .15s}
+.open-textarea:focus{border-color:var(--lc)}
+.open-textarea:disabled{opacity:.65;background:var(--surface3,#f0f2f7)}
+.open-hint{font-size:.72rem;color:var(--muted,#9aa3be);margin-top:.3rem}
+.open-rubric{margin-top:.6rem;background:var(--surface2,#f8fafc);border:1px solid var(--border,#e4e7ef);border-radius:var(--r,8px);padding:.7rem 1rem;font-size:.78rem;line-height:1.55;color:var(--text-mid,#374151)}
+
+.goto-practice-btn{display:block;width:100%;padding:1rem 1.5rem;border:none;border-radius:var(--r-pill,999px);background:#0f766e;color:#fff;font-size:.92rem;font-weight:800;cursor:pointer;transition:all .18s;margin-top:.8rem;text-align:center;box-shadow:0 4px 18px rgba(8,145,178,.25)}
+.goto-practice-btn:hover{transform:translateY(-2px);opacity:.92}
+
+/* ── תוספות תנ״ך v2: חלקים · סעיפי בגרות · תיוג רבדים ── */
+.q-excerpt b{color:var(--lc);font-weight:800;font-size:.72rem;vertical-align:.12em;margin-left:.15rem;font-style:normal}
+.q-excerpt .vref{display:block;font-size:.66rem;font-weight:800;color:var(--lc);letter-spacing:.04em;margin-bottom:.4rem;font-style:normal}
+.section-divider{margin:2rem 0 1.2rem;padding:1.05rem 1.3rem;border-radius:var(--r-lg);background:linear-gradient(135deg,var(--lc-lt) 0%,var(--surface2) 100%);border:1.5px solid var(--lc)}
+.section-divider.sec-b{background:linear-gradient(135deg,var(--gold-lt) 0%,var(--surface2) 100%);border-color:var(--gold)}
+.sd-tag{display:inline-block;font-size:.64rem;font-weight:800;letter-spacing:.05em;padding:.2rem .6rem;border-radius:var(--r-pill);background:var(--lc);color:#fff;margin-bottom:.5rem;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.section-divider.sec-b .sd-tag{background:var(--gold)}
+.sd-title{font-family:'Secular One',sans-serif;font-size:1.05rem;color:var(--text);margin-bottom:.25rem}
+.sd-note{font-size:.78rem;color:var(--text-mid);line-height:1.55}
+.pool-banner{background:var(--surface2);border:1.5px dashed var(--gold);border-radius:var(--r-lg);padding:.85rem 1.15rem;margin:1.1rem 0;display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
+.pool-banner .pb-icon{font-size:1.4rem;line-height:1}
+.pool-banner .pb-text{flex:1;min-width:160px}
+.pool-banner .pb-title{font-family:'Secular One',sans-serif;font-size:.88rem;color:var(--gold);margin-bottom:.15rem}
+.pool-banner .pb-desc{font-size:.75rem;color:var(--text-mid);line-height:1.5}
+.pool-counter{font-size:.72rem;font-weight:800;padding:.32rem .85rem;border-radius:var(--r-pill);background:var(--surface);border:1.5px solid var(--gold);color:var(--gold);white-space:nowrap}
+.pool-counter.done{background:var(--green-lt);border-color:var(--green);color:var(--green)}
+.q-card.bagrut-q{border-right:3px solid var(--gold)}
+.q-total-pts{font-size:.6rem;font-weight:800;padding:.12rem .5rem;border-radius:var(--r-pill);background:var(--gold-lt);color:var(--gold);border:1px solid var(--gold)}
+.bagrut-stem{font-size:.9rem;font-weight:700;color:var(--text);line-height:1.6;margin:.2rem 0 .3rem}
+.bagrut-based{font-size:.72rem;color:var(--muted);font-style:italic;margin-bottom:.7rem}
+.bagrut-part{border-top:1px solid var(--border);padding-top:.8rem;margin-top:.85rem}
+.bagrut-part:first-of-type{border-top:none;padding-top:.2rem;margin-top:.3rem}
+.part-head{display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem;flex-wrap:wrap}
+.part-label{display:inline-flex;width:22px;height:22px;border-radius:50%;background:var(--lc);color:#fff;align-items:center;justify-content:center;font-size:.72rem;font-weight:800;flex-shrink:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.part-points{font-size:.62rem;font-weight:800;padding:.1rem .5rem;border-radius:var(--r-pill);background:var(--gold-lt);color:var(--gold);border:1px solid var(--gold)}
+.part-text{font-size:.86rem;color:var(--text);line-height:1.55;flex:1;min-width:150px}
+.reflective-badge{font-size:.6rem;font-weight:800;padding:.1rem .5rem;border-radius:var(--r-pill);background:var(--green-lt);color:var(--green);border:1px solid #bbf7d0}
+.open-saved{margin-top:.6rem;background:var(--amber-lt);border:1.5px solid #fde68a;border-radius:var(--r);padding:.65rem .95rem;font-size:.8rem;color:var(--amber);font-weight:700}
+.rubric-box{margin-top:.4rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:.7rem .9rem}
+.rubric-part-hd{font-size:.72rem;font-weight:800;color:var(--lc);margin-bottom:.35rem}
+.rubric-model{font-size:.8rem;line-height:1.65;color:var(--text-mid);margin-bottom:.55rem}
+.rubric-model strong{color:var(--green);font-weight:800}
+.rubric-band{display:flex;gap:.5rem;align-items:flex-start;font-size:.76rem;line-height:1.5;margin-bottom:.35rem;color:var(--text-mid)}
+.rubric-band .rb-tag{font-size:.62rem;font-weight:800;padding:.14rem .5rem;border-radius:var(--r-pill);flex-shrink:0;white-space:nowrap}
+.rubric-band.full .rb-tag{background:var(--green-lt);color:var(--green);border:1px solid #bbf7d0}
+.rubric-band.partial .rb-tag{background:var(--amber-lt);color:var(--amber);border:1px solid #fde68a}
+.rubric-pts{display:inline-block;margin-top:.25rem;font-size:.68rem;font-weight:800;color:var(--gold)}
+.ans-excerpt{background:var(--surface2);border-right:3px solid var(--lc);border-radius:var(--r);padding:.55rem .85rem;font-size:.8rem;line-height:1.7;color:var(--text-mid);font-style:italic;margin-bottom:.5rem}
+.layer-tag{display:inline-block;font-size:.6rem;font-weight:800;letter-spacing:.04em;padding:.12rem .5rem;border-radius:var(--r-pill);margin-bottom:.5rem;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.layer-tag.peshat{background:var(--lc-lt);color:var(--lc);border:1px solid var(--lc)}
+.layer-tag.derash{background:var(--purple-lt,#f3e8ff);color:var(--purple,#7c3aed);border:1px solid var(--purple,#7c3aed)}
+.teacher-note-box{background:#fff7ed;border:1.5px solid #fdba74;border-radius:var(--r-lg);padding:1rem 1.2rem;margin:1.4rem 0}.teacher-note-box{display:none}body.is-teacher .teacher-note-box{display:block}
+.tn-tag{display:inline-block;font-size:.62rem;font-weight:800;letter-spacing:.05em;padding:.15rem .55rem;border-radius:var(--r-pill);background:#ea580c;color:#fff;margin-bottom:.5rem;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.teacher-note-box p{font-size:.82rem;color:#7c2d12;line-height:1.65}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <button class="btn-back" onclick="goBack()" style="font-family:Arial,sans-serif">←</button>
+  <div class="topbar-info">
+    <div class="topbar-title">🏆 מבחן מסכם — סיפורי יוסף</div>
+    <div class="topbar-sub">תנ״ך · יחידה ב׳ · בראשית ל״ז–נ׳</div>
+  </div>
+  <div class="topbar-actions">
+    <span class="t-chip lc">⏱ 150 דק׳</span>
+    <span class="t-chip teacher" id="role-chip">🎓 מורה</span>
+    <button class="btn-print" onclick="printLesson()">🖨️ הדפסה</button>
+  </div>
+</div>
+<div class="tabs-bar">
+  <button class="tab-btn active" id="btn-theory" onclick="switchTab('theory')">📋 הוראות</button>
+  <button class="tab-btn" id="btn-practice" onclick="switchTab('practice')">✏️ המבחן</button>
+  <button class="tab-btn" id="btn-answers" onclick="switchTab('answers')" style="display:none">🔑 מחוון (מורה)</button>
+  <button class="tab-btn" id="btn-answers-student" onclick="switchTab('answers')" style="display:none">💡 מחוון</button>
+</div>
+
+<!-- ═══ INSTRUCTIONS ═══ -->
+<div class="tab-pane active" id="pane-theory">
+<div class="print-header"><h1>מבחן מסכם — סיפורי יוסף</h1><p>תנ״ך לתיכון · יחידה ב׳</p></div>
+<div class="lesson-wrap">
+  <div class="lesson-hero">
+    <div class="hero-badge">מבחן מסכם · יחידה ב׳</div>
+    <span class="hero-emoji">🏆</span>
+    <h1 class="hero-title">מבחן מסכם — סיפורי יוסף</h1>
+    <p class="hero-desc">מבחן בפורמט בגרות (שאלון 1261), הבנוי במיוחד על 10 השיעורים שנלמדו ביחידה — בראשית ל״ז עד נ׳</p>
+    <div class="hero-meta"><span class="hero-chip lc">⏱ 150 דק׳</span><span class="hero-chip">📝 100 נקודות</span><span class="hero-chip green">📜 3 חלקים</span></div>
+  </div>
+
+  <div class="teacher-note-box"><span class="tn-tag">הערה למורה</span><p>מבחן זה נכתב על ידי הצוות הפדגוגי בפורמט בגרות אמיתי (מבנה, ניקוד ולשון זהים לשאלון 1261), אך כל השאלות מקוריות ונכתבו במיוחד עבור יחידה זו — הן <strong>אינן</strong> מועתקות ממבחני בגרות רשמיים (החומר הרשמי שמור בזכויות יוצרים למדינת ישראל). המבחן מכסה באופן מייצג את פרקי היחידה, אך אינו חייב לכלול כל פרק שנלמד.</p></div>
+
+  <div class="section-hd"><span class="sn-icon">📋</span><div class="sn">1</div>הוראות לנבחן</div>
+  <div class="card">
+    <p><strong>א. משך הבחינה:</strong> שעתיים וחצי (150 דקות).</p>
+    <p><strong>ב. מבנה השאלון ומפתח ההערכה:</strong> בשאלון זה שלושה חלקים.</p>
+    <table class="cmp-table">
+      <tr><th>חלק</th><th class="col-b">נושא</th><th class="col-c">מבנה</th></tr>
+      <tr><td class="row-label">חלק א׳</td><td>מיוסף הנער אל משנה למלך — פרקים ל״ז, ל״ט, מ׳, מ״א</td><td>ענה על 2 מתוך 4 (20 נק׳ כל אחת) = 40 נק׳</td></tr>
+      <tr><td class="row-label">חלק ב׳</td><td>המבחן, הערבות וההתוודעות — פרקים מ״ב, מ״ג–מ״ד, מ״ה</td><td>ענה על 1 מתוך 3 (20 נק׳) = 20 נק׳</td></tr>
+      <tr><td class="row-label">חלק ג׳</td><td>ירידת המשפחה, ברכה והשגחה — פרקים מ״ו, מ״ח, מ״ט, נ׳</td><td>ענה על 2 מתוך 4 (20 נק׳ כל אחת) = 40 נק׳</td></tr>
+    </table>
+    <p style="margin-top:.8rem"><strong>ג. חומר עזר מותר בשימוש:</strong> תנ״ך שלם בלי פירושים, בלי תוספות ובלי תרגום.</p>
+    <p><strong>ד. הוראות מיוחדות:</strong> (1) אין להעתיק את השאלה; כתוב את מספרה בלבד. (2) התרכז בנושא. שים לב לכתב, לכתיב ולפיסוק. (3) בכל שאלה שתבחר, ענה על כל הסעיפים (א׳, ב׳, ג׳) ובסס את דבריך על הכתוב.</p>
+    <div class="box box-amber"><strong>לתשומת לבך:</strong> כל שאלה כוללת מקטע פסוקים לעיון. יש לענות תוך התבססות מדויקת על הכתוב, ולא מתוך זיכרון כללי בלבד.</div>
+  </div>
+
+  <button class="goto-practice-btn" onclick="switchTab('practice')">✏️ עבור למבחן</button>
+</div>
+</div>
+
+<!-- ═══ EXAM ═══ -->
+<div class="tab-pane" id="pane-practice">
+<div class="print-header"><h1>מבחן מסכם — סיפורי יוסף</h1><p>תנ״ך לתיכון · יחידה ב׳</p></div>
+<div class="lesson-wrap">
+  <div id="student-gate">
+    <div class="gate-header"><span class="gate-icon">✏️</span><div class="gate-title">כניסה למבחן</div><div class="gate-desc">הזינו שם ושיבוץ כיתה</div></div>
+    <div class="gate-body">
+      <div class="gate-field"><label>שם מלא</label><input class="gate-input" id="gate-name" type="text" placeholder="לדוגמה: דנה כהן" autocomplete="off"><div class="gate-err-msg" id="gate-name-err">אנא הזינו שם ושם משפחה</div></div>
+      <div class="gate-field"><label>כיתה</label><select class="gate-select" id="gate-class"><option value="">— בחרו כיתה —</option><option>י׳1</option><option>י׳2</option><option>י׳3</option><option>י׳4</option><option>י״א1</option><option>י״א2</option><option>י״א3</option><option>י״א4</option></select><div class="gate-err-msg" id="gate-class-err">אנא בחרו כיתה</div></div>
+      <div class="gate-field"><label>תאריך</label><div class="gate-date-display" id="gate-date-display"></div></div>
+      <button class="gate-btn" onclick="confirmGate()">✅ התחלת המבחן</button>
+    </div>
+  </div>
+  <div id="gate-confirmed"><div class="gc-avatar" id="gc-avatar"></div><div class="gc-info"><div class="gc-name" id="gc-name-display"></div><div class="gc-meta" id="gc-meta-display"></div><button class="gc-change" onclick="reopenGate()">שינוי פרטים</button></div></div>
+
+  <div id="practice-content-wrap">
+    <div class="quiz-header">
+      <div class="quiz-hd-title">🏆 מבחן מסכם — סיפורי יוסף</div>
+      <div class="quiz-hd-desc">100 נקודות · 3 חלקים · ענה על הנדרש בכל חלק, ובחר את השאלות המועדפות עליך</div>
+      <div class="quiz-prog-bar"><div class="quiz-prog-fill" id="prog-fill" style="width:0%"></div></div>
+      <div class="quiz-prog-row"><span id="prog-txt">0 מתוך 0 נענו</span><span id="prog-pct">0%</span></div>
+    </div>
+    <div id="questions-container"></div>
+    <div id="submit-row" style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;margin-top:1.5rem">
+      <button class="btn-submit" onclick="submitQuiz()">📤 הגשת המבחן</button>
+      <button class="btn-reset" onclick="resetQuiz()">🔄 אתחול</button>
+    </div>
+    <div id="results-container" style="display:none"></div>
+  </div>
+</div>
+</div>
+
+<!-- ═══ ANSWERS ═══ -->
+<div class="tab-pane" id="pane-answers">
+<div class="lesson-wrap">
+  <div id="answers-locked-msg" class="answers-locked"><div style="font-size:2.5rem;margin-bottom:.8rem">🔒</div><div style="font-family:'Secular One',sans-serif;font-size:1.1rem;margin-bottom:.5rem">המחוון טרם פורסם על ידי המורה</div><div style="font-size:.85rem;color:var(--muted)">המורה ישחרר את המחוון לאחר איסוף המבחנים</div></div>
+  <div id="answers-visible-content" style="display:none">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem;flex-wrap:wrap;gap:.5rem"><div style="font-family:'Secular One',sans-serif;font-size:1.1rem;color:var(--lc)">🔑 מחוון מלא</div><span style="font-size:.72rem;color:var(--muted)" id="answers-source"></span></div>
+    <div id="answers-list"></div>
+  </div>
+</div>
+</div>
+<div id="toast"></div>
+<script>
+const FB_CFG={apiKey:"AIzaSyA8QKxGi7-72Dm07VgNwLx-fJu7QTPN1Ak",authDomain:"tanakh-project.firebaseapp.com",projectId:"tanakh-project",storageBucket:"tanakh-project.firebasestorage.app",messagingSenderId:"798378782412",appId:"1:798378782412:web:99a44c6771a5afec7d1c69"};
+let _db=null,_gateConfirmed=false;
+const LESSON_ID='yosef_exam',LESSON_TITLE='מבחן מסכם — סיפורי יוסף';
+function initFirebase(){try{if(typeof firebase==='undefined')return;if(!firebase.apps.length)firebase.initializeApp(FB_CFG);_db=firebase.firestore();_db.enablePersistence().catch(()=>{});_db.collection('lessons').doc(LESSON_ID).onSnapshot(doc=>{const val=doc.exists?doc.data()?.showAnswers===true:false;const av=LS.get('tanakh2_answers_visible',{});av[LESSON_ID]=val;LS.set('tanakh2_answers_visible',av);ANSWERS_VISIBLE=val;applyAnswersVisibility();});}catch(e){}}
+async function saveScore(sn,sc){if(!_db)return;const now=new Date();try{await _db.collection('tanakh2_submissions').add({lessonId:LESSON_ID,lessonTitle:LESSON_TITLE,isExam:true,studentName:sn||'תלמיד/ה',className:sc||'',ts:firebase.firestore.FieldValue.serverTimestamp(),submissionDate:now.toLocaleDateString('he-IL'),submissionTime:now.toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'}),read:false,questionsAnswered:Object.keys(QS.answers).length});await _db.collection('tanakh2_live').doc('latest').set({lessonId:LESSON_ID,studentName:sn,className:sc,ts:firebase.firestore.FieldValue.serverTimestamp()});}catch(e){}}
+const LS={get(k,fb=null){try{const v=localStorage.getItem(k);return v!==null?JSON.parse(v):fb}catch{return fb}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}};
+const _p=new URLSearchParams(location.search);
+let STUDENT_NAME=_p.get('student')||LS.get('tanakh2_uname','')||'תלמיד/ה';
+let STUDENT_CLASS=_p.get('class')||LS.get('tanakh2_class','')||'';
+const USER_ROLE=_p.get('role')||LS.get('tanakh2_role','')||localStorage.getItem('userRole')||'student';
+let ANSWERS_VISIBLE=_p.get('answers_visible')==='1';
+const BACK_URL=_p.get('back')||'index.html';
+function applyAnswersVisibility(){const lk=document.getElementById('answers-locked-msg'),vi=document.getElementById('answers-visible-content'),sr=document.getElementById('answers-source');if(USER_ROLE==='teacher'){if(lk)lk.style.display='none';if(vi)vi.style.display='';if(sr)sr.textContent='גישת מורה';document.getElementById('btn-answers')?.style.setProperty('display','');}else if(ANSWERS_VISIBLE){if(lk)lk.style.display='none';if(vi)vi.style.display='';if(sr)sr.textContent='שוחרר ע״י המורה';document.getElementById('btn-answers-student')?.style.setProperty('display','');}else{if(lk)lk.style.display='';if(vi)vi.style.display='none';}}
+
+const EXAM_QUESTIONS=[
+ {id:'e1',group:'א',points:20,ref:'בראשית ל״ז, ג–ד; ה–ח',
+  based:'קרא/י בראשית ל״ז, ג–ח',
+  excerpt:'<span class="vref">בראשית ל״ז, ג–ה</span><b>ג</b> וְיִשְׂרָאֵל אָהַב אֶת יוֹסֵף מִכָּל בָּנָיו כִּי בֶן זְקֻנִים הוּא לוֹ וְעָשָׂה לוֹ כְּתֹנֶת פַּסִּים. <b>ד</b> וַיִּרְאוּ אֶחָיו כִּי אֹתוֹ אָהַב אֲבִיהֶם מִכָּל אֶחָיו וַיִּשְׂנְאוּ אֹתוֹ וְלֹא יָכְלוּ דַּבְּרוֹ לְשָׁלֹם. <b>ה</b> וַיַּחֲלֹם יוֹסֵף חֲלוֹם וַיַּגֵּד לְאֶחָיו וַיּוֹסִפוּ עוֹד שְׂנֹא אֹתוֹ.',
+  parts:[
+   {label:'א',points:6,text:'כיצד תרמה "כְּתֹנֶת פַּסִּים" והאהבה היתרה של יעקב ליצירת השנאה בין האחים? בסס/י על הכתוב.',
+    rubric:{model:'"וְיִשְׂרָאֵל אָהַב אֶת יוֹסֵף מִכָּל בָּנָיו... וְעָשָׂה לוֹ כְּתֹנֶת פַּסִּים" — ההעדפה הגלויה (הכתונת כביטוי חיצוני) עוררה את קנאת האחים: "וַיִּרְאוּ אֶחָיו כִּי אֹתוֹ אָהַב אֲבִיהֶם... וַיִּשְׂנְאוּ אֹתוֹ". ההבחנה בין הבנים היא זרע הפירוד.',full:'קישור ההעדפה/הכתונת לשנאה + עיגון בכתוב = ניקוד מלא',partial:'ציון ההעדפה בלי קישור לשנאה = ניקוד חלקי'}},
+   {label:'ב',points:7,text:'תאר/י את שני חלומות יוסף, והסבר/י מדוע הוסיפו לשנאת האחים אותו.',
+    rubric:{model:'בחלום הראשון אלומות האחים משתחוות לאלומת יוסף; בשני השמש, הירח ואחד עשר כוכבים משתחווים לו. החלומות רומזים לשליטת יוסף על אחיו (ואף על הוריו), ולכן "וַיּוֹסִפוּ עוֹד שְׂנֹא אֹתוֹ" — הם נתפסו כיומרה לשלטון. גם סיפורם הפומבי החריף את הקנאה.',full:'תיאור שני החלומות + הסבר החרפת השנאה (רמז לשליטה) = ניקוד מלא',partial:'תיאור חלום אחד או בלי ההסבר = ניקוד חלקי'}},
+   {label:'ג',points:7,text:'בעת מכירת יוסף אמר יהודה "מַה בֶּצַע כִּי נַהֲרֹג אֶת אָחִינוּ... לְכוּ וְנִמְכְּרֶנּוּ". הסבר/י את הצעתו ואת המשמעות המוסרית המורכבת שבה.',
+    rubric:{model:'יהודה מציע למכור את יוסף לישמעאלים במקום להורגו ("מַה בֶּצַע"). מצד אחד — הצלת חייו מרצח; מצד אחר — עדיין מעשה אכזרי של מכירת אח לעבדות והפקרתו. ההצעה מצילה מדם אך אינה מוסרית, ותרדוף את האחים בהמשך ("אֲבָל אֲשֵׁמִים אֲנַחְנוּ").',full:'הסבר ההצעה + עמידה על המורכבות המוסרית (הצלה מול אכזריות) = ניקוד מלא',partial:'הסבר ההצעה בלי המורכבות = ניקוד חלקי'}}
+  ]},
+
+ {id:'e2',group:'א',points:20,ref:'בראשית ל״ט, ב–ג; ז–ט',
+  based:'קרא/י בראשית ל״ט, ב–ט',
+  excerpt:'<span class="vref">בראשית ל״ט, ב–ג; ט</span><b>ב</b> וַיְהִי ה׳ אֶת יוֹסֵף וַיְהִי אִישׁ מַצְלִיחַ וַיְהִי בְּבֵית אֲדֹנָיו הַמִּצְרִי. <b>ג</b> וַיַּרְא אֲדֹנָיו כִּי ה׳ אִתּוֹ וְכֹל אֲשֶׁר הוּא עֹשֶׂה ה׳ מַצְלִיחַ בְּיָדוֹ. <b>ט</b> ...וְאֵיךְ אֶעֱשֶׂה הָרָעָה הַגְּדֹלָה הַזֹּאת וְחָטָאתִי לֵאלֹהִים.',
+  parts:[
+   {label:'א',points:7,text:'מהו הביטוי החוזר "וַיְהִי ה׳ אֶת יוֹסֵף", וכיצד הוא בא לידי ביטוי בבית פוטיפר? בסס/י על הכתוב.',
+    rubric:{model:'"וַיְהִי ה׳ אֶת יוֹסֵף וַיְהִי אִישׁ מַצְלִיחַ" — נוכחות ה׳ מלווה את יוסף גם בירידתו למצרים, ומתבטאת בהצלחתו בכל מעשה, עד ש"וַיַּרְא אֲדֹנָיו כִּי ה׳ אִתּוֹ". גם הגוי המצרי מזהה זאת, ומפקיד בידי יוסף את כל אשר לו.',full:'הסבר הביטוי (ליווי ה׳) + ביטויו בהצלחה ובאמון פוטיפר = ניקוד מלא',partial:'ציון הביטוי בלי פירוט ההצלחה = ניקוד חלקי'}},
+   {label:'ב',points:6,text:'כיצד סירב יוסף לאשת פוטיפר, ומה נימוקו המרכזי?',
+    rubric:{model:'יוסף מסרב בתוקף, ומנמק בשני טעמים: נאמנות לאדונו שנתן בו אמון מלא ("לֹא חָשַׂךְ מִמֶּנִּי מְאוּמָה כִּי אִם אוֹתָךְ"), והטעם המרכזי — האיסור המוסרי-דתי: "וְאֵיךְ אֶעֱשֶׂה הָרָעָה הַגְּדֹלָה הַזֹּאת וְחָטָאתִי לֵאלֹהִים".',full:'תיאור הסירוב + הנימוק המרכזי (חטא לאלוהים) = ניקוד מלא',partial:'ציון הסירוב בלי הנימוק = ניקוד חלקי'}},
+   {label:'ג',points:7,text:'"וְחָטָאתִי לֵאלֹהִים" — הסבר/י מה מלמד נימוק זה על עמידתו של יוסף בניסיון ועל אופיו.',
+    rubric:{model:'יוסף תופס את המעשה לא רק כבגידה באדונו אלא כחטא כלפי ה׳ — מדד מוסרי פנימי שאינו תלוי בפיקוח חיצוני. גם בארץ נוכרייה, בעבדות ובפיתוי, הוא נאמן לערכיו. עמידתו בניסיון מגלה יושרה, יראת שמים ושליטה עצמית.',full:'הסבר המדד המוסרי הפנימי + מסקנה על אופיו = ניקוד מלא',partial:'אמירה כללית בלי הסבר עומק הנימוק = ניקוד חלקי'}}
+  ]},
+
+ {id:'e3',group:'א',points:20,ref:'בראשית מ׳, ח; יד; כג',
+  based:'קרא/י בראשית מ׳',
+  excerpt:'<span class="vref">בראשית מ׳, ח; כג</span><b>ח</b> ...וַיֹּאמֶר אֲלֵהֶם יוֹסֵף הֲלוֹא לֵאלֹהִים פִּתְרֹנִים סַפְּרוּ נָא לִי. <b>יד</b> כִּי אִם זְכַרְתַּנִי אִתְּךָ כַּאֲשֶׁר יִיטַב לָךְ... וְהוֹצֵאתַנִי מִן הַבַּיִת הַזֶּה. <b>כג</b> וְלֹא זָכַר שַׂר הַמַּשְׁקִים אֶת יוֹסֵף וַיִּשְׁכָּחֵהוּ.',
+  parts:[
+   {label:'א',points:6,text:'תאר/י בקצרה את שני חלומות שרי פרעה ואת פתרונם על ידי יוסף.',
+    rubric:{model:'שר המשקים חלם גפן בעלת שלושה שריגים שממנה סחט יין לכוס פרעה — פתרון: בעוד שלושה ימים יושב על כנו. שר האופים חלם שלושה סלי מאפה שהעוף אוכל מהם — פתרון: בעוד שלושה ימים ייתלה. ושני הפתרונות התקיימו.',full:'תיאור שני החלומות + פתרונם (חיוב מול שלילה) = ניקוד מלא',partial:'חלום אחד או בלי הפתרון = ניקוד חלקי'}},
+   {label:'ב',points:7,text:'"הֲלוֹא לֵאלֹהִים פִּתְרֹנִים" — הסבר/י את משמעות המשפט וכיצד הוא מאפיין את יוסף.',
+    rubric:{model:'יוסף מייחס את יכולת הפתרון לה׳ ולא לעצמו — "הֲלוֹא לֵאלֹהִים פִּתְרֹנִים". זו ענווה ואמונה: הוא רואה עצמו כלי שדרכו מתגלה דבר ה׳. משפט זה יחזור ויתעצם מול פרעה ("בִּלְעָדָי אֱלֹהִים יַעֲנֶה") — קו אופי עקבי של ייחוס לה׳.',full:'הסבר ייחוס הפתרון לה׳ + אפיון הענווה/אמונה = ניקוד מלא',partial:'ציטוט בלי הסבר = ניקוד חלקי'}},
+   {label:'ג',points:7,text:'הפרק נחתם ב"וְלֹא זָכַר שַׂר הַמַּשְׁקִים אֶת יוֹסֵף וַיִּשְׁכָּחֵהוּ". מה תפקידה של השכחה הזו בהמשך העלילה?',
+    rubric:{model:'שכחת שר המשקים משאירה את יוסף בכלא שנתיים נוספות. אך דווקא היא חלק מן ההשגחה: כשפרעה יחלום ואיש לא יפתור, ייזכר השר ביוסף — וכך יעלה יוסף מן הבור אל המלוכה ברגע הנכון. העיכוב הכואב מתגלה בדיעבד כשלב בתכנית.',full:'הסבר תפקיד השכחה בהמשך (עיכוב שמוביל לעלייה בזמן) = ניקוד מלא',partial:'ציון השכחה בלי תפקידה בהמשך = ניקוד חלקי'}}
+  ]},
+
+ {id:'e4',group:'א',points:20,ref:'בראשית מ״א, טז; לב; מא–מג',
+  based:'קרא/י בראשית מ״א',
+  excerpt:'<span class="vref">בראשית מ״א, טז; לב</span><b>טז</b> וַיַּעַן יוֹסֵף אֶת פַּרְעֹה לֵאמֹר בִּלְעָדָי אֱלֹהִים יַעֲנֶה אֶת שְׁלוֹם פַּרְעֹה. <b>לב</b> וְעַל הִשָּׁנוֹת הַחֲלוֹם... פַּעֲמָיִם כִּי נָכוֹן הַדָּבָר מֵעִם הָאֱלֹהִים וּמְמַהֵר הָאֱלֹהִים לַעֲשֹׂתוֹ.',
+  parts:[
+   {label:'א',points:7,text:'"בִּלְעָדָי אֱלֹהִים יַעֲנֶה אֶת שְׁלוֹם פַּרְעֹה" — הסבר/י את המשפט וכיצד הוא ממשיך קו המופיע כבר בפרק הקודם. היעזר/י בפרשן.',
+    rubric:{model:'יוסף מייחס את הפתרון לה׳ ולא לעצמו — רש״י: "אין החכמה משלי, אלא אלהים יענה". זהו המשך ישיר ל"הֲלוֹא לֵאלֹהִים פִּתְרֹנִים" (מ׳). דווקא מול המלך, ברגע גורלי שבו יכול היה להתפאר ולהיחלץ מן הכלא, יוסף שומר על ענווה ואמונה.',full:'הסבר ייחוס הפתרון לה׳ + הקשר לפרק מ׳ + עיגון בפרשן = ניקוד מלא',partial:'ציטוט בלי הסבר או בלי הקשר = ניקוד חלקי'}},
+   {label:'ב',points:6,text:'מהו פתרון יוסף לחלומות, ומה משמעות הישנות החלום פעמיים (פרות ושיבולים)?',
+    rubric:{model:'הפתרון: שבע שנות שובע גדול ואחריהן שבע שנות רעב כבד שישכיחו את השובע. משמעות ההכפלה: "כִּי נָכוֹן הַדָּבָר מֵעִם הָאֱלֹהִים וּמְמַהֵר הָאֱלֹהִים לַעֲשֹׂתוֹ" — הדבר נגזר בוודאות ויתרחש במהרה.',full:'הפתרון (7+7) + משמעות ההכפלה (ודאות ומהירות) = ניקוד מלא',partial:'הפתרון בלי משמעות ההכפלה = ניקוד חלקי'}},
+   {label:'ג',points:7,text:'פרט/י את סימני עליית יוסף למשנה למלך, וכיצד הם מבטאים את היקף שלטונו.',
+    rubric:{model:'פרעה נותן ליוסף את טבעתו, בגדי שש ורביד זהב, מרכיבו במרכבת המשנה, קורא לו "צָפְנַת פַּעְנֵחַ" ונותן לו את אסנת לאישה. "וּבִלְעָדֶיךָ לֹא יָרִים אִישׁ אֶת יָדוֹ" — שלטון כמעט מוחלט, שני רק לפרעה. מן הבור אל כס המשנה למלך.',full:'פירוט הסימנים + הסבר היקף השלטון = ניקוד מלא',partial:'פירוט חלקי בלי הסבר ההיקף = ניקוד חלקי'}}
+  ]},
+
+ {id:'e5',group:'ב',points:20,ref:'בראשית מ״ב, ו; יט–כא',
+  based:'קרא/י בראשית מ״ב',
+  excerpt:'<span class="vref">בראשית מ״ב, ו; כא</span><b>ו</b> ...וַיָּבֹאוּ אֲחֵי יוֹסֵף וַיִּשְׁתַּחֲווּ לוֹ אַפַּיִם אָרְצָה. <b>כא</b> וַיֹּאמְרוּ אִישׁ אֶל אָחִיו אֲבָל אֲשֵׁמִים אֲנַחְנוּ עַל אָחִינוּ אֲשֶׁר רָאִינוּ צָרַת נַפְשׁוֹ בְּהִתְחַנְנוֹ אֵלֵינוּ וְלֹא שָׁמָעְנוּ...',
+  parts:[
+   {label:'א',points:6,text:'כיצד מתגשם בפרק זה חלום הנעורים של יוסף? בסס/י על הכתוב.',
+    rubric:{model:'"וַיָּבֹאוּ אֲחֵי יוֹסֵף וַיִּשְׁתַּחֲווּ לוֹ אַפַּיִם אָרְצָה", ו"וַיִּזְכֹּר יוֹסֵף אֵת הַחֲלֹמוֹת". ההשתחוויה מגשימה את חלום האלומות (ל״ז) — האחים כורעים בפני יוסף מבלי לדעת מיהו.',full:'זיהוי ההתגשמות + הקישור לחלום האלומות = ניקוד מלא',partial:'ציון ההשתחוויה בלי הקישור = ניקוד חלקי'}},
+   {label:'ב',points:7,text:'מהו המבחן שעורך יוסף לאחיו ("בְּזֹאת תִּבָּחֵנוּ"), ומדוע אין זו נקמה בלבד?',
+    rubric:{model:'יוסף דורש שיביאו את אחיהם הקטן (בנימין) ובינתיים אוסר אח אחד. אין זו נקמה אלא בחינה: האם השתנו האחים — האם ישמרו על בנימין, בנה השני של רחל, או יפקירוהו כפי שהפקירו את יוסף. הדרישה מעמידה אותם באותה נקודת מבחן שבה נכשלו בעבר.',full:'תיאור המבחן + הסבר שאין זו נקמה (בחינת השינוי) = ניקוד מלא',partial:'תיאור המבחן בלי ההסבר = ניקוד חלקי'}},
+   {label:'ג',points:7,text:'"אֲבָל אֲשֵׁמִים אֲנַחְנוּ" — הסבר/י במה מודים האחים, וכיצד ניכרת כאן "מידה כנגד מידה". היעזר/י בפרשן.',
+    rubric:{model:'האחים מודים לראשונה באשמתם על מכירת יוסף — "רָאִינוּ צָרַת נַפְשׁוֹ... וְלֹא שָׁמָעְנוּ". רש״י/אונקלוס: "אֲבָל" = "בקושטא" (באמת). מידה כנגד מידה: כשם שהתעלמו מצרת נפשו של יוסף, כך באה עליהם עתה הצרה. זו ראשית התשובה.',full:'הסבר ההודאה + עקרון מידה כנגד מידה + פרשן = ניקוד מלא',partial:'ציטוט בלי הסבר מידה כנגד מידה = ניקוד חלקי'}}
+  ]},
+
+ {id:'e6',group:'ב',points:20,ref:'בראשית מ״ג, ט; מ״ד, יז–יח',
+  based:'קרא/י בראשית מ״ג–מ״ד',
+  excerpt:'<span class="vref">בראשית מ״ג, ט; מ״ד, יז–יח</span><b>מ״ג, ט</b> אָנֹכִי אֶעֶרְבֶנּוּ מִיָּדִי תְּבַקְשֶׁנּוּ... וְחָטָאתִי לְךָ כָּל הַיָּמִים. <b>מ״ד, יז</b> ...הָאִישׁ אֲשֶׁר נִמְצָא הַגָּבִיעַ בְּיָדוֹ הוּא יִהְיֶה לִּי עָבֶד וְאַתֶּם עֲלוּ לְשָׁלוֹם אֶל אֲבִיכֶם. <b>יח</b> וַיִּגַּשׁ אֵלָיו יְהוּדָה...',
+  parts:[
+   {label:'א',points:7,text:'הסבר/י את ערבות יהודה (מ״ג, ט), והשווה/י אותה להצעת ראובן בפרק מ״ב. מה ההבדל מלמד על יהודה?',
+    rubric:{model:'יהודה מתחייב כערב אישי מלא: "אָנֹכִי אֶעֶרְבֶנּוּ מִיָּדִי תְּבַקְשֶׁנּוּ... וְחָטָאתִי לְךָ כָּל הַיָּמִים". ראובן הציע את חיי בניו (מ״ב) — ונדחה; יהודה מציע את עצמו ואחריותו — והצעתו מתקבלת. ההבדל מלמד על מנהיגותו והשתנותו של יהודה, מן האח שיזם את המכירה אל הלוקח אחריות.',full:'הסבר הערבות + ההשוואה לראובן + מסקנה על יהודה = ניקוד מלא',partial:'הסבר הערבות בלי ההשוואה = ניקוד חלקי'}},
+   {label:'ב',points:7,text:'כיצד מהווה הגביע שהוטמן באמתחת בנימין את "שיא המבחן", ומדוע מכונה הדבר "תשובת המשקל"?',
+    rubric:{model:'הגביע מושתל דווקא אצל בנימין, כך שהוא לבדו "אשם" והאחים יכולים לשוב בשלום ולהפקירו — בדיוק כמצב מכירת יוסף. "תשובת המשקל" (רמב״ם): עמידה מחודשת באותו מצב שבו חטאו כדי לתקן. תגובת האחים תכריע אם השתנו.',full:'הסבר שיא המבחן (אפשרות ההפקרה) + מושג תשובת המשקל = ניקוד מלא',partial:'הסבר חלקי בלי המושג = ניקוד חלקי'}},
+   {label:'ג',points:6,text:'מה משמעות "וַיִּגַּשׁ אֵלָיו יְהוּדָה" בהקשר של המבחן ושל ערבותו?',
+    rubric:{model:'יהודה, שערב לבנימין, אינו מפקיר אותו אלא ניגש להילחם עליו ופותח בנאום. בכך עומדים האחים במבחן — אינם חוזרים על מעשה המכירה אלא מגינים על בן רחל. קימת יהודה מובילה ישירות אל התוודעות יוסף (מ״ה).',full:'הסבר משמעות הקימה (עמידה בערבות/במבחן) + הקשר להמשך = ניקוד מלא',partial:'ציון הקימה בלי הקשר = ניקוד חלקי'}}
+  ]},
+
+ {id:'e7',group:'ב',points:20,ref:'בראשית מ״ה, א; ד; כז–כח',
+  based:'קרא/י בראשית מ״ה',
+  excerpt:'<span class="vref">בראשית מ״ה, א; כז–כח</span><b>א</b> ...וַיִּקְרָא הוֹצִיאוּ כָל אִישׁ מֵעָלָי... <b>ד</b> ...אֲנִי יוֹסֵף אֲחִיכֶם אֲשֶׁר מְכַרְתֶּם אֹתִי מִצְרָיְמָה. <b>כז</b> ...וַיַּרְא אֶת הָעֲגָלוֹת... וַתְּחִי רוּחַ יַעֲקֹב אֲבִיהֶם. <b>כח</b> ...רַב עוֹד יוֹסֵף בְּנִי חָי אֵלְכָה וְאֶרְאֶנּוּ בְּטֶרֶם אָמוּת.',
+  parts:[
+   {label:'א',points:7,text:'מדוע ציווה יוסף "הוֹצִיאוּ כָל אִישׁ מֵעָלָי" לפני שהתגלה, וכיצד ריכך את המפגש עם אחיו הנבהלים?',
+    rubric:{model:'יוסף מוציא את המצרים כדי לחסוך מאחיו את הבושה — שלא יישמע ברבים שמכרו את אחיהם. את האחים הנבהלים הוא מקרב בלשון רכה: "גְּשׁוּ נָא אֵלַי", ומדגיש "אֲחִיכֶם" — עודנו אחיכם באהבה, למרות המכירה.',full:'הסבר הוצאת המצרים (חיסכון בושה) + דרך הריכוך = ניקוד מלא',partial:'אחד מהשניים בלבד = ניקוד חלקי'}},
+   {label:'ב',points:7,text:'תאר/י את שלבי הפיוס בין יוסף לאחיו, והסבר/י מדוע רק לאחר הפיוס "דִּבְּרוּ אֶחָיו אִתּוֹ".',
+    rubric:{model:'יוסף נופל על צווארי בנימין ובוכה, מנשק את כל אחיו ובוכה עליהם. הבכי הגלוי — שהיה עד כה נסתר — שובר את המחיצה. רק לאחר הפיוס הרגשי נפתחות שפתי האחים שהיו נבהלים: "וְאַחֲרֵי כֵן דִּבְּרוּ אֶחָיו אִתּוֹ".',full:'תיאור הפיוס (בכי ונשיקה) + הסבר "אחרי כן" = ניקוד מלא',partial:'תיאור הפיוס בלי ההסבר = ניקוד חלקי'}},
+   {label:'ג',points:6,text:'הסבר/י את המעבר בדמות יעקב מ"וַיָּפָג לִבּוֹ" ל"וַתְּחִי רוּחַ יַעֲקֹב", ואת משמעות "רַב".',
+    rubric:{model:'תחילה יעקב אינו מאמין ("וַיָּפָג לִבּוֹ"), אך למראה העגלות ששלח יוסף שבה אליו רוח החיים ("וַתְּחִי רוּחַ יַעֲקֹב"). "רַב" = די לי — לא גדולת יוסף מעניינת אותו אלא עצם היותו חי: "אֵלְכָה וְאֶרְאֶנּוּ".',full:'הסבר המעבר (ספק←אמונה, בזכות העגלות) + משמעות "רב" = ניקוד מלא',partial:'אחד מהשניים בלבד = ניקוד חלקי'}}
+  ]},
+
+ {id:'e8',group:'ג',points:20,ref:'בראשית מ״ו, ג–ד; כט–ל',
+  based:'קרא/י בראשית מ״ו',
+  excerpt:'<span class="vref">בראשית מ״ו, ג–ד</span><b>ג</b> ...אַל תִּירָא מֵרְדָה מִצְרַיְמָה כִּי לְגוֹי גָּדוֹל אֲשִׂימְךָ שָׁם. <b>ד</b> אָנֹכִי אֵרֵד עִמְּךָ מִצְרַיְמָה וְאָנֹכִי אַעַלְךָ גַם עָלֹה וְיוֹסֵף יָשִׁית יָדוֹ עַל עֵינֶיךָ.',
+  parts:[
+   {label:'א',points:7,text:'מהן ההבטחות שנתן ה׳ ליעקב בחזון באר שבע, ומדוע הן נחוצות דווקא ברגע זה? בסס/י על הכתוב.',
+    rubric:{model:'ה׳ מבטיח: (1) "לְגוֹי גָּדוֹל אֲשִׂימְךָ שָׁם"; (2) "אָנֹכִי אֵרֵד עִמְּךָ" — ליווי השכינה; (3) "אַעַלְךָ גַם עָלֹה" — עלייה עתידית. ההבטחות נחוצות משום שיעקב חושש לרדת אל הגלות ולעזוב את הארץ; ההרגעה מבטיחה שאינו יורד לבדו ושהירידה חלק מתכנית אלוהית.',full:'שלוש ההבטחות + הסבר הצורך (חשש הירידה) = ניקוד מלא',partial:'ההבטחות בלי הסבר הצורך = ניקוד חלקי'}},
+   {label:'ב',points:6,text:'כיצד קשורה הבטחת "אָנֹכִי אַעַלְךָ גַם עָלֹה" להמשך התורה?',
+    rubric:{model:'ההבטחה מלמדת שהירידה זמנית ושבני ישראל ישובו אל הארץ — הגשמת ברית בין הבתרים. היא מהדהדת בהבטחת יוסף "פָּקֹד יִפְקֹד" (נ׳) ובגאולת מצרים בספר שמות. כך נקשרת ירידת יעקב אל השעבוד והגאולה.',full:'הסבר הקשר לעלייה/גאולה עתידית = ניקוד מלא',partial:'אמירה כללית בלי קישור להמשך = ניקוד חלקי'}},
+   {label:'ג',points:7,text:'תאר/י את המפגש בין יעקב ליוסף (פס׳ כט–ל), והסבר/י את דברי יעקב "אָמוּתָה הַפָּעַם".',
+    rubric:{model:'יוסף עולה לקראת אביו, נופל על צווארו ובוכה "עוֹד". יעקב אומר "אָמוּתָה הַפָּעַם אַחֲרֵי רְאוֹתִי אֶת פָּנֶיךָ כִּי עוֹדְךָ חָי" — כעת, משראה שיוסף חי, יכול הוא למות בשלווה; ראיית הבן משלימה את חייו ומרפאת את אבלו הממושך.',full:'תיאור המפגש + הסבר "אמותה הפעם" (השלמה לאחר האבל) = ניקוד מלא',partial:'תיאור בלי הסבר האמירה = ניקוד חלקי'}}
+  ]},
+
+ {id:'e9',group:'ג',points:20,ref:'בראשית מ״ח, יד; כ',
+  based:'קרא/י בראשית מ״ח, יג–כ',
+  excerpt:'<span class="vref">בראשית מ״ח, יד; כ</span><b>יד</b> וַיִּשְׁלַח יִשְׂרָאֵל אֶת יְמִינוֹ וַיָּשֶׁת עַל רֹאשׁ אֶפְרַיִם וְהוּא הַצָּעִיר וְאֶת שְׂמֹאלוֹ עַל רֹאשׁ מְנַשֶּׁה שִׂכֵּל אֶת יָדָיו כִּי מְנַשֶּׁה הַבְּכוֹר. <b>כ</b> ...יְשִׂמְךָ אֱלֹהִים כְּאֶפְרַיִם וְכִמְנַשֶּׁה וַיָּשֶׂם אֶת אֶפְרַיִם לִפְנֵי מְנַשֶּׁה.',
+  parts:[
+   {label:'א',points:6,text:'תאר/י את מעשה הצלבת הידיים של יעקב, ומה הוא מבקש לבטא בכך. בסס/י על הכתוב.',
+    rubric:{model:'יוסף הציב את מנשה הבכור מול ימין יעקב ואת אפרים מול שמאלו, אך יעקב "שִׂכֵּל אֶת יָדָיו" — הניח את ימינו על אפרים הצעיר ואת שמאלו על מנשה. בכך העדיף במודע את אפרים ("וַיָּשֶׂם אֶת אֶפְרַיִם לִפְנֵי מְנַשֶּׁה"), אף שיוסף ניסה למחות.',full:'תיאור הצלבת הידיים + משמעותה (העדפת הצעיר) = ניקוד מלא',partial:'תיאור בלי משמעות = ניקוד חלקי'}},
+   {label:'ב',points:7,text:'כיצד משתלבת העדפת הצעיר (אפרים) במוטיב חוזר בספר בראשית? הבא/י דוגמה אחת לפחות.',
+    rubric:{model:'העדפת הצעיר על הבכור היא מוטיב חוזר בבראשית: יצחק על ישמעאל, יעקב על עשו, יוסף (ורחל) על האחים. ברכת אפרים לפני מנשה ממשיכה קו זה — הבחירה אינה נקבעת בהכרח לפי סדר הלידה אלא לפי ייעוד.',full:'הסבר המוטיב + דוגמה אחת לפחות = ניקוד מלא',partial:'ציון המוטיב בלי דוגמה = ניקוד חלקי'}},
+   {label:'ג',points:7,text:'"יְשִׂמְךָ אֱלֹהִים כְּאֶפְרַיִם וְכִמְנַשֶּׁה" — הסבר/י את משמעות הברכה ומדוע נותרה לדורות.',
+    rubric:{model:'יעקב קובע את אפרים ומנשה כאב-טיפוס לברכת בנים: "בְּךָ יְבָרֵךְ יִשְׂרָאֵל". הם נעשים לשבטים בפני עצמם, ובני יוסף נחשבים כבניו של יעקב. הברכה הפכה לנוסח מסורתי שבו מברכים בנים עד היום — ביטוי לרצף הדורות ולזהות המשפחתית.',full:'הסבר משמעות הברכה + הסבר הישארותה לדורות = ניקוד מלא',partial:'אחד מהשניים בלבד = ניקוד חלקי'}}
+  ]},
+
+ {id:'e10',group:'ג',points:20,ref:'בראשית מ״ט, ח–י',
+  based:'קרא/י בראשית מ״ט, ח–י',
+  excerpt:'<span class="vref">בראשית מ״ט, ח; י</span><b>ח</b> יְהוּדָה אַתָּה יוֹדוּךָ אַחֶיךָ יָדְךָ בְּעֹרֶף אֹיְבֶיךָ יִשְׁתַּחֲווּ לְךָ בְּנֵי אָבִיךָ. <b>י</b> לֹא יָסוּר שֵׁבֶט מִיהוּדָה וּמְחֹקֵק מִבֵּין רַגְלָיו עַד כִּי יָבֹא שִׁילֹה וְלוֹ יִקְּהַת עַמִּים.',
+  parts:[
+   {label:'א',points:7,text:'"לֹא יָסוּר שֵׁבֶט מִיהוּדָה" — הסבר/י את ברכת יהודה ואת רעיון המלכות שבה. בסס/י על הכתוב.',
+    rubric:{model:'הברכה מייעדת ליהודה מנהיגות ומלכות: "לֹא יָסוּר שֵׁבֶט מִיהוּדָה וּמְחֹקֵק מִבֵּין רַגְלָיו" — השלטון לא ייפסק משבטו. "יִשְׁתַּחֲווּ לְךָ בְּנֵי אָבִיךָ" מבטא בכורה מנהיגותית. זהו יסוד למלכות בית דוד היוצא מיהודה.',full:'הסבר הברכה + רעיון המלכות/מנהיגות בעיגון = ניקוד מלא',partial:'ציטוט בלי הסבר המלכות = ניקוד חלקי'}},
+   {label:'ב',points:7,text:'כיצד מתקשרת ברכת המנהיגות ליהודה אל מה שהתגלה באופיו לאורך סיפורי יוסף?',
+    rubric:{model:'ברכת המלכות מגיעה ליהודה לאחר שהוכיח מנהיגות ואחריות: הצעתו למכור ולא להרוג (ל״ז), ובעיקר ערבותו על בנימין וקימתו להגן עליו (מ״ג–מ״ד). מן האח המעורב במכירה אל המנהיג הלוקח אחריות — ולכן הוא ראוי לברכת המלכות.',full:'קישור הברכה להתפתחות/מנהיגות יהודה בסיפור = ניקוד מלא',partial:'אמירה כללית בלי קישור לסיפור = ניקוד חלקי'}},
+   {label:'ג',points:6,text:'ברכות יעקב לשבטים אינן רק מילות פרידה. הסבר/י את אופיין כ"נבואה" וייעוד.',
+    rubric:{model:'יעקב מברך "אִישׁ אֲשֶׁר כְּבִרְכָתוֹ" — כל ברכה מייעדת לשבט את גורלו, אופיו ונחלתו לדורות. הברכות הן חזון על עתיד השבטים (מנהיגות יהודה, פיזור שמעון ולוי, וכו׳), ולא רק דברי פרידה אישיים.',full:'הסבר אופי הברכות כנבואה/ייעוד לדורות = ניקוד מלא',partial:'אמירה כללית בלי הסבר = ניקוד חלקי'}}
+  ]},
+
+ {id:'e11',group:'ג',points:20,ref:'בראשית נ׳, יט–כא; כד',
+  based:'קרא/י בראשית נ׳, טו–כו',
+  excerpt:'<span class="vref">בראשית נ׳, יט–כא; כד</span><b>יט</b> ...אַל תִּירָאוּ כִּי הֲתַחַת אֱלֹהִים אָנִי. <b>כ</b> וְאַתֶּם חֲשַׁבְתֶּם עָלַי רָעָה אֱלֹהִים חֲשָׁבָהּ לְטֹבָה לְמַעַן עֲשֹׂה כַּיּוֹם הַזֶּה לְהַחֲיֹת עַם רָב. <b>כד</b> ...אָנֹכִי מֵת וֵאלֹהִים פָּקֹד יִפְקֹד אֶתְכֶם...',
+  parts:[
+   {label:'א',points:7,text:'"אַתֶּם חֲשַׁבְתֶּם עָלַי רָעָה אֱלֹהִים חֲשָׁבָהּ לְטֹבָה" — הסבר/י את המשפט וכיצד הוא מסכם את כל סיפורי יוסף. בסס/י על הכתוב.',
+    rubric:{model:'יוסף מבחין בין כוונת האחים (רעה) לבין תוצאת ההשגחה (טובה): "לְמַעַן עֲשֹׂה כַּיּוֹם הַזֶּה לְהַחֲיֹת עַם רָב". המשפט מסכם את כל הסיפור — הבור, העבדות, הכלא והעלייה — כתכנית אלוהית שהובילה להצלת המשפחה, והד לדבריו במ״ה ("כִּי לְמִחְיָה שְׁלָחַנִי אֱלֹהִים"). מכאן נובעת סליחתו.',full:'הבחנה כוונה/תוצאה + הסבר הסיכום + הקשר למ״ה = ניקוד מלא',partial:'ציטוט בלי הסבר ההבחנה = ניקוד חלקי'}},
+   {label:'ב',points:7,text:'כיצד מגיב יוסף לפחד האחים לאחר מות יעקב, ומה מלמדת תגובתו על דמותו?',
+    rubric:{model:'האחים חוששים מנקמה ונופלים לפניו ("הִנֶּנּוּ לְךָ לַעֲבָדִים"). יוסף מרגיע: "אַל תִּירָאוּ כִּי הֲתַחַת אֱלֹהִים אָנִי", מבטיח "אָנֹכִי אֲכַלְכֵּל אֶתְכֶם", וינחם אותם. הדבר מלמד על ענווה, סליחה ואחריות — בחירה באיחוד ובכלכלה ולא בנקמה, עד סוף הספר.',full:'תיאור התגובה (הרגעה+כלכלה+ניחום) + מסקנה על אופיו = ניקוד מלא',partial:'ציון התגובה בלי מסקנה = ניקוד חלקי'}},
+   {label:'ג',points:6,text:'מה מבטא "פָּקֹד יִפְקֹד אֱלֹהִים אֶתְכֶם" בפי יוסף לפני מותו?',
+    rubric:{model:'יוסף מת במצרים אך מבטיח ומשביע שה׳ "פָּקֹד יִפְקֹד" — יפקוד את בני ישראל ויעלם אל הארץ שנשבע לאבות. ביטוי לאמונה ולתקווה בגאולה עתידית, החותם את בראשית ופותח אל השעבוד והגאולה (ארונו ממתין ליציאת מצרים).',full:'הסבר "פקד יפקד" (תקווה לגאולה) + הקשר לסיום/המשך = ניקוד מלא',partial:'ציון הביטוי בלי משמעותו = ניקוד חלקי'}}
+  ]},
+];
+
+const EXAM_GROUPS=[
+ {id:'א',title:'חלק א׳ — מיוסף הנער אל משנה למלך',note:'ענה/י על 2 מתוך 4 השאלות הבאות (20 נק׳ לכל שאלה)',answer:2,of:4,members:['e1','e2','e3','e4']},
+ {id:'ב',title:'חלק ב׳ — המבחן, הערבות וההתוודעות',note:'ענה/י על 1 מתוך 3 השאלות הבאות (20 נק׳)',answer:1,of:3,members:['e5','e6','e7']},
+ {id:'ג',title:'חלק ג׳ — ירידת המשפחה, ברכה והשגחה',note:'ענה/י על 2 מתוך 4 השאלות הבאות (20 נק׳ לכל שאלה)',answer:2,of:4,members:['e8','e9','e10','e11']},
+];
+
+
+const QS={answers:{},submitted:false};
+function qById(id){return EXAM_QUESTIONS.find(q=>q.id===id);}
+function groupOf(qid){return EXAM_GROUPS.find(g=>g.members.includes(qid));}
+function isAnswered(qid){const a=QS.answers[qid];return !!(a&&a.parts&&Object.keys(a.parts).length>0);}
+function groupAnsweredCount(g){return g.members.filter(id=>isAnswered(id)).length;}
+function qPoints(q){return q.parts.reduce((s,p)=>s+(p.points||0),0);}
+function requiredGroupsCount(){return EXAM_GROUPS.reduce((s,g)=>s+g.answer,0);}
+function countedAnswered(){return EXAM_GROUPS.reduce((s,g)=>s+Math.min(groupAnsweredCount(g),g.answer),0);}
+
+function switchTab(t){['theory','practice','answers'].forEach(x=>{document.getElementById('pane-'+x)?.classList.toggle('active',x===t);document.getElementById('btn-'+x)?.classList.toggle('active',x===t);document.getElementById('btn-'+x+'-student')?.classList.toggle('active',x===t);});if(t==='practice'&&USER_ROLE==='teacher'){document.getElementById('student-gate')?.classList.add('hidden');const tw=document.getElementById('practice-content-wrap');if(tw)tw.style.display='';}if(t==='practice'&&USER_ROLE==='student'){const dd=document.getElementById('gate-date-display');if(dd)dd.textContent=new Date().toLocaleDateString('he-IL',{weekday:'long',year:'numeric',month:'long',day:'numeric'});const gate=document.getElementById('student-gate'),conf=document.getElementById('gate-confirmed'),wrap=document.getElementById('practice-content-wrap');const ne=document.getElementById('gate-name'),ce=document.getElementById('gate-class');if(!_gateConfirmed){if(ne&&STUDENT_NAME&&STUDENT_NAME!=='תלמיד/ה')ne.value=STUDENT_NAME;if(ce&&STUDENT_CLASS)ce.value=STUDENT_CLASS;if(gate)gate.classList.remove('hidden');if(conf)conf.classList.add('hidden');if(wrap)wrap.style.display='none';}else{if(gate)gate.classList.add('hidden');if(conf)conf.classList.remove('hidden');if(wrap)wrap.style.display='';}}}
+
+function confirmGate(){const ne=document.getElementById('gate-name'),ce=document.getElementById('gate-class');const nv=(ne?.value||'').trim(),cv=ce?.value||'';let ok=true;if(nv.split(/\s+/).filter(Boolean).length<2){ne?.classList.add('err');document.getElementById('gate-name-err')?.classList.add('show');ok=false;}else{ne?.classList.remove('err');document.getElementById('gate-name-err')?.classList.remove('show');}if(!cv){ce?.classList.add('err');document.getElementById('gate-class-err')?.classList.add('show');ok=false;}else{ce?.classList.remove('err');document.getElementById('gate-class-err')?.classList.remove('show');}if(!ok)return;STUDENT_NAME=nv;STUDENT_CLASS=cv;LS.set('tanakh2_uname',nv);LS.set('tanakh2_class',cv);_gateConfirmed=true;const av=document.getElementById('gc-avatar'),nm=document.getElementById('gc-name-display'),mt=document.getElementById('gc-meta-display');if(av)av.textContent=nv[0].toUpperCase();if(nm)nm.textContent=nv;if(mt)mt.textContent='כיתה '+cv+' · '+new Date().toLocaleDateString('he-IL');document.getElementById('student-gate')?.classList.add('hidden');document.getElementById('gate-confirmed')?.classList.remove('hidden');const wrap=document.getElementById('practice-content-wrap');if(wrap){wrap.style.display='';wrap.scrollIntoView({behavior:'smooth',block:'start'});}}
+function reopenGate(){_gateConfirmed=false;document.getElementById('gate-confirmed')?.classList.add('hidden');const g=document.getElementById('student-gate');if(g){g.classList.remove('hidden');g.scrollIntoView({behavior:'smooth',block:'start'});}}
+
+function renderQuestions(){const c=document.getElementById('questions-container');if(!c)return;let html='';EXAM_GROUPS.forEach(g=>{html+=`<div class="section-divider"><span class="sd-tag">${g.title}</span><div class="sd-note">${g.note}</div></div>`;html+=`<div class="pool-banner"><span class="pb-icon">🎯</span><div class="pb-text"><div class="pb-title">${g.title}</div><div class="pb-desc">ענה/י על ${g.answer} מתוך ${g.of} השאלות (מותר לענות על יותר — ייבדקו הטובות)</div></div><span class="pool-counter" id="poolc-${g.id}">0 / ${g.answer}</span></div>`;g.members.forEach(qid=>{const q=qById(qid);html+=buildCard(q);});});c.innerHTML=html;renderAnswers();updateProgress();}
+
+function buildCard(q){const parts=q.parts.map((p,pi)=>`<div class="bagrut-part"><div class="part-head"><span class="part-label">${p.label}</span><span class="part-text">${p.text}</span><span class="part-points">${p.points} נק׳</span></div><textarea class="open-textarea" id="${q.id}_p${pi}" rows="5" placeholder="תשובה לסעיף ${p.label}..." oninput="pickPart('${q.id}',${pi})"></textarea></div>`).join('');return `<div class="q-card bagrut-q" id="${q.id}_card"><div class="q-num">שאלה ${q.id.replace('e','')} <span class="q-type-badge">${q.ref}</span><span class="q-total-pts">${qPoints(q)} נק׳</span></div><div class="q-excerpt">${q.excerpt}</div><div class="bagrut-based">📖 ${q.based} · ענה/י על כל הסעיפים · בסס/י את דבריך על הכתוב</div><div class="open-wrap">${parts}</div><div class="q-feedback" id="${q.id}_fb"></div></div>`;}
+
+function pickPart(qid,pi){if(QS.submitted)return;const el=document.getElementById(qid+'_p'+pi);if(!el)return;if(!QS.answers[qid]||!QS.answers[qid].parts)QS.answers[qid]={parts:{}};const v=(el.value||'').trim();if(v.length>0)QS.answers[qid].parts[pi]=v;else delete QS.answers[qid].parts[pi];if(!QS.answers[qid].parts||Object.keys(QS.answers[qid].parts).length===0)delete QS.answers[qid];updateProgress();}
+
+function updateProgress(){const done=countedAnswered(),req=requiredGroupsCount(),pct=req?Math.round(done/req*100):0;document.getElementById('prog-fill')?.style.setProperty('width',Math.min(pct,100)+'%');const pt=document.getElementById('prog-txt');if(pt)pt.textContent=`${done} מתוך ${req} שאלות נענו`;const pp=document.getElementById('prog-pct');if(pp)pp.textContent=Math.min(pct,100)+'%';EXAM_GROUPS.forEach(g=>{const el=document.getElementById('poolc-'+g.id);if(el){const c=Math.min(groupAnsweredCount(g),g.answer);el.textContent=`${c} / ${g.answer}`;el.classList.toggle('done',c>=g.answer);}});}
+
+function submitQuiz(){for(const g of EXAM_GROUPS){if(groupAnsweredCount(g)<g.answer){toast(`ב${g.title} יש לענות על לפחות ${g.answer} שאלות (כולל כל הסעיפים).`);return;}}QS.submitted=true;let totalPossible=0;EXAM_QUESTIONS.forEach(q=>{const ta=q.parts.map((_,pi)=>document.getElementById(q.id+'_p'+pi));ta.forEach(t=>{if(t)t.disabled=true;});const fb=document.getElementById(q.id+'_fb');if(isAnswered(q.id)&&fb){fb.className='q-feedback show';fb.innerHTML='<div class="open-saved">✍️ תשובתך נשמרה ונמסרה לבדיקת המורה. המחוון ייחשף לאחר שהמורה ישחרר אותו.</div>';}});EXAM_GROUPS.forEach(g=>{const answered=g.members.filter(id=>isAnswered(id));const top=answered.slice(0,g.answer);totalPossible+=top.reduce((s,id)=>s+qPoints(qById(id)),0);});const rc=document.getElementById('results-container');if(rc){rc.style.display='';rc.innerHTML=`<div class="results-card"><span class="results-emoji">📤</span><span class="results-label">המבחן הוגש בהצלחה</span><div style="font-size:.85rem;color:var(--muted);margin:.8rem 0 1.2rem">נמסרו לבדיקת המורה ${Object.keys(QS.answers).length} שאלות, בהיקף פוטנציאלי של ${totalPossible} נקודות (לפי חוקי הבחירה בכל חלק). הציון הסופי ייקבע על ידי המורה בהתאם למחוון.</div><button class="btn-send" onclick="sendResults()">📤 שליחת אישור הגשה למורה</button></div>`;}document.getElementById('submit-row')?.remove();rc?.scrollIntoView({behavior:'smooth',block:'start'});}
+
+async function sendResults(){await saveScore(STUDENT_NAME,STUDENT_CLASS);toast('✅ אישור ההגשה נשלח למורה!');}
+
+function resetQuiz(){QS.answers={};QS.submitted=false;renderQuestions();const rc=document.getElementById('results-container');if(rc){rc.style.display='none';rc.innerHTML='';}if(!document.getElementById('submit-row')){const sw=document.getElementById('practice-content-wrap');if(sw){const d=document.createElement('div');d.id='submit-row';d.style.cssText='display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;margin-top:1.5rem';d.innerHTML='<button class="btn-submit" onclick="submitQuiz()">📤 הגשת המבחן</button><button class="btn-reset" onclick="resetQuiz()">🔄 אתחול</button>';sw.appendChild(d);}}}
+
+function renderAnswers(){const al=document.getElementById('answers-list');if(!al)return;let html='';EXAM_GROUPS.forEach(g=>{html+=`<div class="section-divider"><span class="sd-tag">${g.title}</span><div class="sd-note">${g.note}</div></div>`;g.members.forEach(qid=>{const q=qById(qid);const parts=q.parts.map(p=>{const r=p.rubric||{};return `<div class="rubric-box"><div class="rubric-part-hd">סעיף ${p.label} · ${p.points} נק׳</div><div class="rubric-model"><strong>תשובה לדוגמה:</strong> ${r.model||''}</div>${r.full?`<div class="rubric-band full"><span class="rb-tag">ניקוד מלא</span><span>${r.full}</span></div>`:''}${r.partial?`<div class="rubric-band partial"><span class="rb-tag">ניקוד חלקי</span><span>${r.partial}</span></div>`:''}</div>`;}).join('');const parttexts=q.parts.map(p=>`<div style="font-size:.82rem;margin:.2rem 0;color:var(--text-mid)"><strong>${p.label}.</strong> ${p.text}</div>`).join('');html+=`<div class="answer-row"><div class="ans-num">שאלה ${q.id.replace('e','')} <span style="color:var(--lc)">${q.ref}</span></div><div class="ans-excerpt">${q.excerpt}</div>${parttexts}<div class="rubric-pts">ניקוד כולל לשאלה: ${qPoints(q)} נק׳</div>${parts}</div>`;});});al.innerHTML=html;}
+
+function printLesson(){
+  var pw=window.open('','_blank','width=960,height=760');
+  if(!pw){alert('popup blocked');return;}
+  var isTeacher=(USER_ROLE==='teacher');
+  var studentLine=(!isTeacher&&STUDENT_NAME&&STUDENT_NAME!=='תלמיד/ה')?'<div style="font-size:11pt;font-weight:700;margin-top:.5rem">תלמיד/ה: '+STUDENT_NAME+(STUDENT_CLASS?' | כיתה: '+STUDENT_CLASS:'')+' | '+new Date().toLocaleDateString('he-IL')+'</div>':'<div style="font-size:10pt;color:#6b7594;margin-top:.4rem">'+new Date().toLocaleDateString('he-IL')+'</div>';
+  var qHtml='';
+  EXAM_GROUPS.forEach(function(g){
+    qHtml+='<div style="background:#f0fdfa;border:1px solid #ccc;border-radius:8px;padding:.6rem .9rem;margin:1rem 0 .6rem;font-weight:800;color:#0f766e;font-size:11pt">'+g.title+' — '+g.note+'</div>';
+    g.members.forEach(function(qid){
+      var q=qById(qid);
+      var h='<div style="border:1px solid #e4e7ef;border-radius:8px;padding:.7rem .9rem;margin-bottom:.6rem;break-inside:avoid">';
+      h+='<div style="font-size:8pt;color:#ca8a04;font-weight:700">שאלה '+qid.replace('e','')+' · '+q.ref+' · '+qPoints(q)+' נק׳</div>';
+      h+='<div style="background:#f8f9fb;border-right:3px solid #0891b2;border-radius:6px;padding:.4rem .7rem;font-size:8.5pt;font-style:italic;margin:.3rem 0">'+q.excerpt+'</div>';
+      q.parts.forEach(function(p){
+        h+='<div style="font-size:9pt;font-weight:700;margin-top:.5rem">'+p.label+'. '+p.text+' <span style="color:#ca8a04">('+p.points+' נק׳)</span></div>';
+        if(isTeacher){var r=p.rubric||{};h+='<div style="font-size:8.5pt;background:#f8f9fb;border:1px solid #e4e7ef;border-radius:6px;padding:.4rem .7rem;margin-top:.25rem"><strong style="color:#15803d">תשובה לדוגמה:</strong> '+(r.model||'')+(r.full?'<br><strong>מלא:</strong> '+r.full:'')+(r.partial?'<br><strong>חלקי:</strong> '+r.partial:'')+'</div>';}
+        else{h+='<div style="border:1px dashed #cbd5e1;border-radius:6px;height:70px;margin-top:.25rem"></div>';}
+      });
+      h+='</div>';
+      qHtml+=h;
+    });
+  });
+  var css='*{box-sizing:border-box;margin:0;padding:0}body{font-family:Heebo,sans-serif;direction:rtl;background:#fff;color:#0d1424;font-size:10pt;line-height:1.6}@page{margin:1.5cm;size:A4}.doc{max-width:210mm;margin:0 auto;padding:1cm}.doc-header{text-align:center;padding-bottom:1.2rem;border-bottom:3px solid #0f766e;margin-bottom:1.5rem}.doc-header h1{font-size:18pt;color:#0f766e}.doc-header p{font-size:9pt;color:#555}';
+  var titleTag=isTeacher?' — גרסת מורה (כולל מחוון)':'';if(!isTeacher){css+='.teacher-note-box{display:none}';}
+  var bodyHtml='<div class="doc"><div class="doc-header"><h1>מבחן מסכם — סיפורי יוסף'+titleTag+'</h1><p>תנ״ך לתיכון · יחידה ב׳ · 100 נקודות</p>'+studentLine+'</div>'+qHtml+'</div>';
+  var fullHtml='<!DOCTYPE html><html lang="he" dir="rtl"><head><meta charset="UTF-8"><title>מבחן מסכם — סיפורי יוסף</title><link href="https://fonts.googleapis.com/css2?family=Secular+One&family=Heebo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>'+css+'</style></head><body>'+bodyHtml+'<'+'script>document.fonts.ready.then(function(){setTimeout(function(){window.print();},300);}).catch(function(){setTimeout(function(){window.print();},1200);});<'+'/script></body></html>';
+  pw.document.write(fullHtml);pw.document.close();
+}
+
+let _tt;
+function toast(m){const e=document.getElementById('toast');e.textContent=m;e.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>e.classList.remove('show'),3200);}
+function goBack(){if(window.opener){try{window.opener.postMessage({type:'lessonDone',lid:LESSON_ID},'*')}catch{}window.close();return;}window.location.href=BACK_URL;}
+function init(){initFirebase();if(USER_ROLE==='teacher'){document.body.classList.add('is-teacher');document.getElementById('role-chip')?.style.setProperty('display','');document.getElementById('btn-answers')?.style.setProperty('display','');_gateConfirmed=true;const w=document.getElementById('practice-content-wrap');if(w)w.style.display='';document.getElementById('student-gate')?.classList.add('hidden');}else{const w=document.getElementById('practice-content-wrap');if(w)w.style.display='none';if(STUDENT_NAME&&STUDENT_NAME!=='תלמיד/ה'&&STUDENT_CLASS){_gateConfirmed=true;if(w)w.style.display='';document.getElementById('student-gate')?.classList.add('hidden');const av=document.getElementById('gc-avatar'),nm=document.getElementById('gc-name-display'),mt=document.getElementById('gc-meta-display');if(av)av.textContent=STUDENT_NAME[0].toUpperCase();if(nm)nm.textContent=STUDENT_NAME;if(mt)mt.textContent='כיתה '+STUDENT_CLASS+' · '+new Date().toLocaleDateString('he-IL');document.getElementById('gate-confirmed')?.classList.remove('hidden');}}applyAnswersVisibility();renderQuestions();}
+init();
+</script>
+</body>
+</html>
