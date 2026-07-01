@@ -245,28 +245,50 @@ button,input,select,textarea{font-family:inherit}
 .goto-practice-btn{display:block;width:100%;padding:1rem 1.5rem;border:none;border-radius:var(--r-pill,999px);background:#0f766e;color:#fff;font-size:.92rem;font-weight:800;cursor:pointer;transition:all .18s;margin-top:.8rem;text-align:center;box-shadow:0 4px 18px rgba(8,145,178,.25)}
 .goto-practice-btn:hover{transform:translateY(-2px);opacity:.92}
 
-/* ── תוספות תנ״ך: passage · מאגר בחירה · מחוון ── */
+/* ── תוספות תנ״ך v2: חלקים · סעיפי בגרות · תיוג רבדים ── */
 .q-excerpt b{color:var(--lc);font-weight:800;font-size:.72rem;vertical-align:.12em;margin-left:.15rem;font-style:normal}
 .q-excerpt .vref{display:block;font-size:.66rem;font-weight:800;color:var(--lc);letter-spacing:.04em;margin-bottom:.4rem;font-style:normal}
-.pool-banner{background:linear-gradient(135deg,var(--gold-lt) 0%,var(--surface2) 100%);border:1.5px solid var(--gold);border-radius:var(--r-lg);padding:1rem 1.25rem;margin:1.6rem 0 1.1rem;display:flex;align-items:center;gap:.85rem;flex-wrap:wrap}
-.pool-banner .pb-icon{font-size:1.6rem;line-height:1}
+.section-divider{margin:2rem 0 1.2rem;padding:1.05rem 1.3rem;border-radius:var(--r-lg);background:linear-gradient(135deg,var(--lc-lt) 0%,var(--surface2) 100%);border:1.5px solid var(--lc)}
+.section-divider.sec-b{background:linear-gradient(135deg,var(--gold-lt) 0%,var(--surface2) 100%);border-color:var(--gold)}
+.sd-tag{display:inline-block;font-size:.64rem;font-weight:800;letter-spacing:.05em;padding:.2rem .6rem;border-radius:var(--r-pill);background:var(--lc);color:#fff;margin-bottom:.5rem;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.section-divider.sec-b .sd-tag{background:var(--gold)}
+.sd-title{font-family:'Secular One',sans-serif;font-size:1.05rem;color:var(--text);margin-bottom:.25rem}
+.sd-note{font-size:.78rem;color:var(--text-mid);line-height:1.55}
+.pool-banner{background:var(--surface2);border:1.5px dashed var(--gold);border-radius:var(--r-lg);padding:.85rem 1.15rem;margin:1.1rem 0;display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
+.pool-banner .pb-icon{font-size:1.4rem;line-height:1}
 .pool-banner .pb-text{flex:1;min-width:160px}
-.pool-banner .pb-title{font-family:'Secular One',sans-serif;font-size:.92rem;color:var(--gold);margin-bottom:.18rem}
-.pool-banner .pb-desc{font-size:.76rem;color:var(--text-mid)}
+.pool-banner .pb-title{font-family:'Secular One',sans-serif;font-size:.88rem;color:var(--gold);margin-bottom:.15rem}
+.pool-banner .pb-desc{font-size:.75rem;color:var(--text-mid);line-height:1.5}
 .pool-counter{font-size:.72rem;font-weight:800;padding:.32rem .85rem;border-radius:var(--r-pill);background:var(--surface);border:1.5px solid var(--gold);color:var(--gold);white-space:nowrap}
 .pool-counter.done{background:var(--green-lt);border-color:var(--green);color:var(--green)}
-.q-card.pool-member{border-right:3px solid var(--gold)}
-.q-pts{font-size:.6rem;font-weight:800;padding:.12rem .5rem;border-radius:var(--r-pill);background:var(--gold-lt);color:var(--gold);border:1px solid var(--gold)}
+.q-card.bagrut-q{border-right:3px solid var(--gold)}
+.q-total-pts{font-size:.6rem;font-weight:800;padding:.12rem .5rem;border-radius:var(--r-pill);background:var(--gold-lt);color:var(--gold);border:1px solid var(--gold)}
+.bagrut-stem{font-size:.9rem;font-weight:700;color:var(--text);line-height:1.6;margin:.2rem 0 .3rem}
+.bagrut-based{font-size:.72rem;color:var(--muted);font-style:italic;margin-bottom:.7rem}
+.bagrut-part{border-top:1px solid var(--border);padding-top:.8rem;margin-top:.85rem}
+.bagrut-part:first-of-type{border-top:none;padding-top:.2rem;margin-top:.3rem}
+.part-head{display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem;flex-wrap:wrap}
+.part-label{display:inline-flex;width:22px;height:22px;border-radius:50%;background:var(--lc);color:#fff;align-items:center;justify-content:center;font-size:.72rem;font-weight:800;flex-shrink:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.part-points{font-size:.62rem;font-weight:800;padding:.1rem .5rem;border-radius:var(--r-pill);background:var(--gold-lt);color:var(--gold);border:1px solid var(--gold)}
+.part-text{font-size:.86rem;color:var(--text);line-height:1.55;flex:1;min-width:150px}
+.reflective-badge{font-size:.6rem;font-weight:800;padding:.1rem .5rem;border-radius:var(--r-pill);background:var(--green-lt);color:var(--green);border:1px solid #bbf7d0}
 .open-saved{margin-top:.6rem;background:var(--amber-lt);border:1.5px solid #fde68a;border-radius:var(--r);padding:.65rem .95rem;font-size:.8rem;color:var(--amber);font-weight:700}
-.rubric-box{margin-top:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:.85rem 1rem}
-.rubric-model{font-size:.82rem;line-height:1.7;color:var(--text-mid);margin-bottom:.7rem}
+.rubric-box{margin-top:.4rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:.7rem .9rem}
+.rubric-part-hd{font-size:.72rem;font-weight:800;color:var(--lc);margin-bottom:.35rem}
+.rubric-model{font-size:.8rem;line-height:1.65;color:var(--text-mid);margin-bottom:.55rem}
 .rubric-model strong{color:var(--green);font-weight:800}
-.rubric-band{display:flex;gap:.5rem;align-items:flex-start;font-size:.78rem;line-height:1.55;margin-bottom:.4rem;color:var(--text-mid)}
-.rubric-band .rb-tag{font-size:.64rem;font-weight:800;padding:.16rem .55rem;border-radius:var(--r-pill);flex-shrink:0;white-space:nowrap}
+.rubric-band{display:flex;gap:.5rem;align-items:flex-start;font-size:.76rem;line-height:1.5;margin-bottom:.35rem;color:var(--text-mid)}
+.rubric-band .rb-tag{font-size:.62rem;font-weight:800;padding:.14rem .5rem;border-radius:var(--r-pill);flex-shrink:0;white-space:nowrap}
 .rubric-band.full .rb-tag{background:var(--green-lt);color:var(--green);border:1px solid #bbf7d0}
 .rubric-band.partial .rb-tag{background:var(--amber-lt);color:var(--amber);border:1px solid #fde68a}
-.rubric-pts{display:inline-block;margin-top:.35rem;font-size:.72rem;font-weight:800;color:var(--gold)}
+.rubric-pts{display:inline-block;margin-top:.25rem;font-size:.68rem;font-weight:800;color:var(--gold)}
 .ans-excerpt{background:var(--surface2);border-right:3px solid var(--lc);border-radius:var(--r);padding:.55rem .85rem;font-size:.8rem;line-height:1.7;color:var(--text-mid);font-style:italic;margin-bottom:.5rem}
+.layer-tag{display:inline-block;font-size:.6rem;font-weight:800;letter-spacing:.04em;padding:.12rem .5rem;border-radius:var(--r-pill);margin-bottom:.5rem;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.layer-tag.peshat{background:var(--lc-lt);color:var(--lc);border:1px solid var(--lc)}
+.layer-tag.derash{background:var(--purple-lt,#f3e8ff);color:var(--purple,#7c3aed);border:1px solid var(--purple,#7c3aed)}
+.teacher-note-box{background:#fff7ed;border:1.5px solid #fdba74;border-radius:var(--r-lg);padding:1rem 1.2rem;margin:1.4rem 0}
+.tn-tag{display:inline-block;font-size:.62rem;font-weight:800;letter-spacing:.05em;padding:.15rem .55rem;border-radius:var(--r-pill);background:#ea580c;color:#fff;margin-bottom:.5rem;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.teacher-note-box p{font-size:.82rem;color:#7c2d12;line-height:1.65}
 </style>
 </head>
 <body>
@@ -298,7 +320,7 @@ button,input,select,textarea{font-family:inherit}
     <span class="hero-emoji">📖</span>
     <h1 class="hero-title">לך לך — קריאת אברהם</h1>
     <p class="hero-desc">בראשית י״ב — העזיבה והציווי, הברכות, הבטחת הארץ והזרע, והירידה למצרים</p>
-    <div class="hero-meta"><span class="hero-chip lc">⏱ 45 דק׳</span><span class="hero-chip">📝 18 שאלות</span><span class="hero-chip green">📜 סיפורי האבות</span></div>
+    <div class="hero-meta"><span class="hero-chip lc">⏱ 45 דק׳</span><span class="hero-chip">📝 תרגול + בגרות</span><span class="hero-chip green">📜 סיפורי האבות</span></div>
   </div>
 
   <div style="background:var(--lc-lt);border:2px dashed var(--lc);border-radius:var(--r-xl);padding:1.4rem 1.5rem;margin-bottom:1.8rem"><div style="font-size:.72rem;font-weight:800;color:var(--lc);margin-bottom:.6rem;text-transform:uppercase;letter-spacing:.06em">💭 שאלת פתיחה</div><p style="font-size:.94rem;font-weight:700;color:var(--text);line-height:1.6;margin-bottom:.6rem">ה׳ מצווה על אברם לעזוב "מֵאַרְצְךָ וּמִמּוֹלַדְתְּךָ וּמִבֵּית אָבִיךָ" — מן הרחוק אל הקרוב. מדוע דווקא בסדר הזה, ולא הפוך?</p><p style="font-size:.82rem;color:var(--muted);line-height:1.6">זהו לב הניסיון הראשון של אברם: ההדרגה שבעזיבה, והאמון שבהליכה אל ארץ לא־נודעת.</p></div>
@@ -307,8 +329,8 @@ button,input,select,textarea{font-family:inherit}
   <div class="section-hd"><span class="sn-icon">📜</span><div class="sn">1</div>הציווי "לך לך"</div>
   <div class="card">
     <p>הפרק פותח את סיפורי האבות בציווי האלוהי הראשון לאברם: <strong>"לֶךְ לְךָ מֵאַרְצְךָ וּמִמּוֹלַדְתְּךָ וּמִבֵּית אָבִיךָ אֶל הָאָרֶץ אֲשֶׁר אַרְאֶךָּ"</strong> (י״ב, א). ה׳ דורש מאברם להתנתק מכל המוכר לו — מרחב, חברה ומשפחה — וללכת אל יעד שטרם נחשף לו.</p>
-    <div class="box box-lc"><strong>סדר הניתוקים — מן הקל אל הכבד:</strong> אֶרֶץ (המרחב הגיאוגרפי) ← מוֹלֶדֶת (העיר והחברה) ← בֵּית אָב (המשפחה הקרובה). הסדר עולה בקושי: ככל שמתקרבים אל בית האב, הוויתור גדול יותר — וכך נוצרת הדרגה שמעצימה את הניסיון.</div>
-    <div class="box box-amber"><strong>פירוש רש״י — "לך לך":</strong> "להנאתך ולטובתך" — ההליכה אינה רק ויתור אלא הזדמנות לברכה. רש״י משיב בכך על הקושי: מדוע שאדם יעזוב את כל המוכר לו? התשובה — משום שהדבר לטובתו.</div>
+    <div class="box box-lc"><span class="layer-tag peshat">רובד הפשט</span><br><strong>סדר הניתוקים — מן הקל אל הכבד:</strong> אֶרֶץ (המרחב הגיאוגרפי) ← מוֹלֶדֶת (העיר והחברה) ← בֵּית אָב (המשפחה הקרובה). הסדר עולה בקושי: ככל שמתקרבים אל בית האב, הוויתור גדול יותר — וכך נוצרת הדרגה שמעצימה את הניסיון.</div>
+    <div class="box box-amber"><span class="layer-tag derash">רובד הפרשנות · העשרה</span><br><strong>פירוש רש״י — "לך לך":</strong> "להנאתך ולטובתך" — ההליכה אינה רק ויתור אלא הזדמנות לברכה. רש״י משיב בכך על הקושי: מדוע שאדם יעזוב את כל המוכר לו? התשובה — משום שהדבר לטובתו.</div>
   </div>
 
   <!-- 2 -->
@@ -328,14 +350,15 @@ button,input,select,textarea{font-family:inherit}
   <div class="section-hd"><span class="sn-icon">🌿</span><div class="sn">3</div>המסע והבטחת הארץ</div>
   <div class="card">
     <p><strong>"וַיֵּלֶךְ אַבְרָם כַּאֲשֶׁר דִּבֶּר אֵלָיו ה׳"</strong> (י״ב, ד) — אברם נענה מיד ובלא היסוס. עמו הולך לוט בן אחיו. בהגיעו אל הארץ הוא עובר עד שְׁכֶם ("אֵלוֹן מוֹרֶה"), ואחר כך אל בֵּית אֵל.</p>
-    <div class="box box-lc"><strong>הבטחת הארץ והזרע (י״ב, ז):</strong> "וַיֵּרָא ה׳ אֶל אַבְרָם וַיֹּאמֶר לְזַרְעֲךָ אֶתֵּן אֶת הָאָרֶץ הַזֹּאת" — לראשונה מתחברות שתי ההבטחות: הזרע והארץ. אברם בונה מזבח ו"קורא בשם ה׳" — מציין נוכחות ובעלות רוחנית בארץ.</div>
+    <div class="box box-lc"><strong>הבטחת הארץ והזרע (י״ב, ז):</strong> "וַיֵּרָא ה׳ אֶל אַבְרָם וַיֹּאמֶר לְזַרְעֲךָ אֶתֵּן אֶת הָאָרֶץ הַזֹּאת" — לראשונה מתחברות שתי ההבטחות: הזרע והארץ. אברם בונה מזבח ו"קורא בשם ה׳" — מציין נוכחות וזיקה רוחנית אל הארץ.</div>
   </div>
 
   <!-- 4 -->
   <div class="section-hd"><span class="sn-icon">🏜️</span><div class="sn">4</div>הירידה למצרים והשקר "אֲחֹתִי"</div>
+  <div class="teacher-note-box"><span class="tn-tag">הערה למורה · רגישות</span><p>הפרק כולל אירוע מורכב — אברם מבקש משרי לומר שקר, ושרי נלקחת לבית פרעה. מומלץ לנהל את הדיון בתוך המסגרת הפרשנית (רמב״ן מול רש״י/ראב״ע), להציג את הסוגיה כמחלוקת לגיטימית של דילמה מוסרית (הצלת חיים מול אמת), ולהימנע משיפוט חד-צדדי או מ"הרשעת" האבות. שימו לב לרגישות התלמידים.</p></div>
   <div class="card">
     <p>רעב כבד פוקד את הארץ, ואברם יורד למצרים (י״ב, י). מחשש שיהרגוהו בשל יופייה של שרי, הוא מבקש ממנה: <strong>"אִמְרִי נָא אֲחֹתִי אָתְּ לְמַעַן יִיטַב לִי בַעֲבוּרֵךְ"</strong> (י״ב, יג). שרי נלקחת לבית פרעה, ה׳ מנגף את פרעה ואת ביתו, ופרעה משלח את אברם ושרי עם רכוש רב.</p>
-    <div class="box box-purple"><strong>מחלוקת פרשנים — האם אברם נהג כראוי?</strong><br>• <strong>רמב״ן:</strong> אברם חטא בשוגג — היה עליו לבטוח בה׳ ולא לסכן את שרי; אף הירידה למצרים מפני הרעב הייתה חטא. על מעשה זה נרמז גלות מצרים בעתיד.<br>• <strong>רש״י / ראב״ע:</strong> מעשה לגיטימי של הצלת חיים מול חברה מצרית אלימה; "ייטב לי" — שיכבדו אותו וייתנו לו מתנות בזכותה.</div>
+    <div class="box box-purple"><span class="layer-tag derash">רובד הפרשנות · העשרה</span><br><strong>מחלוקת פרשנים — האם אברם נהג כראוי?</strong><br>• <strong>רמב״ן:</strong> אברם חטא בשוגג — היה עליו לבטוח בה׳ ולא לסכן את שרי; אף הירידה למצרים מפני הרעב הייתה חטא. על מעשה זה נרמז גלות מצרים בעתיד.<br>• <strong>רש״י / ראב״ע:</strong> מעשה לגיטימי של הצלת חיים מול חברה מצרית אלימה; "ייטב לי" — שיכבדו אותו וייתנו לו מתנות בזכותה.</div>
     <div class="box box-amber"><strong>מעשה אבות סימן לבנים:</strong> אברם יורד מצרימה מפני רעב ויוצא ברכוש גדול — בדיוק כפי שבניו (בני ישראל) ירדו מצרימה מפני רעב ויצאו ברכוש גדול. גורל האבות מקדים ומסמן את גורל הבנים.</div>
   </div>
 
@@ -346,7 +369,7 @@ button,input,select,textarea{font-family:inherit}
     <div class="step-item"><div class="step-num">3</div><div><strong>הארץ:</strong> "לזרעך אתן את הארץ הזאת" — מזבחות בשכם ובבית אל.</div></div>
     <div class="step-item"><div class="step-num">4</div><div><strong>מצרים:</strong> רעב ← "אחותי את" ← נגעים ← יציאה ברכוש = מעשה אבות סימן לבנים.</div></div>
   </div>
-  <button class="goto-practice-btn" onclick="switchTab('practice')">✏️ עבור לתרגול — 18 שאלות על בראשית י״ב</button>
+  <button class="goto-practice-btn" onclick="switchTab('practice')">✏️ עבור לתרגול — תרגול הבנה + סימולציית בגרות</button>
 </div>
 </div>
 
@@ -387,7 +410,7 @@ button,input,select,textarea{font-family:inherit}
 
     <div class="quiz-header">
       <div class="quiz-hd-title">✏️ תרגול — בראשית י״ב</div>
-      <div class="quiz-hd-desc">שאלות סגורות · ניתוח פסוקים · מאגר בחירה (ענה על 3 מתוך 5)</div>
+      <div class="quiz-hd-desc">חלק א׳: תרגול הבנה (סגורות) · חלק ב׳: סימולציית בגרות בפורמט 1261 (ענה על 3 מתוך 5, סעיפים מנוקדים)</div>
       <div class="quiz-prog-bar"><div class="quiz-prog-fill" id="prog-fill" style="width:0%"></div></div>
       <div class="quiz-prog-row"><span id="prog-txt">0 מתוך 0 נענו</span><span id="prog-pct">0%</span></div>
     </div>
@@ -428,204 +451,195 @@ const BACK_URL=_p.get('back')||'index.html';
 function applyAnswersVisibility(){const lk=document.getElementById('answers-locked-msg'),vi=document.getElementById('answers-visible-content'),sr=document.getElementById('answers-source');if(USER_ROLE==='teacher'){if(lk)lk.style.display='none';if(vi)vi.style.display='';if(sr)sr.textContent='גישת מורה';document.getElementById('btn-answers')?.style.setProperty('display','');}else if(ANSWERS_VISIBLE){if(lk)lk.style.display='none';if(vi)vi.style.display='';if(sr)sr.textContent='שוחרר ע״י המורה';document.getElementById('btn-answers-student')?.style.setProperty('display','');}else{if(lk)lk.style.display='';if(vi)vi.style.display='none';}}
 
 const QUESTIONS=[
-{id:'q01',type:'mc',ref:'בראשית י״ב, א',
+{id:'q01',type:'mc',section:'א',ref:'בראשית י״ב, א',
  q:'הציווי הוא "מֵאַרְצְךָ וּמִמּוֹלַדְתְּךָ וּמִבֵּית אָבִיךָ" — מן הרחוק אל הקרוב. מהי המשמעות של סדר זה?',
  opts:['הדרגה מן הקל אל הכבד — הוויתור גדל ככל שמתקרבים אל המשפחה, ומעצים את הניסיון','סדר כרונולוגי של שלבי המסע','אין משמעות לסדר','רשימה מקרית של מקומות'],
  ans:0,
  explain:`הסדר עולה בקושי: עזיבת הארץ קלה יחסית, עזיבת בית האב היא הקשה ביותר. ההדרגה מעצימה את גודל הניסיון ואת האמון הנדרש מאברם.`,
  teacherNote:`אפשר לשאול: "איזה ויתור הכי כואב לדעתכם — ולמה התורה שמרה אותו לסוף?"`},
 
-{id:'q02',type:'mc',ref:'רש״י — "לך לך"',
+{id:'q02',type:'mc',section:'א',ref:'רש״י — "לך לך"',
  q:'רש״י מפרש "לך לך" — "להנאתך ולטובתך". על איזה קושי עונה רש״י?',
  opts:['מדוע ה׳ מדבר עם אברם דווקא','היכן נמצאת חרן','מדוע שאדם יסכים לעזוב את כל המוכר לו — ההליכה אינה רק ויתור אלא לטובתו','מי הלך עם אברם'],
  ans:2,
  explain:`הקושי: מדוע ייענה אברם לציווי קשה כל כך? רש״י מבהיר שההליכה היא לתועלתו — "להנאתך ולטובתך" — ולכן יש בה היגיון ולא רק קושי.`,
  teacherNote:`כדאי לחבר לברכות שבפסוקים ב–ג: הטובה מתממשת בברכות.`},
 
-{id:'q03',type:'mc',ref:'בראשית י״ב, ג',
+{id:'q03',type:'mc',section:'א',ref:'בראשית י״ב, ג',
  q:'כיצד יש למיין את הברכה "וְנִבְרְכוּ בְךָ כֹּל מִשְׁפְּחֹת הָאֲדָמָה"?',
  opts:['ברכה אישית — לאברם בלבד','ברכה לאומית — לעם ישראל','קללה למקללים','ברכה אוניברסלית/קולקטיבית — כל באי עולם יתברכו בזכותו'],
  ans:3,
  explain:`זוהי הברכה הרחבה ביותר: היא חורגת מאברם ומעמו ומקיפה את כל משפחות האדמה — מעגל אוניברסלי.`,
  teacherNote:`למיין מול "ואעשך לגוי גדול" (לאומית) ו"ואגדלה שמך" (אישית).`},
 
-{id:'q04',type:'tf',ref:'בראשית י״ב, א',
+{id:'q04',type:'tf',section:'א',ref:'בראשית י״ב, א',
  q:'סדר העזיבה בפסוק בנוי מן הקרוב אל הרחוק: בֵּית אָב ← מוֹלֶדֶת ← אֶרֶץ.',
  ans:false,
  explain:`לא נכון — הסדר הפוך: מן הרחוק אל הקרוב (אֶרֶץ ← מוֹלֶדֶת ← בֵּית אָב), בהדרגה של קושי גובר עד עזיבת המשפחה.`,
  teacherNote:`חיזוק חזותי: לצייר שלושה מעגלים קונצנטריים מן הרחב אל הצר.`},
 
-{id:'q05',type:'mc',ref:'בראשית י״ב, י',
+{id:'q05',type:'mc',section:'א',ref:'בראשית י״ב, י',
  q:'מדוע ירד אברם מצרימה?',
  opts:['ה׳ ציווה עליו לרדת','בשל רעב כבד שפקד את ארץ כנען','כדי להילחם בפרעה','כדי לפגוש את לוט'],
  ans:1,
  explain:`"וַיְהִי רָעָב בָּאָרֶץ... כִּי כָבֵד הָרָעָב בָּאָרֶץ" — אברם יורד למצרים לגור שם בשל הרעב.`,
  teacherNote:`הרמב״ן רואה בירידה זו חיסרון אמון; אפשר להעלות זאת כאן בקצרה.`},
 
-{id:'q06',type:'mc',ref:'בראשית י״ב, יב–יג',
+{id:'q06',type:'mc',section:'א',ref:'בראשית י״ב, יב–יג',
  q:'מדוע ביקש אברם משרי לומר "אֲחֹתִי אָתְּ"?',
  opts:['כדי לקבל מתנות בלבד','כי שרי באמת הייתה אחותו','מחשש שהמצרים יהרגוהו כדי לקחת את שרי היפה','כדי להסתיר את זהותו מפרעה'],
  ans:2,
  explain:`אברם חושש: "וְהָרְגוּ אֹתִי וְאֹתָךְ יְחַיּוּ". כבעל יהרגוהו; כ"אח" יחיה. החשש הוא לחייו.`,
  teacherNote:`להבחין בין המניע (הצלת חיים) לבין התוצאה (הרכוש בפסוק טז).`},
 
-{id:'q07',type:'tf',ref:'מושג — מעשה אבות סימן לבנים',
+{id:'q07',type:'tf',section:'א',ref:'מושג — מעשה אבות סימן לבנים',
  q:'ירידת אברם למצרים בשל רעב ויציאתו ברכוש גדול מהדהדת את ירידת בני ישראל למצרים ויציאתם — "מעשה אבות סימן לבנים".',
  ans:true,
  explain:`נכון. גורל האב (רעב ← ירידה ← יציאה ברכוש) מקדים ומסמן את גורל הבנים ביציאת מצרים.`,
  teacherNote:`להשוות לפסוקים מספר שמות: "וינצלו את מצרים".`},
 
-{id:'q08',type:'mc',ref:'בראשית י״ב, ז–ח',
+{id:'q08',type:'mc',section:'א',ref:'בראשית י״ב, ז–ח',
  q:'מה מבטאת בניית המזבחות ו"וַיִּקְרָא בְּשֵׁם ה׳" של אברם בארץ?',
- opts:['בקשת סליחה על חטא','הכנה למלחמה','טקס פרידה מחרן','עבודת ה׳ והכרזת נוכחות וזיקה רוחנית אל הארץ המובטחת'],
+ opts:['בקשת סליחה על חטא','הכנה למלחמה','טקס פרידה מחרן','עבודת ה׳ והכרזת זיקה רוחנית אל הארץ המובטחת'],
  ans:3,
  explain:`המזבחות וקריאה בשם ה׳ מבטאים עבודת ה׳ פומבית והשתרשות רוחנית בארץ שהובטחה לזרעו.`,
  teacherNote:`לציין את המקומות: שכם (אלון מורה) ובית אל.`},
 
-{id:'q09',type:'mc',ref:'בראשית י״ב, ז',
+{id:'q09',type:'mc',section:'א',ref:'בראשית י״ב, ז',
  q:'מה ייחודה של ההתגלות "לְזַרְעֲךָ אֶתֵּן אֶת הָאָרֶץ הַזֹּאת" (פס׳ ז)?',
  opts:['כאן לראשונה מתחברות הבטחת הזרע והבטחת הארץ יחד','חזרה מדויקת על פסוקים א–ג','ביטול ההבטחות הקודמות','הבטחה ללוט'],
  ans:0,
  explain:`בפסוקים א–ג הובטחו ברכות וזרע; בפסוק ז מתווספת לראשונה הבטחת הארץ במפורש — ומתחברת אל הזרע.`,
  teacherNote:`רמז לברית בין הבתרים (פרק ט״ו) שתרחיב הבטחה זו.`},
 
-{id:'q10',type:'tf',ref:'מחלוקת פרשנים — י״ב, י',
+{id:'q10',type:'tf',section:'א',ref:'מחלוקת פרשנים — י״ב, י',
  q:'לדעת רש״י, ירידת אברם למצרים בשל הרעב נחשבת חטא חמור של חוסר ביטחון בה׳.',
  ans:false,
  explain:`לא נכון — זוהי דעת הרמב״ן ("חטא גדול בשגגה"). רש״י וראב״ע דווקא אינם רואים בירידה חטא, אלא התנהלות לגיטימית מול הרעב.`,
  teacherNote:`להציג כמחלוקת: רמב״ן (חטא) מול רש״י/ראב״ע (לא חטא).`},
-{id:'q11',type:'passage',ref:'בראשית י״ב, א–ג',
+
+{id:'q11',type:'bagrut',section:'ב',pool:'poolA',ref:'בראשית י״ב, א–ג',
+ based:'קרא/י בראשית י״ב, א–ג',
  excerpt:'<span class="vref">בראשית י״ב, א–ג</span><b>א</b> וַיֹּאמֶר ה׳ אֶל אַבְרָם לֶךְ לְךָ מֵאַרְצְךָ וּמִמּוֹלַדְתְּךָ וּמִבֵּית אָבִיךָ אֶל הָאָרֶץ אֲשֶׁר אַרְאֶךָּ. <b>ב</b> וְאֶעֶשְׂךָ לְגוֹי גָּדוֹל וַאֲבָרֶכְךָ וַאֲגַדְּלָה שְׁמֶךָ וֶהְיֵה בְּרָכָה. <b>ג</b> וַאֲבָרְכָה מְבָרְכֶיךָ וּמְקַלֶּלְךָ אָאֹר וְנִבְרְכוּ בְךָ כֹּל מִשְׁפְּחֹת הָאֲדָמָה.',
- q:'לפניך שלוש ברכות מן הקטע: "וְאֶעֶשְׂךָ לְגוֹי גָּדוֹל" · "וַאֲגַדְּלָה שְׁמֶךָ" · "וְנִבְרְכוּ בְךָ כֹּל מִשְׁפְּחֹת הָאֲדָמָה". מיין/י כל אחת (לאומית / אישית / אוניברסלית) והסבר/י בקצרה.',
- hint:'שאל/י: למי מיועדת הברכה — לעם, לאברם עצמו, או לכלל האנושות?',
- rubric:{model:'"ואעשך לגוי גדול" = ברכה לאומית (עם ייצא ממנו). "ואגדלה שמך" = ברכה אישית (שם וכבוד לאברם). "ונברכו בך כל משפחות האדמה" = ברכה אוניברסלית/קולקטיבית (כל באי עולם). יש להסביר כל מיון.',full:'שלושת המיונים נכונים + הסבר קצר לכל אחד = ניקוד מלא',partial:'מיון נכון בלי הסבר, או חלק מהמיונים = ניקוד חלקי',points:9},
- explain:`לאומית / אישית / אוניברסלית — שלושה מעגלי ברכה ההולכים ומתרחבים מן הפרט אל כלל האנושות.`,
- teacherNote:`לקשר לשורש המנחה ב.ר.כ החוזר בקטע.`},
+ q:'הציווי הראשון לאברם והברכות הנלוות אליו.',
+ parts:[
+  {label:'א',points:5,text:'הציווי "מֵאַרְצְךָ וּמִמּוֹלַדְתְּךָ וּמִבֵּית אָבִיךָ" מסודר מן הרחוק אל הקרוב. הסבר/י את משמעות הסדר הזה, ומה הוא מלמד על הניסיון של אברם.',
+   rubric:{model:'הסדר בנוי מן הקל אל הכבד: עזיבת הארץ (מרחב) קלה יחסית, עזיבת המולדת (חברה) קשה יותר, ועזיבת בית האב (משפחה) היא הקשה ביותר. ההדרגה מעצימה את הניסיון ומבליטה את אמונו ומסירותו של אברם, הנענה למרות הקושי הגובר.',full:'זיהוי ההדרגה קל←כבד + הסבר משמעותה לניסיון = ניקוד מלא',partial:'תיאור הסדר בלי הסבר המשמעות = ניקוד חלקי'}},
+  {label:'ב',points:4,text:'לפניך שלוש ברכות: "וְאֶעֶשְׂךָ לְגוֹי גָּדוֹל" · "וַאֲגַדְּלָה שְׁמֶךָ" · "וְנִבְרְכוּ בְךָ כֹּל מִשְׁפְּחֹת הָאֲדָמָה". מיין/י כל אחת (לאומית / אישית / אוניברסלית) והסבר/י בקצרה.',
+   rubric:{model:'"ואעשך לגוי גדול" = לאומית (עם ייצא ממנו); "ואגדלה שמך" = אישית (שם וכבוד לאברם); "ונברכו בך כל משפחות האדמה" = אוניברסלית/קולקטיבית (כל באי עולם). שלושה מעגלי ברכה ההולכים ומתרחבים.',full:'שלושת המיונים נכונים + הסבר קצר לכל אחד = ניקוד מלא',partial:'מיון נכון בלי הסבר, או חלק מהמיונים = ניקוד חלקי'}}
+ ]},
 
-{id:'q12',type:'passage',ref:'בראשית י״ב, ז',
+{id:'q12',type:'bagrut',section:'ב',pool:'poolA',ref:'בראשית י״ב, א, ד',
+ based:'קרא/י בראשית י״ב, א, ד',
+ excerpt:'<span class="vref">בראשית י״ב, א, ד</span><b>א</b> וַיֹּאמֶר ה׳ אֶל אַבְרָם לֶךְ לְךָ... אֶל הָאָרֶץ אֲשֶׁר אַרְאֶךָּ. <b>ד</b> וַיֵּלֶךְ אַבְרָם כַּאֲשֶׁר דִּבֶּר אֵלָיו ה׳ וַיֵּלֶךְ אִתּוֹ לוֹט וְאַבְרָם בֶּן חָמֵשׁ שָׁנִים וְשִׁבְעִים שָׁנָה בְּצֵאתוֹ מֵחָרָן.',
+ q:'היענות אברם לציווי ותפקיד הברכות.',
+ parts:[
+  {label:'א',points:4,text:'כיצד מתאר הכתוב את היענות אברם לציווי? הבא/י ראיה מן הפסוקים, והסבר/י מה היא מלמדת על אופיו.',
+   rubric:{model:'אברם נענה מיד ובלא היסוס: "וילך אברם כאשר דיבר אליו ה׳" — בלי לשאול לאן, אף שהיעד אינו ידוע ("אל הארץ אשר אראך"). הדבר מלמד על אמון מלא ומסירות לה׳.',full:'ציטוט הראיה ("וילך אברם כאשר דיבר") + הסבר המיידיות/האמון = ניקוד מלא',partial:'אמירה כללית בלי עיגון בכתוב = ניקוד חלקי'}},
+  {label:'ב',points:4,text:'מדוע, לדעתך, צירף ה׳ שורת ברכות לציווי "לך לך"? מהו תפקידן בסיפור?',
+   rubric:{model:'הברכות משמשות תמריץ ותמורה: מול הקושי הגדול שבעזיבת כל המוכר, הן מעניקות משמעות ושכר להליכה, והופכות את הציווי הקשה לבחירה כדאית; הן גם מבססות את ייעוד אברם וזרעו. (אפשר לקשר לרש״י: הנדידה ממעטת פרייה, ממון ושם — וה׳ מברך כנגד שלושתם.)',full:'הסבר תפקיד הברכות כתמריץ/תמורה + קישור לקושי העזיבה = ניקוד מלא',partial:'אזכור הברכות בלי הסבר תפקידן = ניקוד חלקי'}}
+ ]},
+
+{id:'q13',type:'bagrut',section:'ב',pool:'poolA',ref:'בראשית י״ב, ז',
+ based:'קרא/י בראשית י״ב, ז',
  excerpt:'<span class="vref">בראשית י״ב, ז</span><b>ז</b> וַיֵּרָא ה׳ אֶל אַבְרָם וַיֹּאמֶר לְזַרְעֲךָ אֶתֵּן אֶת הָאָרֶץ הַזֹּאת וַיִּבֶן שָׁם מִזְבֵּחַ לַה׳ הַנִּרְאֶה אֵלָיו.',
- q:'מה מתחדש בהתגלות זו לעומת הציווי בפסוקים א–ג? התייחס/י גם לתגובת אברם.',
- hint:'בדוק/י מה מובטח כאן במפורש שלא נאמר קודם, ומה אברם עושה בתגובה.',
- rubric:{model:'בפסוק ז מתחדשת לראשונה הבטחת הארץ במפורש ("לזרעך אתן את הארץ הזאת") ומתחברת להבטחת הזרע. תגובת אברם: בניית מזבח — ביטוי של עבודת ה׳ והודיה, והכרזת זיקה רוחנית אל הארץ.',full:'זיהוי חידוש הבטחת הארץ/זרע + ציון תגובת בניית המזבח = ניקוד מלא',partial:'רק חידוש ההבטחה או רק התגובה = ניקוד חלקי',points:8},
- explain:`חידוש: הבטחת הארץ לזרע. תגובה: מזבח ראשון — עבודת ה׳ והשתרשות בארץ.`,
- teacherNote:`להדגיש שזו ההבטחה הראשונה המפורשת על הארץ.`},
+ q:'הבטחת הארץ ותגובת אברם.',
+ parts:[
+  {label:'א',points:4,text:'מה מתחדש בהתגלות שבפסוק ז לעומת ההבטחות שבפסוקים א–ג?',
+   rubric:{model:'בפסוקים א–ג הובטחו ברכות וזרע; בפסוק ז מתווספת לראשונה הבטחת הארץ במפורש ("לזרעך אתן את הארץ הזאת") — ומתחברות יחד הבטחת הזרע והבטחת הארץ.',full:'זיהוי חידוש הבטחת הארץ המפורשת + חיבורה לזרע = ניקוד מלא',partial:'אמירה חלקית בלי החידוש המדויק = ניקוד חלקי'}},
+  {label:'ב',points:4,text:'מהי תגובת אברם להתגלות, ומה היא מבטאת? בסס/י על הכתוב.',
+   rubric:{model:'תגובת אברם: "ויבן שם מזבח לה׳" — בניית מזבח, ביטוי לעבודת ה׳ ולהודיה, ולהכרזת זיקה רוחנית אל הארץ המובטחת.',full:'ציון בניית המזבח + הסבר משמעותה (עבודת ה׳/זיקה לארץ) = ניקוד מלא',partial:'ציון התגובה בלי הסבר משמעותה = ניקוד חלקי'}}
+ ]},
 
-{id:'q13',type:'passage',ref:'בראשית י״ב, י–יג',
- excerpt:'<span class="vref">בראשית י״ב, י–יג</span><b>י</b> וַיְהִי רָעָב בָּאָרֶץ וַיֵּרֶד אַבְרָם מִצְרַיְמָה לָגוּר שָׁם כִּי כָבֵד הָרָעָב בָּאָרֶץ. <b>יא</b> וַיְהִי כַּאֲשֶׁר הִקְרִיב לָבוֹא מִצְרָיְמָה וַיֹּאמֶר אֶל שָׂרַי אִשְׁתּוֹ הִנֵּה נָא יָדַעְתִּי כִּי אִשָּׁה יְפַת מַרְאֶה אָתְּ. <b>יב</b> וְהָיָה כִּי יִרְאוּ אֹתָךְ הַמִּצְרִים וְאָמְרוּ אִשְׁתּוֹ זֹאת וְהָרְגוּ אֹתִי וְאֹתָךְ יְחַיּוּ. <b>יג</b> אִמְרִי נָא אֲחֹתִי אָתְּ לְמַעַן יִיטַב לִי בַעֲבוּרֵךְ וְחָיְתָה נַפְשִׁי בִּגְלָלֵךְ.',
- q:'תאר/י את המתח המוסרי שעולה מבקשת אברם "אִמְרִי נָא אֲחֹתִי אָתְּ". מהו המניע שלו על פי הפסוקים?',
- hint:'שים/י לב למילים "וְהָרְגוּ אֹתִי" ו"וְחָיְתָה נַפְשִׁי" מול הסיכון שנשקף לשרי.',
- rubric:{model:'המתח: אברם מציל את חייו אך מסכן את שרי ומבקש ממנה לומר שקר. המניע המפורש: פחד שיהרגוהו בשל יופייה ("והרגו אותי ואותך יחיו"; "וחיתה נפשי"). יש להציג את שני צדי המתח — הצלה עצמית מול סיכון שרי/אמירת שקר.',full:'זיהוי המתח המוסרי + ציטוט/הצמדה למניע מן הפסוקים = ניקוד מלא',partial:'הצגת המניע בלבד בלי המתח המוסרי = ניקוד חלקי',points:8},
- explain:`מתח בין הצלת חיים לבין סיכון שרי ואמירת שקר. המניע: פחד מפני הריגה בשל יופייה של שרי.`,
- teacherNote:`גשר אל שאלת הבחירה q15 (מחלוקת רמב״ן מול רש״י).`},
+{id:'q14',type:'bagrut',section:'ב',pool:'poolA',ref:'בראשית י״ב, י–יג',
+ based:'קרא/י בראשית י״ב, י–יג',
+ excerpt:'<span class="vref">בראשית י״ב, י–יג</span><b>י</b> וַיְהִי רָעָב בָּאָרֶץ וַיֵּרֶד אַבְרָם מִצְרַיְמָה לָגוּר שָׁם כִּי כָבֵד הָרָעָב בָּאָרֶץ. <b>יא</b> ...הִנֵּה נָא יָדַעְתִּי כִּי אִשָּׁה יְפַת מַרְאֶה אָתְּ. <b>יב</b> וְהָיָה כִּי יִרְאוּ אֹתָךְ הַמִּצְרִים וְאָמְרוּ אִשְׁתּוֹ זֹאת וְהָרְגוּ אֹתִי וְאֹתָךְ יְחַיּוּ. <b>יג</b> אִמְרִי נָא אֲחֹתִי אָתְּ לְמַעַן יִיטַב לִי בַעֲבוּרֵךְ וְחָיְתָה נַפְשִׁי בִּגְלָלֵךְ.',
+ q:'הירידה למצרים ובקשת "אֲחֹתִי אָתְּ".',
+ parts:[
+  {label:'א',points:5,text:'תאר/י את המתח המוסרי העולה מבקשת אברם "אִמְרִי נָא אֲחֹתִי אָתְּ", ומהו המניע שלו על פי הפסוקים.',
+   rubric:{model:'המתח: אברם מציל את חייו אך מסכן את שרי ומבקש ממנה לומר שקר. המניע המפורש: פחד שיהרגוהו בשל יופייה ("והרגו אותי ואותך יחיו"; "וחיתה נפשי"). יש להציג את שני צדי המתח — הצלה עצמית מול סיכון שרי/אמירת שקר.',full:'זיהוי המתח המוסרי + הצמדה למניע מן הפסוקים = ניקוד מלא',partial:'הצגת המניע בלבד בלי המתח המוסרי = ניקוד חלקי'}},
+  {label:'ב',points:4,text:'הצג/י את מחלוקת הפרשנים (רמב״ן מול רש״י/ראב״ע) בשאלה אם אברם נהג כראוי, ונמק/י את עמדתך.',
+   rubric:{model:'הרמב״ן — אברם חטא בשוגג: היה עליו לבטוח בה׳ ולא לסכן את שרי, ואף הירידה מפני הרעב הייתה חיסרון אמון. רש״י/ראב״ע — מעשה לגיטימי של הצלת חיים מול מצרים אלימים. נדרש: שתי העמדות + עמדה אישית מנומקת.',full:'שתי עמדות פרשניות + נימוק אישי = ניקוד מלא',partial:'עמדה אחת בלבד או ללא נימוק = ניקוד חלקי'}}
+ ]},
 
-{id:'q14',type:'open',ref:'מאגר בחירה',pool:'poolA',
- q:'הסבר/י את ההדרגה שבציווי "מֵאַרְצְךָ וּמִמּוֹלַדְתְּךָ וּמִבֵּית אָבִיךָ". מדוע, לדעתך, נבחר סדר זה — מן הרחוק אל הקרוב?',
- hint:'חשוב/חשבי על עוצמת הקושי הרגשי בכל שלב.',
- rubric:{model:'הסדר בנוי מן הקל אל הכבד: עזיבת הארץ (מרחב) קלה יחסית, עזיבת המולדת (חברה) קשה יותר, ועזיבת בית האב (משפחה) היא הקשה ביותר. ההדרגה מעצימה את הניסיון ומבליטה את האמון והמסירות של אברם — שנענה למרות הקושי הגובר.',full:'זיהוי ההדרגה קל←כבד + הסבר מנומק לבחירת הסדר = ניקוד מלא',partial:'תיאור הסדר בלי הסבר משמעותו = ניקוד חלקי',points:10},
- explain:`הדרגה מן הקל אל הכבד — הניסיון מתעצם ככל שמתקרבים אל בית האב.`,
- teacherNote:`לקבל גם הסבר חלופי (אדם נוטש קודם הרגלי מדינה ולבסוף הרגלי בית).`},
-
-{id:'q15',type:'open',ref:'מאגר בחירה',pool:'poolA',
- q:'הצג/י את מחלוקת הפרשנים בשאלה אם אברם נהג כראוי באומרו "אֲחֹתִי אָתְּ", ונמק/י את עמדתך.',
- hint:'הרמב״ן מול רש״י/ראב״ע — ביטחון בה׳ מול הצלת חיים.',
- rubric:{model:'הרמב״ן — אברם חטא בשוגג: היה עליו לבטוח בה׳ ולא לסכן את שרי, ואף הירידה למצרים מפני הרעב הייתה חיסרון אמון; על כך נרמז גלות מצרים. רש״י/ראב״ע — מעשה לגיטימי של הצלת חיים מול מצרים אלימים, ו"ייטב לי" מתפרש כקבלת כבוד/מתנות. נדרש: שתי העמדות + עיגון בפסוק + עמדה אישית מנומקת.',full:'שתי עמדות פרשניות + עיגון בכתוב + נימוק אישי = ניקוד מלא',partial:'עמדה אחת בלבד או ללא עיגון בפסוק = ניקוד חלקי',points:10},
- explain:`רמב״ן: חטא (חוסר ביטחון). רש״י/ראב״ע: הצלת חיים לגיטימית. נדרשת עמדה מנומקת.`,
- teacherNote:`להדגיש שאין כאן תשובה אחת נכונה — מעריכים את ההנמקה והעיגון בכתוב.`},
-
-{id:'q16',type:'open',ref:'מאגר בחירה',pool:'poolA',
- q:'הסבר/י את המושג "מעשה אבות סימן לבנים" בעזרת שתי הקבלות מן הפרק בין אברם לבין גורל בני ישראל.',
- hint:'רעב ← ירידה למצרים ← יציאה ברכוש גדול.',
- rubric:{model:'המושג: קורות האבות מקדימות ומסמנות את קורות הבנים. הקבלות מן הפרק: (1) אברם יורד למצרים מפני רעב — כמו בני יעקב; (2) אברם יוצא ממצרים ברכוש גדול — כמו בני ישראל ביציאת מצרים. אפשר להוסיף: ה׳ מנגף את פרעה — כמכות מצרים.',full:'הגדרת המושג + שתי הקבלות מדויקות מן הפרק = ניקוד מלא',partial:'הגדרה + הקבלה אחת בלבד = ניקוד חלקי',points:10},
- explain:`רעב→ירידה ויציאה ברכוש מהדהדים את ירידת בני ישראל ויציאתם; אף הנגעים כמכות.`,
- teacherNote:`לעודד ציטוט מקביל מספר שמות.`},
-
-{id:'q17',type:'open',ref:'מאגר בחירה',pool:'poolA',
- q:'"וַיֵּלֶךְ אַבְרָם כַּאֲשֶׁר דִּבֶּר אֵלָיו ה׳" (פס׳ ד). כיצד מתאר הפרק את אמונתו ומסירותו של אברם? בסס/י על הכתוב.',
- hint:'שים/י לב למיידיות התגובה ולהיעדר היסוס או שאלה.',
- rubric:{model:'אברם נענה מיד ובלא היסוס — "וילך אברם כאשר דיבר אליו ה׳" — בלי לשאול לאן או לבקש הוכחה, אף שהיעד אינו ידוע ("אל הארץ אשר אראך"). בניית המזבחות וקריאה בשם ה׳ מחזקות את דמותו כמאמין הפועל מתוך אמון מלא.',full:'זיהוי המיידיות/חוסר ההיסוס + עיגון בכתוב (פס׳ ד ו/או המזבחות) = ניקוד מלא',partial:'אמירה כללית על אמונה בלי עיגון בכתוב = ניקוד חלקי',points:10},
- explain:`התגובה מיידית ובלא היסוס אל יעד לא־נודע — ביטוי לאמון מלא בה׳.`,
- teacherNote:`להשוות לעקדה (פרק כ״ב) — שוב היענות מיידית.`},
-
-{id:'q18',type:'open',ref:'מאגר בחירה',pool:'poolA',
- q:'מדוע, לדעתך, מצרף ה׳ לציווי "לך לך" שורת ברכות (פס׳ ב–ג)? מהו תפקידן בסיפור?',
- hint:'חשוב/חשבי על היחס בין הקושי שבעזיבה לבין התמורה שבברכות.',
- rubric:{model:'הברכות משמשות תמריץ ותמורה: מול הקושי הגדול שבעזיבת כל המוכר, ה׳ מבטיח ברכות (עם, שם, ברכה לכל האדמה) המעניקות משמעות ושכר להליכה. הן הופכות את הציווי הקשה לבחירה כדאית ומבססות את ייעודו של אברם וזרעו. (אפשר לקשר לרש״י: הנדידה ממעטת פרייה, ממון ושם — ולכן ה׳ מברך כנגד שלושתם.)',full:'הסבר תפקיד הברכות כתמריץ/תמורה + קישור לקושי העזיבה = ניקוד מלא',partial:'אזכור הברכות בלי הסבר תפקידן = ניקוד חלקי',points:10},
- explain:`הברכות הן תמריץ ותמורה לקושי העזיבה, ומבססות את ייעוד אברם וזרעו.`,
- teacherNote:`אפשר לקבל גם קישור לפירוש רש״י (נדידה ממעטת שלושה דברים).`},
+{id:'q15',type:'bagrut',section:'ב',pool:'poolA',ref:'עיון בפרק כולו',
+ based:'עיין/י בבראשית י״ב כולו',
+ q:'סיכום ועיון — "מעשה אבות סימן לבנים" ומשמעות אישית.',
+ parts:[
+  {label:'א',points:5,text:'הסבר/י את המושג "מעשה אבות סימן לבנים" בעזרת שתי הקבלות מן הפרק בין אברם לבין גורל בני ישראל.',
+   rubric:{model:'המושג: קורות האבות מקדימות ומסמנות את קורות הבנים. הקבלות מן הפרק: (1) אברם יורד למצרים מפני רעב — כמו בני יעקב; (2) אברם יוצא ממצרים ברכוש גדול — כמו בני ישראל ביציאת מצרים. אפשר להוסיף: ה׳ מנגף את פרעה — כמכות מצרים.',full:'הגדרת המושג + שתי הקבלות מדויקות מן הפרק = ניקוד מלא',partial:'הגדרה + הקבלה אחת בלבד = ניקוד חלקי'}},
+  {label:'ב',points:3,reflective:true,text:'שאלת עיון אישית: מה ניתן ללמוד מהיענותו המיידית של אברם לציווי "לך לך" — היציאה אל הלא-נודע — על התמודדות עם שינוי ואי-ודאות בחיינו? בסס/י את דבריך.',
+   rubric:{model:'תשובה פתוחה. מצופה חיבור מנומק בין דמות אברם (אומץ, אמון, נכונות לצאת אל הבלתי-ידוע למען ייעוד) לבין התמודדות אישית/כללית עם שינוי ואי-ודאות. אין תשובה אחת נכונה — מעריכים את עומק הרעיון, ההנמקה והקשר לטקסט.',full:'עמדה אישית מנומקת + חיבור ברור לדמות אברם/לטקסט = ניקוד מלא',partial:'אמירה כללית בלי חיבור לטקסט או בלי הנמקה = ניקוד חלקי'}}
+ ]},
 ];
 
-const POOLS=[{id:'poolA',title:'מאגר בחירה — שאלות פתוחות',answer:3,of:5,member:['q14','q15','q16','q17','q18']}];
+const POOLS=[{id:'poolA',title:'מאגר בחירה — שאלות בגרות',answer:3,of:5,member:['q11','q12','q13','q14','q15']}];
+
+
+const SECTIONS={'א':{tag:'חלק א׳',title:'תרגול הבנה',note:'שאלות סגורות לתרגול ולבדיקה עצמית. נכללות באחוז ההצלחה — אך אינן בפורמט בגרות.',cls:''},'ב':{tag:'חלק ב׳',title:'סימולציית בגרות · שאלון 1261',note:'שאלות פתוחות בפורמט הבגרות. ענה/י על 3 מתוך 5 השאלות; בכל שאלה ענה/י על כל הסעיפים ובסס/י את דבריך על הכתוב. נבדקות ומנוקדות ע״י המורה.',cls:'sec-b'}};
 
 const QS={answers:{},submitted:false};
 
 function closedQuestions(){return QUESTIONS.filter(q=>q.type==='mc'||q.type==='tf');}
+function bagrutQuestions(){return QUESTIONS.filter(q=>q.type==='bagrut');}
 function poolOf(qid){return POOLS.find(p=>p.member.includes(qid));}
-function nonPoolQuestions(){return QUESTIONS.filter(q=>!poolOf(q.id));}
-function poolAnsweredCount(p){return p.member.filter(id=>QS.answers[id]!==undefined).length;}
-function requiredCount(){let n=nonPoolQuestions().length;POOLS.forEach(p=>n+=p.answer);return n;}
-function countedAnswered(){let n=nonPoolQuestions().filter(q=>QS.answers[q.id]!==undefined).length;POOLS.forEach(p=>n+=Math.min(poolAnsweredCount(p),p.answer));return n;}
+function isBagrutAnswered(qid){const a=QS.answers[qid];return !!(a&&a.parts&&Object.keys(a.parts).length>0);}
+function poolAnsweredCount(p){return p.member.filter(id=>isBagrutAnswered(id)).length;}
+function qPoints(q){return (q.parts||[]).reduce((s,p)=>s+(p.points||0),0);}
+function requiredCount(){let n=closedQuestions().length;POOLS.forEach(p=>n+=p.answer);return n;}
+function countedAnswered(){let n=closedQuestions().filter(q=>QS.answers[q.id]!==undefined).length;POOLS.forEach(p=>n+=Math.min(poolAnsweredCount(p),p.answer));return n;}
 
 function switchTab(t){['theory','practice','answers'].forEach(x=>{document.getElementById('pane-'+x)?.classList.toggle('active',x===t);document.getElementById('btn-'+x)?.classList.toggle('active',x===t);document.getElementById('btn-'+x+'-student')?.classList.toggle('active',x===t);});if(t==='practice'&&USER_ROLE==='teacher'){document.getElementById('student-gate')?.classList.add('hidden');const tw=document.getElementById('practice-content-wrap');if(tw)tw.style.display='';}if(t==='practice'&&USER_ROLE==='student'){const dd=document.getElementById('gate-date-display');if(dd)dd.textContent=new Date().toLocaleDateString('he-IL',{weekday:'long',year:'numeric',month:'long',day:'numeric'});const gate=document.getElementById('student-gate'),conf=document.getElementById('gate-confirmed'),wrap=document.getElementById('practice-content-wrap');const ne=document.getElementById('gate-name'),ce=document.getElementById('gate-class');if(!_gateConfirmed){if(ne&&STUDENT_NAME&&STUDENT_NAME!=='תלמיד/ה')ne.value=STUDENT_NAME;if(ce&&STUDENT_CLASS)ce.value=STUDENT_CLASS;if(gate)gate.classList.remove('hidden');if(conf)conf.classList.add('hidden');if(wrap)wrap.style.display='none';}else{if(gate)gate.classList.add('hidden');if(conf)conf.classList.remove('hidden');if(wrap)wrap.style.display='';}}}
 
 function confirmGate(){const ne=document.getElementById('gate-name'),ce=document.getElementById('gate-class');const nv=(ne?.value||'').trim(),cv=ce?.value||'';let ok=true;if(nv.split(/\s+/).filter(Boolean).length<2){ne?.classList.add('err');document.getElementById('gate-name-err')?.classList.add('show');ok=false;}else{ne?.classList.remove('err');document.getElementById('gate-name-err')?.classList.remove('show');}if(!cv){ce?.classList.add('err');document.getElementById('gate-class-err')?.classList.add('show');ok=false;}else{ce?.classList.remove('err');document.getElementById('gate-class-err')?.classList.remove('show');}if(!ok)return;STUDENT_NAME=nv;STUDENT_CLASS=cv;LS.set('tanakh2_uname',nv);LS.set('tanakh2_class',cv);_gateConfirmed=true;const av=document.getElementById('gc-avatar'),nm=document.getElementById('gc-name-display'),mt=document.getElementById('gc-meta-display');if(av)av.textContent=nv[0].toUpperCase();if(nm)nm.textContent=nv;if(mt)mt.textContent='כיתה '+cv+' · '+new Date().toLocaleDateString('he-IL');document.getElementById('student-gate')?.classList.add('hidden');document.getElementById('gate-confirmed')?.classList.remove('hidden');const wrap=document.getElementById('practice-content-wrap');if(wrap){wrap.style.display='';wrap.scrollIntoView({behavior:'smooth',block:'start'});}}
 function reopenGate(){_gateConfirmed=false;document.getElementById('gate-confirmed')?.classList.add('hidden');const g=document.getElementById('student-gate');if(g){g.classList.remove('hidden');g.scrollIntoView({behavior:'smooth',block:'start'});}}
 
-function renderQuestions(){const c=document.getElementById('questions-container');if(!c)return;let html='';const poolsSeen={};QUESTIONS.forEach((q,i)=>{const p=poolOf(q.id);if(p&&!poolsSeen[p.id]){poolsSeen[p.id]=true;html+=poolBanner(p);}html+=buildCard(q,i);});c.innerHTML=html;renderAnswers();updateProgress();}
+function renderQuestions(){const c=document.getElementById('questions-container');if(!c)return;let html='',curSec=null,poolsSeen={},closedNum=0,bagrutNum=0;QUESTIONS.forEach(q=>{const sec=q.section||'א';if(sec!==curSec){curSec=sec;const s=SECTIONS[sec];html+=`<div class="section-divider ${s.cls}"><span class="sd-tag">${s.tag}</span><div class="sd-title">${s.title}</div><div class="sd-note">${s.note}</div></div>`;}const p=poolOf(q.id);if(p&&!poolsSeen[p.id]){poolsSeen[p.id]=true;html+=poolBanner(p);}let label;if(q.type==='bagrut'){bagrutNum++;label='שאלה '+bagrutNum;}else{closedNum++;label='שאלה '+closedNum;}html+=buildCard(q,label);});c.innerHTML=html;renderAnswers();updateProgress();}
 
-function poolBanner(p){return `<div class="pool-banner"><span class="pb-icon">🎯</span><div class="pb-text"><div class="pb-title">${p.title}</div><div class="pb-desc">כמו בבגרות: ענה/י על <strong>${p.answer}</strong> מתוך <strong>${p.of}</strong> השאלות הבאות (אפשר יותר — ייבדקו הטובות).</div></div><span class="pool-counter" id="poolc-${p.id}">0 / ${p.answer}</span></div>`;}
+function poolBanner(p){return `<div class="pool-banner"><span class="pb-icon">🎯</span><div class="pb-text"><div class="pb-title">${p.title}</div><div class="pb-desc">כמו בבגרות: ענה/י על <strong>${p.answer}</strong> מתוך <strong>${p.of}</strong> השאלות הבאות (מותר יותר — ייבדקו הטובות).</div></div><span class="pool-counter" id="poolc-${p.id}">0 / ${p.answer}</span></div>`;}
 
-function buildCard(q,i){let input='';const L=['א','ב','ג','ד'];const pmember=poolOf(q.id);if(q.type==='mc'){input=`<div class="mc-wrap">${q.opts.map((o,oi)=>`<button class="mc-btn" id="${q.id}_o${oi}" onclick="pickMC('${q.id}',${oi})"><span class="mc-letter">${L[oi]}</span><span>${o}</span></button>`).join('')}</div>`;}else if(q.type==='tf'){input=`<div class="tf-row"><button class="tf-btn" id="${q.id}_t" onclick="pickTF('${q.id}',true)">✅ נכון</button><button class="tf-btn" id="${q.id}_f" onclick="pickTF('${q.id}',false)">❌ לא נכון</button></div>`;}else if(q.type==='passage'||q.type==='open'){const exc=(q.type==='passage'&&q.excerpt)?`<div class="q-excerpt">${q.excerpt}</div>`:'';input=`${exc}<div class="open-wrap"><textarea class="open-textarea" id="${q.id}_oa" rows="5" placeholder="${q.placeholder||'כתוב/י את תשובתך כאן...'}" oninput="pickOpen('${q.id}')"></textarea>${q.hint?`<div class="open-hint">💡 ${q.hint}</div>`:''}</div>`;}
-  const ptsBadge=(q.rubric&&q.rubric.points)?`<span class="q-pts">${q.rubric.points} נק׳</span>`:'';
-  return `<div class="q-card${pmember?' pool-member':''}" id="${q.id}_card"><div class="q-num">שאלה ${i+1} <span class="q-type-badge">${q.ref}</span>${ptsBadge}</div><div class="q-text">${q.q}</div>${input}<div class="q-feedback" id="${q.id}_fb"></div></div>`;}
+function buildCard(q,label){let input='';const L=['א','ב','ג','ד'];if(q.type==='mc'){input=`<div class="mc-wrap">${q.opts.map((o,oi)=>`<button class="mc-btn" id="${q.id}_o${oi}" onclick="pickMC('${q.id}',${oi})"><span class="mc-letter">${L[oi]}</span><span>${o}</span></button>`).join('')}</div>`;}else if(q.type==='tf'){input=`<div class="tf-row"><button class="tf-btn" id="${q.id}_t" onclick="pickTF('${q.id}',true)">✅ נכון</button><button class="tf-btn" id="${q.id}_f" onclick="pickTF('${q.id}',false)">❌ לא נכון</button></div>`;}else if(q.type==='bagrut'){const exc=q.excerpt?`<div class="q-excerpt">${q.excerpt}</div>`:'';const based=q.based?`<div class="bagrut-based">📖 ${q.based} · ענה/י על כל הסעיפים · בסס/י את דבריך על הכתוב</div>`:'';const stem=q.q?`<div class="bagrut-stem">${q.q}</div>`:'';const parts=q.parts.map((p,pi)=>`<div class="bagrut-part"><div class="part-head"><span class="part-label">${p.label}</span><span class="part-text">${p.text}</span>${p.reflective?'<span class="reflective-badge">שאלת עיון</span>':''}<span class="part-points">${p.points} נק׳</span></div><textarea class="open-textarea" id="${q.id}_p${pi}" rows="4" placeholder="תשובה לסעיף ${p.label}..." oninput="pickPart('${q.id}',${pi})"></textarea></div>`).join('');input=`${exc}${based}${stem}<div class="open-wrap">${parts}</div>`;}
+  const badge=(q.type==='bagrut')?`<span class="q-total-pts">${qPoints(q)} נק׳</span>`:'';
+  return `<div class="q-card${q.type==='bagrut'?' bagrut-q':''}" id="${q.id}_card"><div class="q-num">${label} <span class="q-type-badge">${q.ref}</span>${badge}</div>${q.type!=='bagrut'?`<div class="q-text">${q.q}</div>`:''}${input}<div class="q-feedback" id="${q.id}_fb"></div></div>`;}
 
 function pickMC(qid,idx){if(QS.submitted)return;QS.answers[qid]={sel:idx};QUESTIONS.find(x=>x.id===qid).opts.forEach((_,oi)=>{const b=document.getElementById(qid+'_o'+oi);if(b)b.classList.toggle('sel',oi===idx);});updateProgress();}
 function pickTF(qid,val){if(QS.submitted)return;QS.answers[qid]={sel:val};['t','f'].forEach(k=>{const b=document.getElementById(qid+'_'+k);if(b)b.classList.toggle('sel',k==='t'?val:!val);});updateProgress();}
-function pickOpen(qid){if(QS.submitted)return;const el=document.getElementById(qid+'_oa');if(!el)return;const val=(el.value||'').trim();if(val.length>0)QS.answers[qid]={type:'open',text:val};else delete QS.answers[qid];updateProgress();}
+function pickPart(qid,pi){if(QS.submitted)return;const el=document.getElementById(qid+'_p'+pi);if(!el)return;if(!QS.answers[qid]||!QS.answers[qid].parts)QS.answers[qid]={parts:{}};const v=(el.value||'').trim();if(v.length>0)QS.answers[qid].parts[pi]=v;else delete QS.answers[qid].parts[pi];if(!QS.answers[qid].parts||Object.keys(QS.answers[qid].parts).length===0)delete QS.answers[qid];updateProgress();}
 
 function updateProgress(){const done=countedAnswered(),req=requiredCount(),pct=req?Math.round(done/req*100):0;document.getElementById('prog-fill')?.style.setProperty('width',Math.min(pct,100)+'%');const pt=document.getElementById('prog-txt');if(pt)pt.textContent=`${done} מתוך ${req} נענו`;const pp=document.getElementById('prog-pct');if(pp)pp.textContent=Math.min(pct,100)+'%';POOLS.forEach(p=>{const el=document.getElementById('poolc-'+p.id);if(el){const c=Math.min(poolAnsweredCount(p),p.answer);el.textContent=`${c} / ${p.answer}`;el.classList.toggle('done',c>=p.answer);}});}
 
-function submitQuiz(){const npMissing=nonPoolQuestions().filter(q=>QS.answers[q.id]===undefined);if(npMissing.length){toast(`חסרות ${npMissing.length} שאלות חובה. ענה/י על כולן.`);return;}for(const p of POOLS){if(poolAnsweredCount(p)<p.answer){toast(`במאגר הבחירה ענה/י על לפחות ${p.answer} שאלות.`);return;}}QS.submitted=true;let correct=0;const closed=closedQuestions();QUESTIONS.forEach(q=>{const a=QS.answers[q.id];let ok=false;if(q.type==='mc'&&a?.sel!==undefined){ok=a.sel===q.ans;q.opts.forEach((_,oi)=>{const b=document.getElementById(q.id+'_o'+oi);if(!b)return;b.disabled=true;if(oi===q.ans)b.classList.add('correct');else if(oi===a.sel&&!ok)b.classList.add('wrong');});}else if(q.type==='tf'&&a?.sel!==undefined){ok=a.sel===q.ans;['t','f'].forEach(k=>{const b=document.getElementById(q.id+'_'+k);if(!b)return;b.disabled=true;const bv=k==='t';if(bv===q.ans)b.classList.add('correct');else if(bv===a.sel&&!ok)b.classList.add('wrong');});}if((q.type==='mc'||q.type==='tf')&&ok)correct++;const fb=document.getElementById(q.id+'_fb');if(q.type==='passage'||q.type==='open'){const ta=document.getElementById(q.id+'_oa');if(ta)ta.disabled=true;if(a?.text){if(fb){fb.className='q-feedback show';fb.innerHTML='<div class="open-saved">✍️ תשובתך נשמרה ונמסרה לבדיקת המורה. המחוון ייחשף לאחר שחרור התשובות.</div>';}}}else if(fb&&(q.type==='mc'||q.type==='tf')){fb.className='q-feedback show '+(ok?'ok':'wrong');fb.innerHTML=(ok?'✅ נכון! ':'❌ לא נכון. ')+q.explain;}document.getElementById(q.id+'_card')?.classList.add((q.type==='mc'||q.type==='tf')?(ok?'ok':'wrong'):'');});_lastCorrect=correct;_lastScore=closed.length?Math.round(correct/closed.length*100):0;const pct=_lastScore,emoji=pct>=90?'🏆':pct>=75?'⭐':pct>=60?'👍':'💪',color=pct>=90?'#15803d':pct>=75?'#0f766e':pct>=60?'#1a56db':'#dc2626';const openCount=QUESTIONS.filter(q=>(q.type==='open'||q.type==='passage')&&QS.answers[q.id]).length;const rc=document.getElementById('results-container');if(rc){rc.style.display='';rc.innerHTML=`<div class="results-card"><span class="results-emoji">${emoji}</span><span class="results-score" style="color:${color}">${pct}%</span><span class="results-label">${correct} מתוך ${closed.length} בשאלות הסגורות</span><div class="results-bar"><div class="results-bar-fill" style="width:0%;background:${color}" id="res-fill"></div></div><div style="font-size:.8rem;color:var(--muted);margin-bottom:1.2rem">📝 ${openCount} שאלות פתוחות נמסרו לבדיקת המורה (אינן נכללות באחוז).</div><button class="btn-send" onclick="sendResults()">📤 שליחה למורה</button></div>`;}document.getElementById('submit-row')?.remove();setTimeout(()=>{const rf=document.getElementById('res-fill');if(rf)rf.style.width=pct+'%';},80);rc?.scrollIntoView({behavior:'smooth',block:'start'});}
+function submitQuiz(){const closed=closedQuestions();const cMissing=closed.filter(q=>QS.answers[q.id]===undefined);if(cMissing.length){toast(`בחלק א׳ חסרות ${cMissing.length} שאלות. ענה/י על כולן.`);return;}for(const p of POOLS){if(poolAnsweredCount(p)<p.answer){toast(`בחלק ב׳ ענה/י על לפחות ${p.answer} שאלות (כולל כל הסעיפים).`);return;}}QS.submitted=true;let correct=0;QUESTIONS.forEach(q=>{const a=QS.answers[q.id];let ok=false;if(q.type==='mc'&&a?.sel!==undefined){ok=a.sel===q.ans;q.opts.forEach((_,oi)=>{const b=document.getElementById(q.id+'_o'+oi);if(!b)return;b.disabled=true;if(oi===q.ans)b.classList.add('correct');else if(oi===a.sel&&!ok)b.classList.add('wrong');});}else if(q.type==='tf'&&a?.sel!==undefined){ok=a.sel===q.ans;['t','f'].forEach(k=>{const b=document.getElementById(q.id+'_'+k);if(!b)return;b.disabled=true;const bv=k==='t';if(bv===q.ans)b.classList.add('correct');else if(bv===a.sel&&!ok)b.classList.add('wrong');});}if((q.type==='mc'||q.type==='tf')&&ok)correct++;const fb=document.getElementById(q.id+'_fb');if(q.type==='bagrut'){(q.parts||[]).forEach((_,pi)=>{const ta=document.getElementById(q.id+'_p'+pi);if(ta)ta.disabled=true;});if(isBagrutAnswered(q.id)&&fb){fb.className='q-feedback show';fb.innerHTML='<div class="open-saved">✍️ תשובתך נשמרה ונמסרה לבדיקת המורה. המחוון ייחשף לאחר שחרור התשובות.</div>';}}else if(fb&&(q.type==='mc'||q.type==='tf')){fb.className='q-feedback show '+(ok?'ok':'wrong');fb.innerHTML=(ok?'✅ נכון! ':'❌ לא נכון. ')+q.explain;document.getElementById(q.id+'_card')?.classList.add(ok?'ok':'wrong');}});_lastCorrect=correct;_lastScore=closed.length?Math.round(correct/closed.length*100):0;const pct=_lastScore,emoji=pct>=90?'🏆':pct>=75?'⭐':pct>=60?'👍':'💪',color=pct>=90?'#15803d':pct>=75?'#0f766e':pct>=60?'#1a56db':'#dc2626';let bAns=0,bPts=0;bagrutQuestions().forEach(q=>{if(isBagrutAnswered(q.id)){bAns++;bPts+=qPoints(q);}});const rc=document.getElementById('results-container');if(rc){rc.style.display='';rc.innerHTML=`<div class="results-card"><span class="results-emoji">${emoji}</span><span class="results-score" style="color:${color}">${pct}%</span><span class="results-label">חלק א׳ (תרגול הבנה): ${correct} מתוך ${closed.length} נכונות</span><div class="results-bar"><div class="results-bar-fill" style="width:0%;background:${color}" id="res-fill"></div></div><div style="font-size:.82rem;color:var(--muted);margin-bottom:1.2rem">📝 חלק ב׳ (בגרות): ${bAns} שאלות נמסרו לבדיקת המורה (${bPts} נקודות אפשריות). אינן נכללות באחוז זה.</div><button class="btn-send" onclick="sendResults()">📤 שליחה למורה</button></div>`;}document.getElementById('submit-row')?.remove();setTimeout(()=>{const rf=document.getElementById('res-fill');if(rf)rf.style.width=pct+'%';},80);rc?.scrollIntoView({behavior:'smooth',block:'start'});}
 
 async function sendResults(){await saveScore(_lastScore,STUDENT_NAME,STUDENT_CLASS);toast('✅ התוצאה נשלחה למורה!');}
 
 function resetQuiz(){QS.answers={};QS.submitted=false;_lastScore=null;_lastCorrect=0;renderQuestions();const rc=document.getElementById('results-container');if(rc){rc.style.display='none';rc.innerHTML='';}if(!document.getElementById('submit-row')){const sw=document.getElementById('practice-content-wrap');if(sw){const d=document.createElement('div');d.id='submit-row';d.style.cssText='display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;margin-top:1.5rem';d.innerHTML='<button class="btn-submit" onclick="submitQuiz()">📤 הגשת התרגול</button><button class="btn-reset" onclick="resetQuiz()">🔄 אתחול</button>';sw.appendChild(d);}}}
 
-function renderAnswers(){const al=document.getElementById('answers-list');if(!al)return;const L=['א','ב','ג','ד'];al.innerHTML=QUESTIONS.map((q,i)=>{let block='';if(q.type==='mc'){block=`<div class="ans-correct">✅ ${L[q.ans]}. ${q.opts[q.ans]}</div><div class="ans-explain">💡 ${q.explain}</div>`;}else if(q.type==='tf'){block=`<div class="ans-correct">✅ ${q.ans?'נכון':'לא נכון'}</div><div class="ans-explain">💡 ${q.explain}</div>`;}else{const exc=(q.type==='passage'&&q.excerpt)?`<div class="ans-excerpt">${q.excerpt}</div>`:'';const r=q.rubric||{};block=`${exc}<div class="rubric-box"><div class="rubric-model"><strong>תשובה לדוגמה:</strong> ${r.model||q.explain||''}</div>${r.full?`<div class="rubric-band full"><span class="rb-tag">ניקוד מלא</span><span>${r.full}</span></div>`:''}${r.partial?`<div class="rubric-band partial"><span class="rb-tag">ניקוד חלקי</span><span>${r.partial}</span></div>`:''}${r.points?`<span class="rubric-pts">ניקוד מרבי: ${r.points} נק׳</span>`:''}</div>`;}return `<div class="answer-row"><div class="ans-num">שאלה ${i+1} <span style="color:var(--lc)">${q.ref}</span></div><div class="ans-q">${q.q}</div>${block}</div>`;}).join('');}
+function renderAnswers(){const al=document.getElementById('answers-list');if(!al)return;const L=['א','ב','ג','ד'];let curSec=null,html='';QUESTIONS.forEach(q=>{const sec=q.section||'א';if(sec!==curSec){curSec=sec;const s=SECTIONS[sec];html+=`<div class="section-divider ${s.cls}"><span class="sd-tag">${s.tag}</span><div class="sd-title">${s.title}</div></div>`;}let block='';if(q.type==='mc'){block=`<div class="ans-correct">✅ ${L[q.ans]}. ${q.opts[q.ans]}</div><div class="ans-explain">💡 ${q.explain}</div>`;}else if(q.type==='tf'){block=`<div class="ans-correct">✅ ${q.ans?'נכון':'לא נכון'}</div><div class="ans-explain">💡 ${q.explain}</div>`;}else if(q.type==='bagrut'){const exc=q.excerpt?`<div class="ans-excerpt">${q.excerpt}</div>`:'';const parts=q.parts.map(p=>{const r=p.rubric||{};return `<div class="rubric-box"><div class="rubric-part-hd">סעיף ${p.label} · ${p.points} נק׳${p.reflective?' · שאלת עיון':''}</div><div class="rubric-model"><strong>תשובה לדוגמה:</strong> ${r.model||''}</div>${r.full?`<div class="rubric-band full"><span class="rb-tag">ניקוד מלא</span><span>${r.full}</span></div>`:''}${r.partial?`<div class="rubric-band partial"><span class="rb-tag">ניקוד חלקי</span><span>${r.partial}</span></div>`:''}</div>`;}).join('');const stem=q.q?`<div class="bagrut-stem">${q.q}</div>`:'';const parttexts=q.parts.map(p=>`<div style="font-size:.82rem;margin:.2rem 0;color:var(--text-mid)"><strong>${p.label}.</strong> ${p.text}</div>`).join('');block=`${exc}${stem}${parttexts}<div class="rubric-pts">ניקוד כולל לשאלה: ${qPoints(q)} נק׳</div>${parts}`;}html+=`<div class="answer-row"><div class="ans-num">${q.type==='bagrut'?'שאלת בגרות':'שאלה'} <span style="color:var(--lc)">${q.ref}</span></div>${q.type!=='bagrut'?`<div class="ans-q">${q.q}</div>`:''}${block}</div>`;});al.innerHTML=html;}
 
 function printLesson(){
   var pw=window.open('','_blank','width=960,height=760');
   if(!pw){alert('popup blocked');return;}
   var isTeacher=(USER_ROLE==='teacher');
-  var score=(typeof _lastScore!=='undefined')?_lastScore:null;
-  var sn=isTeacher?'':STUDENT_NAME;var sc=isTeacher?'':STUDENT_CLASS;
   var L=['א','ב','ג','ד'];
   var theoryHtml=(document.getElementById('pane-theory')||{innerHTML:''}).innerHTML||'';
-  var qHtml=QUESTIONS.map(function(q,i){
-    var pts=(q.rubric&&q.rubric.points)?'<div style="font-size:8pt;color:#ca8a04;font-weight:700">'+q.rubric.points+' נק׳ · '+q.ref+'</div>':'<div style="font-size:7.5pt;color:#0f766e">'+q.ref+'</div>';
-    var h='<div style="border:1px solid #e4e7ef;border-radius:8px;padding:.7rem .9rem;margin-bottom:.6rem;break-inside:avoid">';
-    h+='<div style="display:flex;gap:.5rem"><div style="width:20px;height:20px;border-radius:50%;background:#0f766e;color:#fff;font-size:.6rem;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+(i+1)+'</div><div style="flex:1">'+pts+'<div style="font-size:9.5pt;font-weight:700;margin-bottom:.3rem">'+q.q+'</div>';
-    if(q.type==='passage'&&q.excerpt)h+='<div style="background:#f8f9fb;border-right:3px solid #0891b2;border-radius:6px;padding:.4rem .7rem;font-size:8.5pt;font-style:italic;margin-bottom:.3rem">'+q.excerpt+'</div>';
-    if(isTeacher){
-      if(q.type==='mc')h+='<div style="font-size:9pt;padding:.3rem .65rem;background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;border-radius:6px"><strong>✅ תשובה:</strong> '+L[q.ans]+'. '+q.opts[q.ans]+'</div>';
-      else if(q.type==='tf')h+='<div style="font-size:9pt;padding:.3rem .65rem;background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;border-radius:6px"><strong>✅ תשובה:</strong> '+(q.ans?'נכון':'לא נכון')+'</div>';
-      else{var r=q.rubric||{};h+='<div style="font-size:8.5pt;background:#f8f9fb;border:1px solid #e4e7ef;border-radius:6px;padding:.4rem .7rem"><strong style="color:#15803d">תשובה לדוגמה:</strong> '+(r.model||q.explain||'')+(r.full?'<br><strong>ניקוד מלא:</strong> '+r.full:'')+(r.partial?'<br><strong>ניקוד חלקי:</strong> '+r.partial:'')+'</div>';}
-    }else{
-      if(q.type==='passage'||q.type==='open')h+='<div style="border:1px dashed #cbd5e1;border-radius:6px;height:60px"></div>';
-    }
-    h+='</div></div>';return h;
+  var closedNum=0,bagrutNum=0,curSec=null;
+  var qHtml=QUESTIONS.map(function(q){
+    var secHtml='';var sec=q.section||'א';if(sec!==curSec){curSec=sec;secHtml='<div style="background:#f0fdfa;border:1px solid #ccc;border-radius:8px;padding:.5rem .8rem;margin:1rem 0 .6rem;font-weight:800;color:#0f766e;font-size:11pt">'+SECTIONS[sec].tag+' — '+SECTIONS[sec].title+'</div>';}
+    var h=secHtml+'<div style="border:1px solid #e4e7ef;border-radius:8px;padding:.7rem .9rem;margin-bottom:.6rem;break-inside:avoid">';
+    if(q.type==='bagrut'){bagrutNum++;h+='<div style="font-size:8pt;color:#ca8a04;font-weight:700">שאלה '+bagrutNum+' · '+q.ref+' · '+qPoints(q)+' נק׳</div>';if(q.excerpt)h+='<div style="background:#f8f9fb;border-right:3px solid #0891b2;border-radius:6px;padding:.4rem .7rem;font-size:8.5pt;font-style:italic;margin:.3rem 0">'+q.excerpt+'</div>';if(q.q)h+='<div style="font-size:9.5pt;font-weight:700;margin-bottom:.3rem">'+q.q+'</div>';q.parts.forEach(function(p){h+='<div style="font-size:9pt;font-weight:700;margin-top:.5rem">'+p.label+'. '+p.text+' <span style="color:#ca8a04">('+p.points+' נק׳)</span></div>';if(isTeacher){var r=p.rubric||{};h+='<div style="font-size:8.5pt;background:#f8f9fb;border:1px solid #e4e7ef;border-radius:6px;padding:.4rem .7rem;margin-top:.25rem"><strong style="color:#15803d">תשובה לדוגמה:</strong> '+(r.model||'')+(r.full?'<br><strong>מלא:</strong> '+r.full:'')+(r.partial?'<br><strong>חלקי:</strong> '+r.partial:'')+'</div>';}else{h+='<div style="border:1px dashed #cbd5e1;border-radius:6px;height:50px;margin-top:.25rem"></div>';}});}
+    else{closedNum++;h+='<div style="font-size:7.5pt;color:#0f766e">שאלה '+closedNum+' · '+q.ref+'</div><div style="font-size:9.5pt;font-weight:700;margin:.2rem 0 .3rem">'+q.q+'</div>';if(isTeacher){if(q.type==='mc')h+='<div style="font-size:9pt;padding:.3rem .65rem;background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;border-radius:6px"><strong>✅ תשובה:</strong> '+L[q.ans]+'. '+q.opts[q.ans]+'</div>';else h+='<div style="font-size:9pt;padding:.3rem .65rem;background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;border-radius:6px"><strong>✅ תשובה:</strong> '+(q.ans?'נכון':'לא נכון')+'</div>';}}
+    h+='</div>';return h;
   }).join('');
-  var poolNote=POOLS.map(function(p){return '<div style="font-size:9pt;color:#ca8a04;font-weight:700;margin:.5rem 0">🎯 '+p.title+' — ענה/י על '+p.answer+' מתוך '+p.of+'.</div>';}).join('');
-  var scoreHtml=(!isTeacher&&score!==null)?'<div style="background:#f0fdf4;border:2px solid #15803d;border-radius:12px;padding:.8rem;text-align:center;margin-bottom:1rem"><div style="font-size:30pt;color:#15803d">'+score+'%</div><div style="font-size:10pt;color:#15803d;font-weight:700">בשאלות הסגורות</div></div>':'';
-  var studentLine=(sn&&sn.length>0)?'<div style="font-size:11pt;font-weight:700;margin-top:.5rem">תלמיד/ה: '+sn+(sc?' | כיתה: '+sc:'')+' | '+new Date().toLocaleDateString('he-IL')+'</div>':'<div style="font-size:10pt;color:#6b7594;margin-top:.4rem">'+new Date().toLocaleDateString('he-IL')+'</div>';
-  var css='*{box-sizing:border-box;margin:0;padding:0}body{font-family:Heebo,sans-serif;direction:rtl;background:#fff;color:#0d1424;font-size:10pt;line-height:1.6}@page{margin:1.5cm;size:A4}.doc{max-width:210mm;margin:0 auto;padding:1cm}.doc-header{text-align:center;padding-bottom:1.2rem;border-bottom:3px solid #0f766e;margin-bottom:1.5rem}.doc-header h1{font-size:18pt;color:#0f766e}.doc-header p{font-size:9pt;color:#555}.sec-title{font-size:13pt;color:#0f766e;border-bottom:2px solid #ecfeff;padding-bottom:.4rem;margin:1.5rem 0 1rem;page-break-after:avoid}.card,.box,.cmp-table,.steps-wrap{border:1px solid #e4e7ef;border-radius:8px;padding:.7rem .9rem;margin-bottom:.6rem;break-inside:avoid}.section-hd{font-size:11pt;color:#0f766e;font-weight:800;margin:1rem 0 .5rem}.cmp-table{width:100%;border-collapse:collapse;font-size:.8rem}.cmp-table th{background:#0f766e;color:#fff;padding:.4rem .6rem;-webkit-print-color-adjust:exact;print-color-adjust:exact}.cmp-table td{padding:.4rem .6rem;border-bottom:1px solid #e4e7ef}.lesson-hero::before,.hero-badge,.hero-meta,.btn-print,.goto-practice-btn,.print-header,.sn-icon{display:none!important}.lesson-hero{background:#f0fdfa;border:1px solid #ccc;border-radius:10px;padding:1rem;margin-bottom:1rem}.sn{display:inline-flex;width:22px;height:22px;border-radius:50%;background:#0f766e;color:#fff;align-items:center;justify-content:center;font-size:.7rem;-webkit-print-color-adjust:exact;print-color-adjust:exact}';
+  var studentLine=(!isTeacher&&STUDENT_NAME&&STUDENT_NAME!=='תלמיד/ה')?'<div style="font-size:11pt;font-weight:700;margin-top:.5rem">תלמיד/ה: '+STUDENT_NAME+(STUDENT_CLASS?' | כיתה: '+STUDENT_CLASS:'')+' | '+new Date().toLocaleDateString('he-IL')+'</div>':'<div style="font-size:10pt;color:#6b7594;margin-top:.4rem">'+new Date().toLocaleDateString('he-IL')+'</div>';
+  var css='*{box-sizing:border-box;margin:0;padding:0}body{font-family:Heebo,sans-serif;direction:rtl;background:#fff;color:#0d1424;font-size:10pt;line-height:1.6}@page{margin:1.5cm;size:A4}.doc{max-width:210mm;margin:0 auto;padding:1cm}.doc-header{text-align:center;padding-bottom:1.2rem;border-bottom:3px solid #0f766e;margin-bottom:1.5rem}.doc-header h1{font-size:18pt;color:#0f766e}.doc-header p{font-size:9pt;color:#555}.sec-title{font-size:13pt;color:#0f766e;border-bottom:2px solid #ecfeff;padding-bottom:.4rem;margin:1.5rem 0 1rem;page-break-after:avoid}.card,.box,.cmp-table,.steps-wrap,.teacher-note-box{border:1px solid #e4e7ef;border-radius:8px;padding:.7rem .9rem;margin-bottom:.6rem;break-inside:avoid}.section-hd{font-size:11pt;color:#0f766e;font-weight:800;margin:1rem 0 .5rem}.cmp-table{width:100%;border-collapse:collapse;font-size:.8rem}.cmp-table th{background:#0f766e;color:#fff;padding:.4rem .6rem;-webkit-print-color-adjust:exact;print-color-adjust:exact}.cmp-table td{padding:.4rem .6rem;border-bottom:1px solid #e4e7ef}.lesson-hero::before,.hero-badge,.hero-meta,.btn-print,.goto-practice-btn,.print-header,.sn-icon,.layer-tag,.tn-tag{display:none!important}.lesson-hero{background:#f0fdfa;border:1px solid #ccc;border-radius:10px;padding:1rem;margin-bottom:1rem}.sn{display:inline-flex;width:22px;height:22px;border-radius:50%;background:#0f766e;color:#fff;align-items:center;justify-content:center;font-size:.7rem;-webkit-print-color-adjust:exact;print-color-adjust:exact}';
   var titleTag=isTeacher?' — גרסת מורה (כולל מחוון)':'';
-  var bodyHtml='<div class="doc"><div class="doc-header"><h1>לך לך — קריאת אברהם'+titleTag+'</h1><p>תנ״ך לתיכון · יחידה א׳ — סיפורי האבות · שיעור 1 · בראשית י״ב</p>'+studentLine+'</div>'+scoreHtml+'<div class="sec-title">חלק א — רקע ועיון</div><div>'+theoryHtml+'</div><div class="sec-title" style="page-break-before:always">חלק ב — שאלות</div>'+poolNote+qHtml+'</div>';
+  var bodyHtml='<div class="doc"><div class="doc-header"><h1>לך לך — קריאת אברהם'+titleTag+'</h1><p>תנ״ך לתיכון · יחידה א׳ — סיפורי האבות · שיעור 1 · בראשית י״ב</p>'+studentLine+'</div><div class="sec-title">חלק א — רקע ועיון</div><div>'+theoryHtml+'</div><div class="sec-title" style="page-break-before:always">חלק ב — שאלות</div>'+qHtml+'</div>';
   var fullHtml='<!DOCTYPE html><html lang="he" dir="rtl"><head><meta charset="UTF-8"><title>לך לך — קריאת אברהם</title><link href="https://fonts.googleapis.com/css2?family=Secular+One&family=Heebo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>'+css+'</style></head><body>'+bodyHtml+'<'+'script>document.fonts.ready.then(function(){setTimeout(function(){window.print();},300);}).catch(function(){setTimeout(function(){window.print();},1200);});<'+'/script></body></html>';
   pw.document.write(fullHtml);pw.document.close();
 }
 
 let _tt;
-function toast(m){const e=document.getElementById('toast');e.textContent=m;e.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>e.classList.remove('show'),2800);}
+function toast(m){const e=document.getElementById('toast');e.textContent=m;e.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>e.classList.remove('show'),3200);}
 function goBack(){if(window.opener){try{window.opener.postMessage({type:'lessonDone',lid:LESSON_ID},'*')}catch{}window.close();return;}window.location.href=BACK_URL;}
 function init(){initFirebase();if(USER_ROLE==='teacher'){document.getElementById('role-chip')?.style.setProperty('display','');document.getElementById('btn-answers')?.style.setProperty('display','');_gateConfirmed=true;const w=document.getElementById('practice-content-wrap');if(w)w.style.display='';document.getElementById('student-gate')?.classList.add('hidden');}else{const w=document.getElementById('practice-content-wrap');if(w)w.style.display='none';if(STUDENT_NAME&&STUDENT_NAME!=='תלמיד/ה'&&STUDENT_CLASS){_gateConfirmed=true;if(w)w.style.display='';document.getElementById('student-gate')?.classList.add('hidden');const av=document.getElementById('gc-avatar'),nm=document.getElementById('gc-name-display'),mt=document.getElementById('gc-meta-display');if(av)av.textContent=STUDENT_NAME[0].toUpperCase();if(nm)nm.textContent=STUDENT_NAME;if(mt)mt.textContent='כיתה '+STUDENT_CLASS+' · '+new Date().toLocaleDateString('he-IL');document.getElementById('gate-confirmed')?.classList.remove('hidden');}}applyAnswersVisibility();renderQuestions();}
 init();
