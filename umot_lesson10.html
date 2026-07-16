@@ -443,13 +443,13 @@ const BACK_URL=_p.get('back')||'index.html';
 function applyAnswersVisibility(){const lk=document.getElementById('answers-locked-msg'),vi=document.getElementById('answers-visible-content'),sr=document.getElementById('answers-source');if(USER_ROLE==='teacher'){if(lk)lk.style.display='none';if(vi)vi.style.display='';if(sr)sr.textContent='גישת מורה';document.getElementById('btn-answers')?.style.setProperty('display','');}else if(ANSWERS_VISIBLE){if(lk)lk.style.display='none';if(vi)vi.style.display='';if(sr)sr.textContent='שוחרר ע״י המורה';document.getElementById('btn-answers-student')?.style.setProperty('display','');}else{if(lk)lk.style.display='';if(vi)vi.style.display='none';}}
 
 const QUESTIONS=[
-{id:'q01',type:'mc',section:'א',ref:'שמות ל״ד, א',
+{id:'q01',type:'mc',section:'א',ref:'שמות ל״ד, א; ד',
  q:`מה נצטווה משה לעשות בפתח הפרק?`,
  opts:[`לשבור את הלוחות`,`“פְּסָל לְךָ שְׁנֵי לֻחֹת אֲבָנִים כָּרִאשֹׁנִים”`,`לבנות מזבח`,`לספור את העם`],
  ans:1, explain:`“פְּסָל לְךָ שְׁנֵי לֻחֹת אֲבָנִים כָּרִאשֹׁנִים” (פס׳ א) — ובהמשך “וַיִּפְסֹל שְׁנֵי לֻחֹת אֲבָנִים כָּרִאשֹׁנִים” (פס׳ ד).`,
  teacherNote:`הציווי פותח את מהלך התיקון שלאחר שבירת הלוחות.`},
 
-{id:'q02',type:'mc',section:'א',ref:'שמות ל״ד, א · שמות ל״ב, טז',
+{id:'q02',type:'mc',section:'א',ref:'שמות ל״ד, א; ד · שמות ל״ב, טז',
  q:`מה ההבדל בין הלוחות השניים לראשונים?`,
  opts:[`השניים נכתבו בידי אהרן`,`השניים היו מזהב`,`את השניים פסל משה בעצמו, ואילו הראשונים היו “מַעֲשֵׂה אֱלֹהִים”`,`אין כל הבדל ביניהם`],
  ans:2, explain:`משה נצטווה “פְּסָל לְךָ שְׁנֵי לֻחֹת אֲבָנִים כָּרִאשֹׁנִים” וקיים — “וַיִּפְסֹל שְׁנֵי לֻחֹת אֲבָנִים כָּרִאשֹׁנִים” (פס׳ א, ד); ואילו על הראשונים נאמר “וְהַלֻּחֹת מַעֲשֵׂה אֱלֹהִים הֵמָּה” (ל״ב, טז). הכתיבה עצמה נותרה של ה׳ — “וְכָתַבְתִּי עַל הַלֻּחֹת אֶת הַדְּבָרִים אֲשֶׁר הָיוּ עַל הַלֻּחֹת הָרִאשֹׁנִים אֲשֶׁר שִׁבַּרְתָּ”.`,
@@ -460,7 +460,7 @@ const QUESTIONS=[
  ans:true, explain:`נכון. “וַיַּעֲבֹר יְהוָה עַל פָּנָיו וַיִּקְרָא”, ובעקבותיו “יְהוָה יְהוָה אֵל רַחוּם וְחַנּוּן אֶרֶךְ אַפַּיִם וְרַב חֶסֶד וֶאֱמֶת” (פס׳ ו).`,
  teacherNote:`קיום ההבטחה “אני אעביר כל טובי על פניך” (ל״ג, יט).`},
 
-{id:'q04',type:'mc',section:'א',ref:'שמות ל״ד, ו',
+{id:'q04',type:'mc',section:'א',ref:'שמות ל״ד, ו–ז',
  q:`כיצד נפתחת רשימת המידות?`,
  opts:[`“יְהוָה יְהוָה אֵל רַחוּם וְחַנּוּן אֶרֶךְ אַפַּיִם וְרַב חֶסֶד וֶאֱמֶת”`,`“אל נקמות”`,`“שופט כל הארץ”`,`“אל שדי”`],
  ans:0, explain:`“וַיַּעֲבֹר יְהוָה עַל פָּנָיו וַיִּקְרָא יְהוָה יְהוָה אֵל רַחוּם וְחַנּוּן אֶרֶךְ אַפַּיִם וְרַב חֶסֶד וֶאֱמֶת” (פס׳ ו), וממשיך “נֹצֵר חֶסֶד לָאֲלָפִים נֹשֵׂא עָוֹן וָפֶשַׁע וְחַטָּאָה” (פס׳ ז).`,
