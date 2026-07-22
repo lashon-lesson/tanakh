@@ -1,7 +1,10 @@
 <!DOCTYPE html>
+<!-- @copyright-line | © 2026 זכויות יוצרים – ליאור אלמוסלינוס | כל הזכויות שמורות. אין להעתיק או להפיץ ללא אישור. -->
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
+<meta name="copyright" content="© 2026 זכויות יוצרים – ליאור אלמוסלינוס">
+<meta name="author" content="ליאור אלמוסלינוס">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>שיעור 5 — ברית המילה | תנ״ך לתיכון</title>
 <link href="https://fonts.googleapis.com/css2?family=Secular+One&family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -633,7 +636,8 @@ function printLesson(){
   var css='*{box-sizing:border-box;margin:0;padding:0}body{font-family:Heebo,sans-serif;direction:rtl;background:#fff;color:#0d1424;font-size:10pt;line-height:1.6}@page{margin:1.5cm;size:A4}.doc{max-width:210mm;margin:0 auto;padding:1cm}.doc-header{text-align:center;padding-bottom:1.2rem;border-bottom:3px solid #0f766e;margin-bottom:1.5rem}.doc-header h1{font-size:18pt;color:#0f766e}.doc-header p{font-size:9pt;color:#555}.sec-title{font-size:13pt;color:#0f766e;border-bottom:2px solid #ecfeff;padding-bottom:.4rem;margin:1.5rem 0 1rem;page-break-after:avoid}.card,.box,.cmp-table,.steps-wrap,.teacher-note-box{border:1px solid #e4e7ef;border-radius:8px;padding:.7rem .9rem;margin-bottom:.6rem;break-inside:avoid}.section-hd{font-size:11pt;color:#0f766e;font-weight:800;margin:1rem 0 .5rem}.cmp-table{width:100%;border-collapse:collapse;font-size:.8rem}.cmp-table th{background:#0f766e;color:#fff;padding:.4rem .6rem;-webkit-print-color-adjust:exact;print-color-adjust:exact}.cmp-table td{padding:.4rem .6rem;border-bottom:1px solid #e4e7ef}.lesson-hero::before,.hero-badge,.hero-meta,.btn-print,.goto-practice-btn,.print-header,.sn-icon,.layer-tag,.tn-tag{display:none!important}.lesson-hero{background:#f0fdfa;border:1px solid #ccc;border-radius:10px;padding:1rem;margin-bottom:1rem}.sn{display:inline-flex;width:22px;height:22px;border-radius:50%;background:#0f766e;color:#fff;align-items:center;justify-content:center;font-size:.7rem;-webkit-print-color-adjust:exact;print-color-adjust:exact}';
   var titleTag=isTeacher?' — גרסת מורה (כולל מחוון)':'';if(!isTeacher){css+='.teacher-note-box{display:none}';}
   var bodyHtml='<div class="doc"><div class="doc-header"><h1>ברית המילה'+titleTag+'</h1><p>תנ״ך לתיכון · יחידה א׳ — סיפורי האבות · שיעור 5 · בראשית י״ז</p>'+studentLine+'</div><div class="sec-title">חלק א — רקע ועיון</div><div>'+theoryHtml+'</div><div class="sec-title" style="page-break-before:always">חלק ב — שאלות</div>'+qHtml+'</div>';
-  var fullHtml='<!DOCTYPE html><html lang="he" dir="rtl"><head><meta charset="UTF-8"><title>ברית המילה</title><link href="https://fonts.googleapis.com/css2?family=Secular+One&family=Heebo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>'+css+'</style></head><body>'+bodyHtml+'<'+'script>document.fonts.ready.then(function(){setTimeout(function(){window.print();},300);}).catch(function(){setTimeout(function(){window.print();},1200);});<'+'/script></body></html>';
+  var fullHtml='<!DOCTYPE html><html lang="he" dir="rtl"><head><meta charset="UTF-8"><title>ברית המילה</title><link href="https://fonts.googleapis.com/css2?family=Secular+One&family=Heebo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>'+css+'</style></head><body>'+bodyHtml+'<'+'script>document.fonts.ready.then(function(){setTimeout(function(){window.print();},300);}).catch(function(){setTimeout(function(){window.print();},1200);});<'+'/script><footer class="copyright-line" dir="rtl" style="margin-top:2rem;padding:1rem;border-top:1px solid rgba(0,0,0,.12);font-size:.78rem;color:#6b7280;text-align:center">© 2026 זכויות יוצרים – ליאור אלמוסלינוס</footer>
+</body></html>';
   pw.document.write(fullHtml);pw.document.close();
 }
 
