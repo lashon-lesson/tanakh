@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- @copyright-line | © 2026 זכויות יוצרים – ליאור אלמוסלינוס | כל הזכויות שמורות. אין להעתיק או להפיץ ללא אישור. -->
+<!-- @copyright-line | © 2026 זכויות יוצרים – ליאור אלמוסלינוס | כל הזכויות שמורות. אין להעתיק, לשכפל או להפיץ ללא אישור בכתב. -->
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
@@ -292,6 +292,12 @@ button,input,select,textarea{font-family:inherit}
 .teacher-note-box{background:#fff7ed;border:1.5px solid #fdba74;border-radius:var(--r-lg);padding:1rem 1.2rem;margin:1.4rem 0}.teacher-note-box{display:none}body.is-teacher .teacher-note-box{display:block}
 .tn-tag{display:inline-block;font-size:.62rem;font-weight:800;letter-spacing:.05em;padding:.15rem .55rem;border-radius:var(--r-pill);background:#ea580c;color:#fff;margin-bottom:.5rem;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 .teacher-note-box p{font-size:.82rem;color:#7c2d12;line-height:1.65}
+
+/* ── COPYRIGHT ── */
+.copyright-line{padding:1.35rem 1rem .9rem;text-align:center;font-size:.71rem;letter-spacing:.015em;color:var(--muted);opacity:.8;line-height:1.5;user-select:none}
+.copyright-line.pinned{position:absolute;bottom:.7rem;left:0;right:0;z-index:2;opacity:.72}
+@media print{.copyright-line{opacity:1;color:#6b7594}}
+
 </style>
 </head>
 <body>
@@ -434,6 +440,7 @@ button,input,select,textarea{font-family:inherit}
   </div>
 </div>
 </div>
+<div class="copyright-line">© 2026 זכויות יוצרים – ליאור אלמוסלינוס</div>
 <div id="toast"></div>
 <script>
 const FB_CFG={apiKey:"AIzaSyA8QKxGi7-72Dm07VgNwLx-fJu7QTPN1Ak",authDomain:"tanakh-project.firebaseapp.com",projectId:"tanakh-project",storageBucket:"tanakh-project.firebasestorage.app",messagingSenderId:"798378782412",appId:"1:798378782412:web:99a44c6771a5afec7d1c69"};
@@ -631,11 +638,10 @@ function printLesson(){
     h+='</div>';return h;
   }).join('');
   var studentLine=(!isTeacher&&STUDENT_NAME&&STUDENT_NAME!=='תלמיד/ה')?'<div style="font-size:11pt;font-weight:700;margin-top:.5rem">תלמיד/ה: '+STUDENT_NAME+(STUDENT_CLASS?' | כיתה: '+STUDENT_CLASS:'')+' | '+new Date().toLocaleDateString('he-IL')+'</div>':'<div style="font-size:10pt;color:#6b7594;margin-top:.4rem">'+new Date().toLocaleDateString('he-IL')+'</div>';
-  var css='*{box-sizing:border-box;margin:0;padding:0}body{font-family:Heebo,sans-serif;direction:rtl;background:#fff;color:#0d1424;font-size:10pt;line-height:1.6}@page{margin:1.5cm;size:A4}.doc{max-width:210mm;margin:0 auto;padding:1cm}.doc-header{text-align:center;padding-bottom:1.2rem;border-bottom:3px solid #0f766e;margin-bottom:1.5rem}.doc-header h1{font-size:18pt;color:#0f766e}.doc-header p{font-size:9pt;color:#555}.sec-title{font-size:13pt;color:#0f766e;border-bottom:2px solid #ecfeff;padding-bottom:.4rem;margin:1.5rem 0 1rem;page-break-after:avoid}.card,.box,.cmp-table,.steps-wrap,.teacher-note-box{border:1px solid #e4e7ef;border-radius:8px;padding:.7rem .9rem;margin-bottom:.6rem;break-inside:avoid}.section-hd{font-size:11pt;color:#0f766e;font-weight:800;margin:1rem 0 .5rem}.cmp-table{width:100%;border-collapse:collapse;font-size:.8rem}.cmp-table th{background:#0f766e;color:#fff;padding:.4rem .6rem;-webkit-print-color-adjust:exact;print-color-adjust:exact}.cmp-table td{padding:.4rem .6rem;border-bottom:1px solid #e4e7ef}.lesson-hero::before,.hero-badge,.hero-meta,.btn-print,.goto-practice-btn,.print-header,.sn-icon,.layer-tag,.tn-tag{display:none!important}.lesson-hero{background:#f0fdfa;border:1px solid #ccc;border-radius:10px;padding:1rem;margin-bottom:1rem}.sn{display:inline-flex;width:22px;height:22px;border-radius:50%;background:#0f766e;color:#fff;align-items:center;justify-content:center;font-size:.7rem;-webkit-print-color-adjust:exact;print-color-adjust:exact}';
+  var css='*{box-sizing:border-box;margin:0;padding:0}body{font-family:Heebo,sans-serif;direction:rtl;background:#fff;color:#0d1424;font-size:10pt;line-height:1.6}@page{margin:1.5cm 1.5cm 2.4cm;size:A4}.print-cr{position:fixed;bottom:0;left:0;right:0;text-align:center;font-size:7pt;color:#8a92a8;padding-top:.12cm;border-top:1px solid #e8ebf2;background:#fff}.doc{max-width:210mm;margin:0 auto;padding:1cm}.doc-header{text-align:center;padding-bottom:1.2rem;border-bottom:3px solid #0f766e;margin-bottom:1.5rem}.doc-header h1{font-size:18pt;color:#0f766e}.doc-header p{font-size:9pt;color:#555}.sec-title{font-size:13pt;color:#0f766e;border-bottom:2px solid #ecfeff;padding-bottom:.4rem;margin:1.5rem 0 1rem;page-break-after:avoid}.card,.box,.cmp-table,.steps-wrap,.teacher-note-box{border:1px solid #e4e7ef;border-radius:8px;padding:.7rem .9rem;margin-bottom:.6rem;break-inside:avoid}.section-hd{font-size:11pt;color:#0f766e;font-weight:800;margin:1rem 0 .5rem}.cmp-table{width:100%;border-collapse:collapse;font-size:.8rem}.cmp-table th{background:#0f766e;color:#fff;padding:.4rem .6rem;-webkit-print-color-adjust:exact;print-color-adjust:exact}.cmp-table td{padding:.4rem .6rem;border-bottom:1px solid #e4e7ef}.lesson-hero::before,.hero-badge,.hero-meta,.btn-print,.goto-practice-btn,.print-header,.sn-icon,.layer-tag,.tn-tag{display:none!important}.lesson-hero{background:#f0fdfa;border:1px solid #ccc;border-radius:10px;padding:1rem;margin-bottom:1rem}.sn{display:inline-flex;width:22px;height:22px;border-radius:50%;background:#0f766e;color:#fff;align-items:center;justify-content:center;font-size:.7rem;-webkit-print-color-adjust:exact;print-color-adjust:exact}';
   var titleTag=isTeacher?' — גרסת מורה (כולל מחוון)':'';if(!isTeacher){css+='.teacher-note-box{display:none}';}
   var bodyHtml='<div class="doc"><div class="doc-header"><h1>חלום יעקב בבית אל'+titleTag+'</h1><p>תנ״ך לתיכון · יחידה א׳ — סיפורי האבות · שיעור 14 · בראשית כ״ח</p>'+studentLine+'</div><div class="sec-title">חלק א — רקע ועיון</div><div>'+theoryHtml+'</div><div class="sec-title" style="page-break-before:always">חלק ב — שאלות</div>'+qHtml+'</div>';
-  var fullHtml='<!DOCTYPE html><html lang="he" dir="rtl"><head><meta charset="UTF-8"><title>חלום יעקב בבית אל</title><link href="https://fonts.googleapis.com/css2?family=Secular+One&family=Heebo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>'+css+'</style></head><body>'+bodyHtml+'<'+'script>document.fonts.ready.then(function(){setTimeout(function(){window.print();},300);}).catch(function(){setTimeout(function(){window.print();},1200);});<'+'/script><footer class="copyright-line" dir="rtl" style="margin-top:2rem;padding:1rem;border-top:1px solid rgba(0,0,0,.12);font-size:.78rem;color:#6b7280;text-align:center">© 2026 זכויות יוצרים – ליאור אלמוסלינוס</footer>
-</body></html>';
+  var fullHtml='<!DOCTYPE html><html lang="he" dir="rtl"><head><meta charset="UTF-8"><title>חלום יעקב בבית אל</title><link href="https://fonts.googleapis.com/css2?family=Secular+One&family=Heebo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>'+css+'</style></head><body>'+bodyHtml+'<div class="print-cr">© 2026 זכויות יוצרים – ליאור אלמוסלינוס</div><'+'script>document.fonts.ready.then(function(){setTimeout(function(){window.print();},300);}).catch(function(){setTimeout(function(){window.print();},1200);});<'+'/script></body></html>';
   pw.document.write(fullHtml);pw.document.close();
 }
 
