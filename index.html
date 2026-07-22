@@ -1,7 +1,10 @@
 <!DOCTYPE html>
+<!-- @copyright-line | © 2026 זכויות יוצרים – ליאור אלמוסלינוס | כל הזכויות שמורות. אין להעתיק, לשכפל או להפיץ ללא אישור בכתב. -->
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
+<meta name="copyright" content="© 2026 זכויות יוצרים – ליאור אלמוסלינוס">
+<meta name="author" content="ליאור אלמוסלינוס">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#6366f1">
@@ -623,6 +626,12 @@ a{text-decoration:none;color:inherit}
   .topnav-btn.active{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-color:transparent;box-shadow:0 4px 14px rgba(109,94,245,.32)}
 }
 @media(max-width:480px){.stat-grid,.up-grid,.mid-grid{grid-template-columns:1fr}.welcome-t{font-size:1.25rem}}
+
+/* ── COPYRIGHT ── */
+.copyright-line{padding:1.35rem 1rem .9rem;text-align:center;font-size:.71rem;letter-spacing:.015em;color:var(--muted);opacity:.8;line-height:1.5;user-select:none}
+.copyright-line.on-dark{position:absolute;bottom:.5rem;left:0;right:0;z-index:2;color:rgba(255,255,255,.40);opacity:1}
+@media print{.copyright-line{opacity:1;color:#6b7594}}
+
 </style>
 </head>
 <body>
@@ -708,6 +717,7 @@ a{text-decoration:none;color:inherit}
     <p class="tcp-hint">קיבלת קוד כניסה ראשוני? הזן אותו כאן</p>
     <button class="tcp-back" onclick="hideTCP()">← חזרה</button>
   </div>
+<div class="copyright-line on-dark">© 2026 זכויות יוצרים – ליאור אלמוסלינוס</div>
 </div>
 
 <!-- CHANGE PASSWORD SCREEN -->
@@ -847,6 +857,7 @@ a{text-decoration:none;color:inherit}
   </div>
   <div id="units-wrap" style="display:none"></div>
 
+<div class="copyright-line">© 2026 זכויות יוצרים – ליאור אלמוסלינוס</div>
 </div>
 
 <!-- SETTINGS MODAL -->
