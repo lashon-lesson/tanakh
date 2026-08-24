@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<!-- @copyright-line | © 2026 זכויות יוצרים – ליאור אלמוסלינוס | כל הזכויות שמורות. אין להעתיק, לשכפל או להפיץ ללא אישור בכתב. -->
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="הצהרת נגישות — פלטפורמת תנ״ך לתיכון. עמידה בתקן ישראלי 5568 ברמה AA.">
+<meta name="copyright" content="© 2026 זכויות יוצרים – ליאור אלמוסלינוס">
+<meta name="author" content="ליאור אלמוסלינוס">
+<meta name="theme-color" content="#6366f1">
+<title>הצהרת נגישות — תנ״ך לתיכון</title>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f5f6fc;--surface:#fff;--surface2:#f2f3fb;
+  --border:rgba(26,29,54,.10);--line-soft:rgba(26,29,54,.06);
+  --text:#191c2e;--text-mid:#3d4460;--muted:#5f6580;
+  --acc:#6366f1;--acc2:#8b5cf6;--acc-dk:#4f46e5;--acc-lt:rgba(99,102,241,.09);
+  --green:#047857;--green-lt:rgba(4,120,87,.09);
+  --amber:#b45309;--amber-lt:rgba(180,83,9,.09);
+  --display:'Rubik',sans-serif;--sans:'Heebo','Rubik',sans-serif;
+  --r:14px;--r-lg:20px;--r-xl:24px;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#0c0c12;--surface:#17151f;--surface2:#201d2c;
+  --border:rgba(255,255,255,.11);--line-soft:rgba(255,255,255,.07);
+  --text:#ece9f7;--text-mid:#c5c1d6;--muted:#a8a3bd;
+  --acc:#8b7dff;--acc2:#a78bfa;--acc-dk:#a5b4fc;--acc-lt:rgba(139,125,255,.13);
+  --green:#4ade80;--green-lt:rgba(74,222,128,.10);
+  --amber:#fbbf24;--amber-lt:rgba(251,191,36,.10);
+}}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-family:var(--sans);background:var(--bg);color:var(--text);-webkit-text-size-adjust:100%}
+body{line-height:1.75;font-size:16px}
+a{color:var(--acc-dk);text-decoration:underline;text-underline-offset:3px}
+a:hover{color:var(--acc)}
+
+.page-hd{background:linear-gradient(135deg,#4f46e5 0%,#6366f1 45%,#8b5cf6 100%);
+  padding:2.4rem 1.25rem 2rem;color:#fff}
+.page-hd-in{max-width:820px;margin:0 auto}
+.page-hd h1{font-family:var(--display);font-weight:700;font-size:clamp(1.5rem,4.5vw,2.1rem);line-height:1.25;margin-bottom:.4rem}
+.page-hd p{font-size:.95rem;color:rgba(255,255,255,.92)}
+.hd-icon{font-size:2.2rem;display:block;margin-bottom:.5rem}
+
+main{max-width:820px;margin:0 auto;padding:1.6rem 1.25rem 4rem}
+section{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);
+  padding:1.4rem 1.4rem 1.5rem;margin-bottom:1rem}
+h2{font-family:var(--display);font-weight:600;font-size:1.14rem;color:var(--text);
+  margin-bottom:.7rem;padding-bottom:.55rem;border-bottom:2px solid var(--acc-lt);
+  display:flex;align-items:center;gap:.55rem}
+h3{font-family:var(--display);font-weight:600;font-size:.98rem;color:var(--text);margin:1.1rem 0 .45rem}
+p{margin-bottom:.8rem;color:var(--text-mid)}
+p:last-child{margin-bottom:0}
+ul{margin:0 1.2rem .8rem 0;color:var(--text-mid)}
+li{margin-bottom:.42rem}
+li::marker{color:var(--acc)}
+strong{color:var(--text);font-weight:700}
+kbd{font-family:inherit;font-size:.86em;font-weight:700;background:var(--surface2);
+  border:1px solid var(--border);border-radius:5px;padding:.05em .4em;color:var(--text)}
+
+.callout{border-radius:var(--r);padding:.9rem 1.1rem;margin:.9rem 0;font-size:.92rem;line-height:1.7}
+.callout-ok{background:var(--green-lt);border:1px solid var(--green);color:var(--text-mid)}
+.callout-note{background:var(--amber-lt);border:1px solid var(--amber);color:var(--text-mid)}
+.callout strong{display:block;margin-bottom:.2rem}
+.callout-ok strong{color:var(--green)}
+.callout-note strong{color:var(--amber)}
+
+.contact-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:1.1rem 1.2rem}
+.contact-row{display:flex;gap:.7rem;align-items:flex-start;margin-bottom:.7rem;font-size:.95rem}
+.contact-row:last-child{margin-bottom:0}
+.contact-row .ci{font-size:1.1rem;flex-shrink:0;line-height:1.5}
+.contact-row .cl{font-weight:700;color:var(--text);min-width:104px;flex-shrink:0}
+.contact-row .cv{color:var(--text-mid);word-break:break-word}
+
+.meta-bar{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.2rem}
+.chip{font-size:.76rem;font-weight:700;padding:.32rem .85rem;border-radius:999px;
+  background:var(--acc-lt);color:var(--acc-dk);border:1px solid var(--acc)}
+
+.back-link{display:inline-flex;align-items:center;gap:.45rem;margin-top:1.4rem;
+  padding:.72rem 1.4rem;border-radius:999px;background:linear-gradient(135deg,var(--acc),var(--acc2));
+  color:#fff;font-weight:700;font-size:.92rem;text-decoration:none;box-shadow:0 6px 20px rgba(99,102,241,.32)}
+.back-link:hover{color:#fff;transform:translateY(-1px)}
+
+footer{max-width:820px;margin:0 auto;padding:0 1.25rem 3rem;font-size:.84rem;color:var(--muted);text-align:center}
+footer a{color:var(--acc-dk)}
+
+a:focus-visible,button:focus-visible{outline:3px solid #f59e0b;outline-offset:3px;border-radius:4px}
+@media print{.back-link{display:none}section{break-inside:avoid;border:1px solid #ccc}}
+</style>
+</head>
+<body>
+
+<header class="page-hd">
+  <div class="page-hd-in">
+    <span class="hd-icon" aria-hidden="true">&#9855;</span>
+    <h1>הצהרת נגישות</h1>
+    <p>פלטפורמת <strong>תנ״ך לתיכון</strong> — לימודי תנ״ך לתלמידי תיכון</p>
+  </div>
+</header>
+
+<main id="a11y-main" tabindex="-1">
+
+  <section aria-labelledby="s-commit">
+    <h2 id="s-commit"><span aria-hidden="true">&#127919;</span> המחויבות שלנו לנגישות</h2>
+    <p>
+      פלטפורמת "תנ״ך לתיכון" היא כלי לימודי המשמש תלמידי ומורי תיכון. אנו רואים חשיבות
+      עליונה בכך שכל תלמיד ותלמידה, לרבות אנשים עם מוגבלות, יוכלו ללמוד באמצעותה באופן
+      עצמאי, שוויוני ומכובד.
+    </p>
+    <p>
+      אנו פועלים להנגשת האתר בהתאם ל<strong>חוק שוויון זכויות לאנשים עם מוגבלות, התשנ"ח–1998</strong>,
+      ול<strong>תקנות שוויון זכויות לאנשים עם מוגבלות (התאמות נגישות לשירות), התשע"ג–2013</strong>.
+    </p>
+  </section>
+
+  <section aria-labelledby="s-level">
+    <h2 id="s-level"><span aria-hidden="true">&#128202;</span> רמת הנגישות באתר</h2>
+    <p>
+      האתר הונגש בהתאם ל<strong>תקן הישראלי ת"י 5568</strong> ברמת התאמה <strong>AA</strong>,
+      המבוסס על הנחיות הנגישות הבין־לאומיות <span lang="en">WCAG</span> של ארגון
+      <span lang="en">W3C</span>.
+    </p>
+    <div class="callout callout-ok">
+      <strong>הנגשה בקוד, לא רק בתפריט</strong>
+      ההנגשה בוצעה בקוד האתר עצמו — מבנה כותרות, ניווט מקלדת מלא, שמות נגישים לרכיבי
+      הממשק וניגודיות צבעים — ולא באמצעות תוסף חיצוני בלבד.
+    </div>
+  </section>
+
+  <section aria-labelledby="s-what">
+    <h2 id="s-what"><span aria-hidden="true">&#9989;</span> ההתאמות שבוצעו באתר</h2>
+    <ul>
+      <li><strong>ניווט מלא במקלדת</strong> — ניתן להפעיל כל רכיב באתר, כולל תפריט הצד, כרטיסי יחידות הלימוד, רשימת המבחנים ושורות השיעורים, באמצעות מקשי <kbd>Tab</kbd>, <kbd>Enter</kbd> ו<kbd>רווח</kbd>, ללא צורך בעכבר.</li>
+      <li><strong>סימון מיקום הפוקוס</strong> — מסגרת כתומה בולטת מסמנת בכל רגע היכן נמצא הסמן בעת ניווט במקלדת.</li>
+      <li><strong>קישור דילוג לתוכן</strong> — קישור המופיע בלחיצת <kbd>Tab</kbd> ראשונה ומאפשר לדלג על התפריטים ישירות אל התוכן.</li>
+      <li><strong>תמיכה בקוראי מסך</strong> — שמות נגישים לכפתורים, למתגים ולשדות הטופס, וסימון תקני של חלונות קופצים.</li>
+      <li><strong>הודעות מערכת מוקראות</strong> — הודעות הצלחה ושגיאה מוכרזות אוטומטית לקורא המסך.</li>
+      <li><strong>הפעלה ללא עכבר של חלונות</strong> — סגירה במקש <kbd>Esc</kbd> ולכידת הפוקוס בתוך חלון פתוח.</li>
+      <li><strong>כיבוד העדפות מערכת</strong> — האתר מזהה הגדרת "צמצום תנועה" במערכת ההפעלה ומשבית אנימציות בהתאם.</li>
+      <li><strong>מבנה סמנטי</strong> — היררכיית כותרות תקינה, הגדרת שפה (עברית) וכיוון כתיבה מימין לשמאל.</li>
+      <li><strong>תצוגה מותאמת</strong> — ניתן להגדיל את התצוגה בדפדפן עד 200% ללא אובדן תוכן או פונקציונליות.</li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="s-menu">
+    <h2 id="s-menu"><span aria-hidden="true">&#9881;</span> תפריט הנגישות</h2>
+    <p>
+      בכל עמודי האתר מוצג <strong>כפתור נגישות עגול בפינה השמאלית־התחתונה</strong> של המסך.
+      לחיצה עליו פותחת תפריט המאפשר התאמה אישית של התצוגה:
+    </p>
+    <ul>
+      <li>הגדלה והקטנה של גודל הטקסט (80%–150%)</li>
+      <li>מצב ניגודיות גבוהה</li>
+      <li>תצוגה בגווני אפור</li>
+      <li>הדגשת קישורים</li>
+      <li>מעבר לגופן קריא</li>
+      <li>הגדלת ריווח השורות והאותיות</li>
+      <li>עצירת אנימציות ותנועה</li>
+      <li>הגדלת סמן העכבר</li>
+    </ul>
+    <p>
+      ההעדפות נשמרות במכשיר שלך ונטענות מחדש בכל כניסה. ניתן לאפס אותן בכל עת
+      באמצעות כפתור "איפוס" שבתפריט.
+    </p>
+  </section>
+
+  <section aria-labelledby="s-tested">
+    <h2 id="s-tested"><span aria-hidden="true">&#128421;</span> סביבות שנבדקו</h2>
+    <p>נגישות האתר נבדקה בדפדפנים העדכניים במחשב ובמכשירים ניידים:</p>
+    <ul>
+      <li><span lang="en">Google Chrome</span> — מחשב ואנדרואיד</li>
+      <li><span lang="en">Safari</span> — מחשב Mac ו־iPhone</li>
+      <li><span lang="en">Microsoft Edge</span> ו־<span lang="en">Mozilla Firefox</span> — מחשב</li>
+      <li>ניווט מקלדת מלא ובדיקה עם קוראי המסך המובנים במערכות ההפעלה</li>
+    </ul>
+    <p>
+      לצפייה מיטבית מומלץ להשתמש בגרסה עדכנית של הדפדפן ושל תוכנת קריאת המסך.
+    </p>
+  </section>
+
+  <section aria-labelledby="s-limits">
+    <h2 id="s-limits"><span aria-hidden="true">&#9888;</span> מגבלות ידועות</h2>
+    <p>
+      למרות מאמצינו, ייתכנו חלקים באתר שטרם הונגשו במלואם. אנו ממשיכים בעבודת ההנגשה
+      באופן שוטף. נכון למועד עדכון הצהרה זו, ידועות לנו המגבלות הבאות:
+    </p>
+    <ul>
+      <li><strong>קבצי השיעורים והמבחנים</strong> — תהליך ההנגשה של קבצי השיעורים, התרגולים והמבחנים מתבצע בשלבים; ייתכן שחלקם טרם עודכנו במלואם.</li>
+      <li><strong>מסמכים להורדה והדפסה</strong> — דפי עבודה ומסמכים המיועדים להדפסה טרם הונגשו באופן מלא לקוראי מסך.</li>
+      <li><strong>תוכן צד שלישי</strong> — רכיבים המסופקים על ידי שירותים חיצוניים (כגון גופנים ותשתיות ענן) אינם בשליטתנו המלאה.</li>
+    </ul>
+    <div class="callout callout-note">
+      <strong>נתקלתם בבעיה?</strong>
+      אם נתקלתם ברכיב או בעמוד שאינם נגישים — נשמח מאוד לשמוע. פנייה כזו עוזרת לנו
+      לתקן במהירות. פרטי ההתקשרות מופיעים מיד להלן.
+    </div>
+  </section>
+
+  <section aria-labelledby="s-contact">
+    <h2 id="s-contact"><span aria-hidden="true">&#128231;</span> פניות בנושא נגישות</h2>
+    <p>
+      אם נתקלתם בקושי בשימוש באתר, או שיש לכם הצעה לשיפור הנגישות, אנא פנו אלינו.
+      נשתדל לטפל בפנייה ולהשיב בהקדם האפשרי.
+    </p>
+    <div class="contact-box">
+      <div class="contact-row">
+        <span class="ci" aria-hidden="true">&#128100;</span>
+        <span class="cl">אחראי נגישות</span>
+        <span class="cv">ליאור אלמוסלינוס</span>
+      </div>
+      <div class="contact-row">
+        <span class="ci" aria-hidden="true">&#9993;</span>
+        <span class="cl">דואר אלקטרוני</span>
+        <span class="cv"><a href="mailto:apps.lior@gmail.com?subject=%D7%A4%D7%A0%D7%99%D7%99%D7%94%20%D7%91%D7%A0%D7%95%D7%A9%D7%90%20%D7%A0%D7%92%D7%99%D7%A9%D7%95%D7%AA" dir="ltr" lang="en">apps.lior@gmail.com</a></span>
+      </div>
+      <div class="contact-row">
+        <span class="ci" aria-hidden="true">&#128172;</span>
+        <span class="cl">מה לציין</span>
+        <span class="cv">כתובת העמוד שבו נתקלתם בבעיה, תיאור קצר של הקושי, וסוג הדפדפן או תוכנת הסיוע שבהם השתמשתם.</span>
+      </div>
+    </div>
+    <p style="margin-top:1rem">
+      אם פנייתכם לא נענתה באופן משביע רצון, באפשרותכם לפנות אל
+      <a href="https://www.gov.il/he/departments/moj_disability_rights" target="_blank" rel="noopener">נציבות שוויון זכויות לאנשים עם מוגבלות</a>
+      שבמשרד המשפטים, באמצעות
+      <a href="https://www.gov.il/he/service/application_for_information_people_with_disabilities" target="_blank" rel="noopener">הטופס המקוון להגשת פנייה</a>
+      או בטלפון <a href="tel:*6763" dir="ltr">‎*6763</a>
+      (ימים א׳–ה׳, 8:00–16:00).
+    </p>
+  </section>
+
+  <section aria-labelledby="s-update">
+    <h2 id="s-update"><span aria-hidden="true">&#128197;</span> עדכון ההצהרה</h2>
+    <p>
+      הצהרה זו נבדקת ומתעדכנת באופן תקופתי, ובכל שינוי מהותי באתר.
+    </p>
+    <div class="meta-bar">
+      <span class="chip">עודכן לאחרונה: 24 באוגוסט 2026</span>
+      <span class="chip">תקן: ת"י 5568 — רמה AA</span>
+    </div>
+    <a class="back-link" href="index.html">
+      <span aria-hidden="true">&#8594;</span> חזרה לפלטפורמה
+    </a>
+  </section>
+
+</main>
+
+<footer>
+  <p>תנ״ך לתיכון &nbsp;·&nbsp; <a href="privacy.html">מדיניות פרטיות</a></p>
+  <p style="margin-top:.5rem;opacity:.8">© 2026 זכויות יוצרים – ליאור אלמוסלינוס</p>
+</footer>
+
+<script src="a11y.js" defer></script>
+</body>
+</html>

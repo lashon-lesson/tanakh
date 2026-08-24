@@ -153,6 +153,10 @@ a{text-decoration:none;color:inherit}
 .tcp-go{padding:.82rem 1.3rem;border:none;border-radius:var(--r-pill);background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;font-size:.9rem;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;min-height:48px;transition:all .18s;box-shadow:0 6px 18px rgba(99,102,241,.3)}
 .tcp-go:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(99,102,241,.4)}
 .tcp-hint{font-size:.66rem;color:var(--subtle);margin-top:.35rem}
+.tcp-privacy{font-size:.66rem;color:var(--text-mid);margin-top:.6rem;padding:.5rem .7rem;line-height:1.65;
+  background:var(--surface2);border:1px solid var(--line-soft);border-radius:var(--r)}
+.tcp-privacy a{color:var(--acc-dk);text-decoration:underline;text-underline-offset:2px;font-weight:700}
+.tcp-privacy a:hover{color:var(--acc)}
 .tcp-back{margin-top:1rem;background:none;border:none;color:var(--muted);font-size:.76rem;cursor:pointer;padding:.3rem 0;display:block}
 .tcp-back:hover{color:var(--acc)}
 /* ── Student registration panel — inherits .ls-tcp card styling, sits between the cards ── */
@@ -680,6 +684,7 @@ a{text-decoration:none;color:inherit}
         <button class="tcp-go scp-go" onclick="submitStudentLogin()">התחל ›</button>
       </div>
       <p class="tcp-hint">השם והכיתה ילוו אותך בכל השיעורים — נא להזין שם מלא ומדויק</p>
+      <p class="tcp-privacy">🔒 השם, הכיתה והציונים שלך יישמרו כדי שהמורה תוכל לעקוב אחרי ההתקדמות, ויימחקו בתום שנת הלימודים. <a href="privacy.html" target="_blank" rel="noopener">מדיניות הפרטיות</a></p>
       <button class="tcp-back" onclick="hideSCP()">← חזרה</button>
     </div>
 
@@ -715,6 +720,7 @@ a{text-decoration:none;color:inherit}
       <button class="tcp-go" onclick="doTeacherLogin()">כניסה</button>
     </div>
     <p class="tcp-hint">קיבלת קוד כניסה ראשוני? הזן אותו כאן</p>
+    <p class="tcp-privacy">🔒 שמך ומספר הוואטסאפ יישמרו לצורך תפעול המערכת ושליחת סיכומים. <a href="privacy.html" target="_blank" rel="noopener">מדיניות הפרטיות</a></p>
     <button class="tcp-back" onclick="hideTCP()">← חזרה</button>
   </div>
 <div class="copyright-line pinned">© 2026 זכויות יוצרים – ליאור אלמוסלינוס</div>
@@ -913,7 +919,7 @@ a{text-decoration:none;color:inherit}
     <div class="m-pane" id="tab-classes">
       <div class="m-section">הכיתות שאני מלמד/ת</div>
       <div style="background:var(--blue-lt);border:1px solid #bfdbfe;border-radius:var(--r);padding:.7rem .95rem;font-size:.78rem;color:var(--blue);margin-bottom:1rem;line-height:1.6">
-        ������ הוסיפי כיתה ← לאחר מכן פתחי אותה והוסיפי <strong>רשימה שמית של תלמידים</strong>. המעקב יציג את כל תלמידייך לפי ביצוע.
+        💡 הוסיפי כיתה ← לאחר מכן פתחי אותה והוסיפי <strong>רשימה שמית של תלמידים</strong>. המעקב יציג את כל תלמידייך לפי ביצוע.
       </div>
       <div style="display:flex;gap:.55rem;margin-bottom:1rem">
         <input class="m-in" id="new-class-inp" type="text"
@@ -3110,5 +3116,8 @@ if ('serviceWorker' in navigator) {
   });
 }
 </script>
+
+<!-- ═══ שכבת נגישות — ת"י 5568 (WCAG AA) ═══ -->
+<script src="a11y.js" defer></script>
 </body>
 </html>

@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<!-- @copyright-line | © 2026 זכויות יוצרים – ליאור אלמוסלינוס | כל הזכויות שמורות. אין להעתיק, לשכפל או להפיץ ללא אישור בכתב. -->
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="מדיניות פרטיות — פלטפורמת תנ״ך לתיכון. איזה מידע נאסף, למה, למי הוא מועבר וכמה זמן הוא נשמר.">
+<meta name="copyright" content="© 2026 זכויות יוצרים – ליאור אלמוסלינוס">
+<meta name="author" content="ליאור אלמוסלינוס">
+<meta name="theme-color" content="#6366f1">
+<title>מדיניות פרטיות — תנ״ך לתיכון</title>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f5f6fc;--surface:#fff;--surface2:#f2f3fb;
+  --border:rgba(26,29,54,.10);
+  --text:#191c2e;--text-mid:#3d4460;--muted:#5f6580;
+  --acc:#6366f1;--acc2:#8b5cf6;--acc-dk:#4f46e5;--acc-lt:rgba(99,102,241,.09);
+  --green:#047857;--green-lt:rgba(4,120,87,.09);
+  --amber:#b45309;--amber-lt:rgba(180,83,9,.09);
+  --red:#b91c1c;--red-lt:rgba(185,28,28,.07);
+  --display:'Rubik',sans-serif;--sans:'Heebo','Rubik',sans-serif;
+  --r:14px;--r-lg:20px;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#0c0c12;--surface:#17151f;--surface2:#201d2c;
+  --border:rgba(255,255,255,.11);
+  --text:#ece9f7;--text-mid:#c5c1d6;--muted:#a8a3bd;
+  --acc:#8b7dff;--acc2:#a78bfa;--acc-dk:#a5b4fc;--acc-lt:rgba(139,125,255,.13);
+  --green:#4ade80;--green-lt:rgba(74,222,128,.10);
+  --amber:#fbbf24;--amber-lt:rgba(251,191,36,.10);
+  --red:#fca5a5;--red-lt:rgba(252,165,165,.09);
+}}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-family:var(--sans);background:var(--bg);color:var(--text);-webkit-text-size-adjust:100%}
+body{line-height:1.75;font-size:16px}
+a{color:var(--acc-dk);text-decoration:underline;text-underline-offset:3px}
+a:hover{color:var(--acc)}
+
+.page-hd{background:linear-gradient(135deg,#4f46e5 0%,#6366f1 45%,#8b5cf6 100%);padding:2.4rem 1.25rem 2rem;color:#fff}
+.page-hd-in{max-width:820px;margin:0 auto}
+.page-hd h1{font-family:var(--display);font-weight:700;font-size:clamp(1.5rem,4.5vw,2.1rem);line-height:1.25;margin-bottom:.4rem}
+.page-hd p{font-size:.95rem;color:rgba(255,255,255,.92)}
+.hd-icon{font-size:2.2rem;display:block;margin-bottom:.5rem}
+
+main{max-width:820px;margin:0 auto;padding:1.6rem 1.25rem 4rem}
+section{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.4rem;margin-bottom:1rem}
+h2{font-family:var(--display);font-weight:600;font-size:1.14rem;margin-bottom:.7rem;padding-bottom:.55rem;
+  border-bottom:2px solid var(--acc-lt);display:flex;align-items:center;gap:.55rem}
+h3{font-family:var(--display);font-weight:600;font-size:.97rem;margin:1.1rem 0 .4rem;color:var(--text)}
+p{margin-bottom:.8rem;color:var(--text-mid)}
+p:last-child{margin-bottom:0}
+ul{margin:0 1.2rem .8rem 0;color:var(--text-mid)}
+li{margin-bottom:.42rem}
+li::marker{color:var(--acc)}
+strong{color:var(--text);font-weight:700}
+code{font-size:.86em;background:var(--surface2);border:1px solid var(--border);
+  border-radius:5px;padding:.05em .4em;direction:ltr;display:inline-block}
+
+.tldr{background:var(--acc-lt);border:1px solid var(--acc);border-radius:var(--r-lg);padding:1.2rem 1.35rem;margin-bottom:1rem}
+.tldr h2{border:none;padding:0;margin-bottom:.55rem;color:var(--acc-dk)}
+.tldr ul{margin-bottom:0}
+
+.callout{border-radius:var(--r);padding:.9rem 1.1rem;margin:.9rem 0;font-size:.92rem;line-height:1.7;color:var(--text-mid)}
+.callout strong{display:block;margin-bottom:.2rem}
+.c-ok{background:var(--green-lt);border:1px solid var(--green)}
+.c-ok strong{color:var(--green)}
+.c-note{background:var(--amber-lt);border:1px solid var(--amber)}
+.c-note strong{color:var(--amber)}
+.c-alert{background:var(--red-lt);border:1px solid var(--red)}
+.c-alert strong{color:var(--red)}
+
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.88rem;margin:.6rem 0 .9rem}
+th,td{text-align:right;padding:.6rem .7rem;border-bottom:1px solid var(--border);vertical-align:top}
+th{background:var(--surface2);font-weight:700;font-size:.82rem;color:var(--text)}
+td{color:var(--text-mid)}
+caption{text-align:right;font-size:.84rem;color:var(--muted);padding-bottom:.4rem}
+
+.contact-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:1.1rem 1.2rem}
+.contact-row{display:flex;gap:.7rem;align-items:flex-start;margin-bottom:.7rem;font-size:.95rem}
+.contact-row:last-child{margin-bottom:0}
+.contact-row .ci{font-size:1.05rem;flex-shrink:0;line-height:1.6}
+.contact-row .cl{font-weight:700;color:var(--text);min-width:104px;flex-shrink:0}
+.contact-row .cv{color:var(--text-mid);word-break:break-word}
+
+.meta-bar{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.2rem}
+.chip{font-size:.76rem;font-weight:700;padding:.32rem .85rem;border-radius:999px;background:var(--acc-lt);color:var(--acc-dk);border:1px solid var(--acc)}
+.back-link{display:inline-flex;align-items:center;gap:.45rem;margin-top:1.4rem;padding:.72rem 1.4rem;border-radius:999px;
+  background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;font-weight:700;font-size:.92rem;
+  text-decoration:none;box-shadow:0 6px 20px rgba(99,102,241,.32)}
+.back-link:hover{color:#fff}
+footer{max-width:820px;margin:0 auto;padding:0 1.25rem 3rem;font-size:.84rem;color:var(--muted);text-align:center}
+footer a{color:var(--acc-dk)}
+a:focus-visible,button:focus-visible{outline:3px solid #f59e0b;outline-offset:3px;border-radius:4px}
+@media print{.back-link{display:none}section{break-inside:avoid;border:1px solid #ccc}}
+</style>
+</head>
+<body>
+
+<header class="page-hd">
+  <div class="page-hd-in">
+    <span class="hd-icon" aria-hidden="true">&#128274;</span>
+    <h1>מדיניות פרטיות</h1>
+    <p>פלטפורמת <strong>תנ״ך לתיכון</strong> — לימודי תנ״ך לתלמידי תיכון</p>
+  </div>
+</header>
+
+<main id="a11y-main" tabindex="-1">
+
+  <div class="tldr">
+    <h2><span aria-hidden="true">&#128161;</span> בקצרה</h2>
+    <ul>
+      <li>אנחנו אוספים <strong>שם, כיתה וציונים</strong> של תלמידים — כדי שהמורה תוכל לעקוב אחרי ההתקדמות.</li>
+      <li>המידע נשמר בשירות <strong>Firebase של Google</strong>, על שרתים שעשויים להימצא מחוץ לישראל.</li>
+      <li>סיכומי הגשות עשויים להישלח דרך <strong>וואטסאפ</strong> אל המורה, וכוללים שמות וציונים.</li>
+      <li>המידע נמחק <strong>בתום שנת הלימודים</strong>.</li>
+      <li><strong>אין באתר פרסומות, אין מכירת מידע ואין כלי מעקב שיווקיים.</strong></li>
+      <li>אפשר לבקש בכל עת לעיין במידע, לתקן אותו או למחוק אותו — בפנייה למייל שבתחתית העמוד.</li>
+    </ul>
+  </div>
+
+  <section aria-labelledby="p-who">
+    <h2 id="p-who"><span aria-hidden="true">&#128100;</span> מי אחראי על המידע</h2>
+    <p>
+      בעל המאגר והאחראי על המידע הוא <strong>ליאור אלמוסלינוס</strong>, מפעיל פלטפורמת
+      "תנ״ך לתיכון". ניתן לפנות בכל שאלה או בקשה בנושא פרטיות בכתובת
+      <a href="mailto:apps.lior@gmail.com" dir="ltr" lang="en">apps.lior@gmail.com</a>.
+    </p>
+    <p>
+      מדיניות זו נכתבה בהתאם ל<strong>חוק הגנת הפרטיות, התשמ"א–1981</strong>, לרבות תיקון מס' 13
+      לחוק שנכנס לתוקף באוגוסט 2025.
+    </p>
+  </section>
+
+  <section aria-labelledby="p-what">
+    <h2 id="p-what"><span aria-hidden="true">&#128203;</span> איזה מידע נאסף</h2>
+
+    <h3>מידע על תלמידים</h3>
+    <div class="tbl-wrap">
+    <table>
+      <caption>המידע שהתלמיד/ה מוסר/ת בעת הכניסה לפלטפורמה ובעת הגשת תרגול או מבחן</caption>
+      <thead>
+        <tr><th scope="col">סוג המידע</th><th scope="col">כיצד נאסף</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>שם התלמיד/ה</td><td>מוקלד ידנית במסך הכניסה</td></tr>
+        <tr><td>כיתה</td><td>נבחרת ומוקלדת ידנית במסך הכניסה</td></tr>
+        <tr><td>שם ומזהה השיעור או המבחן</td><td>נרשם אוטומטית בעת ההגשה</td></tr>
+        <tr><td>ציון, מספר תשובות נכונות ושגויות</td><td>מחושב אוטומטית בעת ההגשה</td></tr>
+        <tr><td>תאריך ושעת ההגשה</td><td>נרשמים אוטומטית</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h3>מידע על מורים</h3>
+    <ul>
+      <li>שם מלא</li>
+      <li>מספר טלפון לוואטסאפ — לצורך קבלת סיכומי הגשות</li>
+      <li>סיסמה — נשמרת <strong>מוצפנת בלבד</strong> (גיבוב SHA-256 עם מלח), ולא ניתנת לשחזור</li>
+      <li>רשימת הכיתות שהמורה מלמד/ת, ורשימות שמיות של תלמידים שהמורה מזין/ה בעצמו/ה</li>
+      <li>הרשאות ותפקיד במערכת (מורה / מנהל/ת)</li>
+    </ul>
+
+    <h3>מידע טכני</h3>
+    <p>
+      האתר שומר העדפות והתקדמות באחסון המקומי של הדפדפן שלך (<span lang="en">localStorage</span>) —
+      מידע זה נשאר במכשירך ואינו נשלח אלינו. בנוסף, ספקי התשתית שלנו רושמים כתובות
+      <span lang="en">IP</span> כחלק מתפעול השירות, כמקובל בכל שירות אינטרנטי.
+    </p>
+
+    <div class="callout c-ok">
+      <strong>מה איננו אוספים</strong>
+      אין באתר קבצי עוגיות פרסומיים, אין <span lang="en">Google Analytics</span>, אין פיקסלים של
+      רשתות חברתיות, אין כלי מעקב שיווקיים ואיננו אוספים מספרי תעודת זהות, כתובות מגורים
+      או פרטי תשלום.
+    </div>
+  </section>
+
+  <section aria-labelledby="p-why">
+    <h2 id="p-why"><span aria-hidden="true">&#127919;</span> מטרות השימוש במידע</h2>
+    <ul>
+      <li>הצגת התקדמות התלמיד/ה ביחידות הלימוד, בתרגולים ובמבחנים</li>
+      <li>מעקב פדגוגי של המורה אחר ביצועי הכיתה ומתן משוב</li>
+      <li>ניהול הרשאות — נעילת שיעורים ופרסום תשובות על ידי המורה</li>
+      <li>תפעול, אבטחה ושיפור של הפלטפורמה</li>
+    </ul>
+    <p>
+      <strong>המידע אינו נמכר, אינו מושכר ואינו מועבר לצדדים שלישיים למטרות מסחריות או שיווקיות.</strong>
+    </p>
+  </section>
+
+  <section aria-labelledby="p-basis">
+    <h2 id="p-basis"><span aria-hidden="true">&#9878;</span> מסירת המידע</h2>
+    <p>
+      מסירת המידע נעשית מרצון ואינה מחויבת על פי חוק. עם זאת, ללא מסירת שם וכיתה לא ניתן
+      לשמור את תוצאות התרגול ולהציגן למורה, ולכן חלק מהפונקציונליות של הפלטפורמה לא תהיה זמינה.
+    </p>
+    <p>
+      השימוש בפלטפורמה מהווה הסכמה למדיניות זו. הודעה זו נמסרת בהתאם לחובת היידוע
+      הקבועה בסעיף 11 לחוק הגנת הפרטיות.
+    </p>
+  </section>
+
+  <section aria-labelledby="p-third">
+    <h2 id="p-third"><span aria-hidden="true">&#127760;</span> למי מועבר המידע</h2>
+    <div class="tbl-wrap">
+    <table>
+      <caption>ספקי השירות החיצוניים הפועלים בפלטפורמה</caption>
+      <thead>
+        <tr><th scope="col">הגורם</th><th scope="col">איזה מידע</th><th scope="col">לשם מה</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Google Firebase</strong><br><span lang="en">(Google LLC)</span></td>
+          <td>כל ההגשות, פרטי המורים והרשימות השמיות</td>
+          <td>אחסון ענן וסנכרון הנתונים בזמן אמת</td>
+        </tr>
+        <tr>
+          <td><strong>Google Fonts</strong></td>
+          <td>כתובת <span lang="en">IP</span> בלבד</td>
+          <td>טעינת הגופנים העבריים שבהם מוצג האתר</td>
+        </tr>
+        <tr>
+          <td><strong>WhatsApp</strong><br><span lang="en">(Meta Platforms)</span></td>
+          <td>שמות תלמידים, כיתות וציונים — כמפורט להלן</td>
+          <td>שליחת סיכום הגשות אל המורה</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div class="callout c-note">
+      <strong>שליחת סיכומים בוואטסאפ</strong>
+      הפלטפורמה מאפשרת למורה להפיק סיכום הגשות ולשלוח אותו אל עצמה דרך וואטסאפ.
+      הסיכום כולל שמות תלמידים, כיתות וציונים. פעולה זו נעשית ביוזמת המורה בלבד,
+      ובעת ביצועה המידע עובר דרך שירות וואטסאפ וכפוף למדיניות הפרטיות של Meta.
+    </div>
+
+    <h3>העברת מידע אל מחוץ לישראל</h3>
+    <p>
+      שירותי הענן של Google פועלים על תשתית עולמית, ולכן ייתכן שהמידע יאוחסן או יעובד
+      בשרתים הממוקמים מחוץ לגבולות ישראל. Google מחויבת לתקני אבטחת מידע והגנת פרטיות
+      בין־לאומיים.
+    </p>
+  </section>
+
+  <!-- ═══ להחלטה: משך שמירת המידע. שינוי כאן מחייב שינוי בפועל במחיקת הנתונים ═══ -->
+  <section aria-labelledby="p-keep">
+    <h2 id="p-keep"><span aria-hidden="true">&#9203;</span> משך שמירת המידע</h2>
+    <p>
+      נתוני ההגשות והציונים של תלמידים נשמרים <strong>עד תום שנת הלימודים שבה נוצרו,
+      ולא יאוחר מ־31 באוגוסט של אותה שנה</strong>, ולאחר מכן נמחקים.
+    </p>
+    <p>
+      פרטי מורים ורשימות הכיתות נשמרים כל עוד חשבון המורה פעיל, ונמחקים לבקשת המורה.
+      מידע השמור באחסון המקומי של הדפדפן נמחק בעת ניקוי נתוני הגלישה במכשיר.
+    </p>
+  </section>
+
+  <section aria-labelledby="p-sec">
+    <h2 id="p-sec"><span aria-hidden="true">&#128737;</span> אבטחת מידע</h2>
+    <ul>
+      <li>התקשורת מול האתר מוצפנת בפרוטוקול <span lang="en">HTTPS</span>.</li>
+      <li>סיסמאות מורים נשמרות בגיבוב חד־כיווני בלבד ואינן ניתנות לשחזור — גם למנהל המערכת.</li>
+      <li>הגישה לנתוני התלמידים מוגבלת לצוות ההוראה המורשה, באמצעות כללי הרשאה בשרת.</li>
+      <li>הנתונים מאוחסנים בתשתית ענן מאובטחת של Google.</li>
+    </ul>
+    <p>
+      עם זאת, אין מערכת מקוונת המספקת הגנה מוחלטת. אנו פועלים באמצעים סבירים ומקובלים,
+      אך איננו יכולים להתחייב לחסינות מוחלטת מפני גישה בלתי מורשית.
+    </p>
+  </section>
+
+  <section aria-labelledby="p-rights">
+    <h2 id="p-rights"><span aria-hidden="true">&#128273;</span> הזכויות שלכם</h2>
+    <p>על פי חוק הגנת הפרטיות, עומדות לכם הזכויות הבאות:</p>
+    <ul>
+      <li><strong>זכות עיון</strong> — לבקש לדעת איזה מידע עליכם שמור אצלנו (סעיף 13 לחוק).</li>
+      <li><strong>זכות תיקון</strong> — לבקש לתקן מידע שגוי, לא שלם או לא מדויק (סעיף 14 לחוק).</li>
+      <li><strong>זכות מחיקה</strong> — לבקש למחוק מידע שאינו נדרש עוד למטרה שלשמה נאסף.</li>
+    </ul>
+    <p>
+      לבקשה בכל אחד מהנושאים האלה, פנו אל
+      <a href="mailto:apps.lior@gmail.com?subject=%D7%91%D7%A7%D7%A9%D7%94%20%D7%91%D7%A0%D7%95%D7%A9%D7%90%20%D7%A4%D7%A8%D7%98%D7%99%D7%95%D7%AA" dir="ltr" lang="en">apps.lior@gmail.com</a>.
+      נשיב לפנייתכם בתוך זמן סביר.
+    </p>
+  </section>
+
+  <!-- ═══ להחלטה: מדיניות קטינים והורים ═══ -->
+  <section aria-labelledby="p-minors">
+    <h2 id="p-minors"><span aria-hidden="true">&#128106;</span> תלמידים קטינים והורים</h2>
+    <p>
+      הפלטפורמה מיועדת לתלמידי תיכון, שרובם קטינים. אנו מודעים לרגישות המיוחדת של מידע
+      על קטינים ופועלים לצמצם אותו למינימום ההכרחי: איננו אוספים מספרי תעודת זהות,
+      כתובות, תמונות או פרטי התקשרות של תלמידים.
+    </p>
+    <p>
+      השימוש בפלטפורמה נעשה במסגרת פעילות לימודית בהנחיית המורה. <strong>באחריות המורה
+      ליידע את התלמידים ואת הוריהם על השימוש בפלטפורמה ועל מדיניות זו</strong> טרם תחילת
+      השימוש.
+    </p>
+    <div class="callout c-alert">
+      <strong>להורים</strong>
+      אם אינכם מעוניינים שמידע על ילדכם יישמר בפלטפורמה, או שברצונכם לעיין במידע השמור
+      עליו או למחוק אותו — פנו אלינו במייל ונטפל בבקשה. אין צורך בנימוק.
+    </div>
+    <p>
+      להרחבה בנושא, הרשות להגנת הפרטיות פרסמה
+      <a href="https://www.gov.il/he/pages/students_privacy_guide" target="_blank" rel="noopener">מדריך להגנת הפרטיות של תלמידים בלמידה מקוונת</a>,
+      המיועד למוסדות חינוך, לעובדי הוראה ולציבור ההורים.
+    </p>
+  </section>
+
+  <section aria-labelledby="p-cookies">
+    <h2 id="p-cookies"><span aria-hidden="true">&#127850;</span> עוגיות ואחסון מקומי</h2>
+    <p>
+      האתר אינו עושה שימוש בעוגיות מעקב, פרסום או פרופיילינג. הוא משתמש באחסון המקומי
+      של הדפדפן (<span lang="en">localStorage</span>) כדי לזכור את תפקידך במערכת
+      (<code>userRole</code>), את ההתקדמות ביחידות הלימוד (<code>tanakh2_prog_*</code>)
+      ואת העדפות הנגישות שבחרת (<code>tanakh2_a11y</code>). מידע זה נשמר במכשירך בלבד.
+    </p>
+    <p>
+      ניתן למחוק אותו בכל עת דרך הגדרות הדפדפן, או באמצעות לחיצה על "יציאה" בפלטפורמה.
+    </p>
+  </section>
+
+  <section aria-labelledby="p-changes">
+    <h2 id="p-changes"><span aria-hidden="true">&#128260;</span> שינויים במדיניות</h2>
+    <p>
+      אנו רשאים לעדכן מדיניות זו מעת לעת, בהתאם לשינויים בפלטפורמה או בדין. תאריך העדכון
+      האחרון מופיע בתחתית העמוד. שינוי מהותי יובא לידיעת המשתמשים באמצעות הודעה בפלטפורמה.
+    </p>
+  </section>
+
+  <section aria-labelledby="p-contact">
+    <h2 id="p-contact"><span aria-hidden="true">&#128231;</span> יצירת קשר</h2>
+    <div class="contact-box">
+      <div class="contact-row">
+        <span class="ci" aria-hidden="true">&#128100;</span>
+        <span class="cl">אחראי על המידע</span>
+        <span class="cv">ליאור אלמוסלינוס</span>
+      </div>
+      <div class="contact-row">
+        <span class="ci" aria-hidden="true">&#9993;</span>
+        <span class="cl">דואר אלקטרוני</span>
+        <span class="cv"><a href="mailto:apps.lior@gmail.com" dir="ltr" lang="en">apps.lior@gmail.com</a></span>
+      </div>
+    </div>
+    <p style="margin-top:1rem">
+      אם סברתם שנפגעה פרטיותכם ולא קיבלתם מענה מספק, באפשרותכם לפנות אל
+      <a href="https://www.gov.il/he/pages/public_inquiries_ilita" target="_blank" rel="noopener">הרשות להגנת הפרטיות</a>
+      שבמשרד המשפטים.
+    </p>
+    <div class="meta-bar">
+      <span class="chip">עודכן לאחרונה: 24 באוגוסט 2026</span>
+    </div>
+    <a class="back-link" href="index.html"><span aria-hidden="true">&#8594;</span> חזרה לפלטפורמה</a>
+  </section>
+
+</main>
+
+<footer>
+  <p>תנ״ך לתיכון &nbsp;·&nbsp; <a href="accessibility.html">הצהרת נגישות</a></p>
+  <p style="margin-top:.5rem;opacity:.8">© 2026 זכויות יוצרים – ליאור אלמוסלינוס</p>
+</footer>
+
+<script src="a11y.js" defer></script>
+</body>
+</html>
