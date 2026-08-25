@@ -255,6 +255,9 @@ a{text-decoration:none;color:inherit}
 .v1-grad{background:linear-gradient(140deg,#0891b2,#06b6d4)}
 .v2-grad{background:linear-gradient(140deg,#6d28d9,#6366f1)}
 .v3-grad{background:linear-gradient(140deg,#d97706,#f59e0b)}
+.u5-grad{background:linear-gradient(140deg,#15803d,#22c55e)}
+.u6-grad{background:linear-gradient(140deg,#be123c,#f43f5e)}
+.uc-opt-tag{font-size:.54rem;font-weight:800;padding:.08rem .38rem;border-radius:6px;background:rgba(255,255,255,.24);margin-inline-start:.3rem;letter-spacing:.02em;vertical-align:middle}
 
 /* ── LESSON PANEL (white surface) ── */
 .lesson-panel{background:var(--surface);border-radius:0 0 var(--r-lg) var(--r-lg);border:1px solid var(--border);border-top:none;overflow:hidden;width:100%}
@@ -649,7 +652,9 @@ a{text-decoration:none;color:inherit}
     <h1 class="ls-title">תנ״ך <em>לתיכון</em></h1>
     <p class="ls-tagline">לימוד תנ״ך כיתות י׳–י״א</p>
     <div class="ls-chips">
+      <span class="ls-chip">ראשית העולם</span>
       <span class="ls-chip">סיפורי האבות</span>
+      <span class="ls-chip">מגילת רות</span>
       <span class="ls-chip">סיפורי יוסף</span>
       <span class="ls-chip">התהוות האומה</span>
       <span class="ls-chip">חוק וחברה</span>
@@ -1133,7 +1138,30 @@ function setAnswersVisible(lid,visible){
    CURRICULUM DATA
 ════════════════════════════════════════════════ */
 const UNITS=[
-  { id:'avot',emoji:'📜',label:'יחידה א׳',title:'סיפורי האבות',color:'#1a56db',colorLt:'#eff4ff',assess:'external',
+  { id:'reshit',emoji:'🌍',label:'יחידה א׳',title:'ראשית העולם והאנושות',color:'#15803d',colorLt:'#f0fdf4',assess:'external',
+    desc:'מבוא למקרא ובראשית א׳–י״א — בריאה, חטא ועונש, מבול והפצת האנושות',
+    lessons:[
+      {id:'reshit_l1',short:'שיעור 1',emoji:'📚',color:'#15803d',mins:45,locked:false,isNew:true,
+       title:'מבוא למקרא',desc:'מבנה התנ״ך, סוגות וכלי פרשנות — פשט מול דרש',file:'reshit_lesson1.html'},
+      {id:'reshit_l2',short:'שיעור 2',emoji:'🌟',color:'#0891b2',mins:45,locked:false,isNew:true,
+       title:'סיפור הבריאה הראשון',desc:'בראשית א׳ — שבעת הימים והאדם בצלם',file:'reshit_lesson2.html'},
+      {id:'reshit_l3',short:'שיעור 3',emoji:'🌲',color:'#7c3aed',mins:45,locked:false,isNew:true,
+       title:'סיפור הבריאה השני וגן עדן',desc:'בראשית ב׳ — “לא טוב היות האדם לבדו” והשוואת שני הסיפורים',file:'reshit_lesson3.html'},
+      {id:'reshit_l4',short:'שיעור 4',emoji:'🐍',color:'#059669',mins:45,locked:false,isNew:true,
+       title:'החטא ועונשו',desc:'בראשית ג׳ — הנחש, האכילה, המשפט והגירוש',file:'reshit_lesson4.html'},
+      {id:'reshit_l5',short:'שיעור 5',emoji:'🌾',color:'#b45309',mins:45,locked:false,isNew:true,
+       title:'קין והבל',desc:'בראשית ד׳ — “הלוא אם תיטיב” ו“השומר אחי אנוכי”',file:'reshit_lesson5.html'},
+      {id:'reshit_l6',short:'שיעור 6',emoji:'🚢',color:'#be185d',mins:45,locked:false,isNew:true,
+       title:'נח והמבול',desc:'בראשית ו׳ ה׳–כ״ב — “וינחם ה׳”, צדיק תמים וציווי התיבה',file:'reshit_lesson6.html'},
+      {id:'reshit_l7',short:'שיעור 7',emoji:'🌈',color:'#0284c7',mins:45,locked:false,isNew:true,
+       title:'אחרי המבול — ברית הקשת',desc:'בראשית ט׳ — “שופך דם האדם” וקדושת החיים',file:'reshit_lesson7.html'},
+      {id:'reshit_l8',short:'שיעור 8',emoji:'🏗️',color:'#ca8a04',mins:45,locked:false,isNew:true,
+       title:'מגדל בבל',desc:'בראשית י״א א׳–ט׳ — “נעשה לנו שם” וההפצה',file:'reshit_lesson8.html'},
+      {id:'reshit_exam',short:'מבחן',emoji:'🏆',color:'#ca8a04',mins:90,locked:false,exam:true,isNew:true,
+       title:'מבחן מסכם — ראשית העולם והאנושות',desc:'מבחן מסכם לכל נושאי היחידה',file:'reshit_exam.html'},
+    ]
+  },
+  { id:'avot',emoji:'📜',label:'יחידה ב׳',title:'סיפורי האבות',color:'#1a56db',colorLt:'#eff4ff',assess:'external',
     desc:'אברהם, יצחק ויעקב — מסע האמונה, הברית והבחירה בספר בראשית',
     lessons:[
       {id:'avot_l1',short:'שיעור 1',emoji:'📖',color:'#1a56db',mins:45,locked:false,isNew:true,
@@ -1172,7 +1200,24 @@ const UNITS=[
        title:'מבחן מסכם — סיפורי האבות',desc:'מבחן מסכם לכל נושאי היחידה',file:'avot_exam.html'},
     ]
   },
-  { id:'yosef',emoji:'⭐',label:'יחידה ב׳',title:'סיפורי יוסף',color:'#0f766e',colorLt:'#f0fdfa',assess:'external',
+  { id:'rut',emoji:'🌾',label:'יחידה ג׳',title:'אהבה וחסד — מגילת רות',color:'#be123c',colorLt:'#fff1f2',assess:'external',
+    desc:'חסד, גאולה והשתייכות — משדות מואב עד שושלת דוד',
+    lessons:[
+      {id:'rut_l1',short:'שיעור 1',emoji:'🛤️',color:'#be123c',mins:45,locked:false,isNew:true,
+       title:'הירידה למואב והשיבה',desc:'רות א׳ — הרעב, האבדן ו“כי אל אשר תלכי אלך”',file:'rut_lesson1.html'},
+      {id:'rut_l2',short:'שיעור 2',emoji:'🌾',color:'#ca8a04',mins:45,locked:false,isNew:true,
+       title:'בשדה בועז',desc:'רות ב׳ — לקט, שכחה ופאה והחסד ההדדי',file:'rut_lesson2.html'},
+      {id:'rut_l3',short:'שיעור 3',emoji:'🌙',color:'#7c3aed',mins:45,locked:false,isNew:true,
+       title:'ליל הגורן',desc:'רות ג׳ — יוזמת נעמי ו“ופרשת כנפך”',file:'rut_lesson3.html'},
+      {id:'rut_l4',short:'שיעור 4',emoji:'⚖️',color:'#0f766e',mins:45,locked:false,isNew:true,
+       title:'הגאולה בשער והשושלת',desc:'רות ד׳ — חליצת הנעל, הגאולה והשושלת עד דוד',file:'rut_lesson4.html'},
+      {id:'rut_l5',short:'שיעור 5',emoji:'🎓',color:'#1a56db',mins:45,locked:false,isNew:true,
+       title:'סיכום — חסד, גאולה והשתייכות',desc:'קווי המגילה והחיבור לחוקי מתנות עניים',file:'rut_lesson5.html'},
+      {id:'rut_exam',short:'מבחן',emoji:'🏆',color:'#ca8a04',mins:90,locked:false,exam:true,isNew:true,
+       title:'מבחן מסכם — מגילת רות',desc:'מבחן מסכם לכל נושאי היחידה',file:'rut_exam.html'},
+    ]
+  },
+  { id:'yosef',emoji:'⭐',label:'יחידה ד׳',title:'סיפורי יוסף',color:'#0f766e',colorLt:'#f0fdfa',assess:'external',
     desc:'מהחלומות אל מצרים — ירידה, מעלה ופיוס במשפחת יעקב',
     lessons:[
       {id:'yosef_l1',short:'שיעור 1',emoji:'📖',color:'#1a56db',mins:45,locked:false,
@@ -1194,12 +1239,14 @@ const UNITS=[
       {id:'yosef_l9',short:'שיעור 9',emoji:'⚖️',color:'#4f46e5',mins:45,locked:false,
        title:'ההתוודעות — "אני יוסף"',desc:'בראשית מ״ה — הגילוי, המחילה והשליחות',file:'yosef_lesson9.html'},
       {id:'yosef_l10',short:'שיעור 10',emoji:'🏛️',color:'#ca8a04',mins:45,locked:false,
-       title:'ירידת יעקב למצרים וברכת יעקב',desc:'בראשית מ״ו–נ׳ — האיחוד, הברכות והפרידה',file:'yosef_lesson10.html'},
+       title:'ירידת יעקב למצרים וברכת מנשה ואפרים',desc:'בראשית מ״ו–מ״ח — האיחוד, ההתיישבות בגושן והברכה המצליבה',file:'yosef_lesson10.html'},
+      {id:'yosef_l11',short:'שיעור 11',emoji:'🕊️',color:'#0f766e',mins:45,locked:false,isNew:true,
+       title:'ברכת יעקב לבניו ומות יעקב',desc:'בראשית מ״ט–נ׳ — הברכות, הקבורה והפיוס האחרון',file:'yosef_lesson11.html'},
       {id:'yosef_exam',short:'מבחן',emoji:'🏆',color:'#ca8a04',mins:90,locked:false,exam:true,
        title:'מבחן מסכם — סיפורי יוסף',desc:'מבחן מסכם לכל נושאי היחידה',file:'yosef_exam.html'},
     ]
   },
-  { id:'umot',emoji:'🔥',label:'יחידה ג׳',title:'סיפור התהוות האומה',color:'#7c3aed',colorLt:'#faf5ff',assess:'external',
+  { id:'umot',emoji:'🔥',label:'יחידה ה׳',title:'סיפור התהוות האומה',color:'#7c3aed',colorLt:'#faf5ff',assess:'external',
     desc:'משעבוד לחירות — יציאת מצרים, מתן תורה והקמת העם בספר שמות',
     lessons:[
       {id:'umot_l1',short:'שיעור 1',emoji:'📖',color:'#1a56db',mins:45,locked:false,
@@ -1226,7 +1273,7 @@ const UNITS=[
        title:'מבחן מסכם — התהוות האומה',desc:'מבחן מסכם לכל נושאי היחידה',file:'umot_exam.html'},
     ]
   },
-  { id:'hok',emoji:'⚖️',label:'יחידה ד׳',title:'חוק וחברה',color:'#ca8a04',colorLt:'#fefce8',assess:'external',
+  { id:'hok',emoji:'⚖️',label:'יחידה ו׳',title:'חוק וחברה',color:'#ca8a04',colorLt:'#fefce8',assess:'external',
     desc:'צדק, משפט והגנה על החלש — ערכים חברתיים בחוקי התורה ובנביאים',
     lessons:[
       {id:'hok_l1',short:'שיעור 1',emoji:'📜',color:'#ca8a04',mins:45,locked:false,
@@ -1249,32 +1296,7 @@ const UNITS=[
        title:'מבחן מסכם — חוק וחברה',desc:'מבחן מסכם לכל נושאי היחידה',file:'hok_exam.html'},
     ]
   },
-  { id:'navi',emoji:'🕊️',label:'יחידה ה׳',title:'נביא ונבואה — ירמיהו',color:'#0891b2',colorLt:'#ecfeff',assess:'external',
-    desc:'תפקיד הנביא, נבואת אמת מול שקר ודמותו של ירמיהו בערב החורבן',
-    lessons:[
-      {id:'navi_l1',short:'שיעור 1',emoji:'📖',color:'#1a56db',mins:45,locked:false,
-       title:'מהי נבואה — תפקיד הנביא',desc:'שליח ה׳, מבקר חברתי ומנהיג רוחני',file:'navi_lesson1.html'},
-      {id:'navi_l2',short:'שיעור 2',emoji:'📜',color:'#0891b2',mins:45,locked:false,
-       title:'הקדשת ירמיהו לנבואה',desc:'ירמיהו א׳ — הקריאה, ההיסוס והשליחות',file:'navi_lesson2.html'},
-      {id:'navi_l3',short:'שיעור 3',emoji:'✡️',color:'#7c3aed',mins:45,locked:false,
-       title:'תוכחה על עזיבת ה׳',desc:'ירמיהו ב׳ — "אותי עזבו מקור מים חיים"',file:'navi_lesson3.html'},
-      {id:'navi_l4',short:'שיעור 4',emoji:'🕯️',color:'#059669',mins:45,locked:false,
-       title:'נאום המקדש',desc:'ירמיהו ז׳ — ביקורת על ביטחון שווא במקדש',file:'navi_lesson4.html'},
-      {id:'navi_l5',short:'שיעור 5',emoji:'🔥',color:'#b45309',mins:45,locked:false,
-       title:'וידויי ירמיהו',desc:'ירמיהו כ׳ — מצוקת הנביא וקריאת התיגר',file:'navi_lesson5.html'},
-      {id:'navi_l6',short:'שיעור 6',emoji:'⭐',color:'#be185d',mins:45,locked:false,
-       title:'עימות עם נביא השקר חנניה',desc:'ירמיהו כ״ח — אמת מול שקר בנבואה',file:'navi_lesson6.html'},
-      {id:'navi_l7',short:'שיעור 7',emoji:'🌿',color:'#0284c7',mins:45,locked:false,
-       title:'נבואת הנחמה והברית החדשה',desc:'ירמיהו ל״א — תקווה, שיבה וברית מחודשת',file:'navi_lesson7.html'},
-      {id:'navi_l8',short:'שיעור 8',emoji:'👑',color:'#0f766e',mins:45,locked:false,
-       title:'חורבן ירושלים ודמות ירמיהו',desc:'ירמיהו ל״ט, נ״ב — הנפילה והנביא שנותר',file:'navi_lesson8.html'},
-      {id:'navi_l9',short:'שיעור 9',emoji:'⚖️',color:'#4f46e5',mins:45,locked:false,
-       title:'סיכום — נבואת אמת מול נבואת שקר',desc:'מבחני האמת של הנביא לאורך הספר',file:'navi_lesson9.html'},
-      {id:'navi_exam',short:'מבחן',emoji:'🏆',color:'#ca8a04',mins:90,locked:false,exam:true,
-       title:'מבחן סיכום — נביא ונבואה — ירמיהו',desc:'מבחן מסכם לכל נושאי היחידה',file:'navi_exam.html'},
-    ]
-  },
-  { id:'shivat',emoji:'🏛️',label:'יחידה ו׳',title:'שיבת ציון',color:'#be185d',colorLt:'#fdf2f8',assess:'external',
+  { id:'shivat',emoji:'🏛️',label:'יחידה ז׳',title:'שיבת ציון',color:'#be185d',colorLt:'#fdf2f8',assess:'external',
     desc:'מהצהרת כורש אל חידוש האומה בארץ — עזרא ונחמיה',
     lessons:[
       {id:'shivat_l1',short:'שיעור 1',emoji:'📖',color:'#1a56db',mins:45,locked:false,
@@ -1299,6 +1321,31 @@ const UNITS=[
        title:'סיכום — חידוש האומה בארץ',desc:'הסוגות, הקשת ומעגלי השיקום',file:'shivat_l10.html'},
       {id:'shivat_exam',short:'מבחן',emoji:'🏆',color:'#ca8a04',mins:90,locked:false,exam:true,
        title:'מבחן מסכם — שיבת ציון',desc:'11 שאלות בגרות ב-3 קבוצות בחירה · 100 נק׳',file:'shivat_exam.html'},
+    ]
+  },
+  { id:'navi',emoji:'🕊️',label:'יחידה ח׳',title:'נביא ונבואה — ירמיהו',color:'#0891b2',colorLt:'#ecfeff',assess:'external',optional:true,
+    desc:'יחידת רשות · העשרה — אינה כלולה בתוכנית העבודה השנתית. תפקיד הנביא, נבואת אמת מול שקר ודמותו של ירמיהו',
+    lessons:[
+      {id:'navi_l1',short:'שיעור 1',emoji:'📖',color:'#1a56db',mins:45,locked:false,
+       title:'מהי נבואה — תפקיד הנביא',desc:'שליח ה׳, מבקר חברתי ומנהיג רוחני',file:'navi_lesson1.html'},
+      {id:'navi_l2',short:'שיעור 2',emoji:'📜',color:'#0891b2',mins:45,locked:false,
+       title:'הקדשת ירמיהו לנבואה',desc:'ירמיהו א׳ — הקריאה, ההיסוס והשליחות',file:'navi_lesson2.html'},
+      {id:'navi_l3',short:'שיעור 3',emoji:'✡️',color:'#7c3aed',mins:45,locked:false,
+       title:'תוכחה על עזיבת ה׳',desc:'ירמיהו ב׳ — "אותי עזבו מקור מים חיים"',file:'navi_lesson3.html'},
+      {id:'navi_l4',short:'שיעור 4',emoji:'🕯️',color:'#059669',mins:45,locked:false,
+       title:'נאום המקדש',desc:'ירמיהו ז׳ — ביקורת על ביטחון שווא במקדש',file:'navi_lesson4.html'},
+      {id:'navi_l5',short:'שיעור 5',emoji:'🔥',color:'#b45309',mins:45,locked:false,
+       title:'וידויי ירמיהו',desc:'ירמיהו כ׳ — מצוקת הנביא וקריאת התיגר',file:'navi_lesson5.html'},
+      {id:'navi_l6',short:'שיעור 6',emoji:'⭐',color:'#be185d',mins:45,locked:false,
+       title:'עימות עם נביא השקר חנניה',desc:'ירמיהו כ״ח — אמת מול שקר בנבואה',file:'navi_lesson6.html'},
+      {id:'navi_l7',short:'שיעור 7',emoji:'🌿',color:'#0284c7',mins:45,locked:false,
+       title:'נבואת הנחמה והברית החדשה',desc:'ירמיהו ל״א — תקווה, שיבה וברית מחודשת',file:'navi_lesson7.html'},
+      {id:'navi_l8',short:'שיעור 8',emoji:'👑',color:'#0f766e',mins:45,locked:false,
+       title:'חורבן ירושלים ודמות ירמיהו',desc:'ירמיהו ל״ט, נ״ב — הנפילה והנביא שנותר',file:'navi_lesson8.html'},
+      {id:'navi_l9',short:'שיעור 9',emoji:'⚖️',color:'#4f46e5',mins:45,locked:false,
+       title:'סיכום — נבואת אמת מול נבואת שקר',desc:'מבחני האמת של הנביא לאורך הספר',file:'navi_lesson9.html'},
+      {id:'navi_exam',short:'מבחן',emoji:'🏆',color:'#ca8a04',mins:90,locked:false,exam:true,
+       title:'מבחן סיכום — נביא ונבואה — ירמיהו',desc:'מבחן מסכם לכל נושאי היחידה',file:'navi_exam.html'},
     ]
   },
 ];
@@ -1922,7 +1969,7 @@ function renderGrid(){
   const isT=(S.role==='teacher'||S.role==='admin');
   let totalOpen=0,totalDone=0;
   const DOT={u1:'#2563eb',u2:'#059669',u3:'#7c3aed',u4:'#ea580c',v1:'#0891b2',v2:'#8b5cf6',v3:'#d97706'};
-  const GRAD={avot:'u1-grad',yosef:'u2-grad',umot:'u3-grad',hok:'u4-grad',navi:'v1-grad',shivat:'v2-grad'};
+  const GRAD={reshit:'u5-grad',avot:'u1-grad',rut:'u6-grad',yosef:'u2-grad',umot:'u3-grad',hok:'u4-grad',shivat:'v2-grad',navi:'v1-grad'};
 
   function buildSection(units, secLabel, gridClass){
     // Build the grid of colored cards
@@ -1939,7 +1986,7 @@ function renderGrid(){
           ${locked?'<div class="uc-lock-icon">🔒</div>':''}
           <div class="uc-em">${unit.emoji}</div>
           <div class="uc-left-text">
-            <div class="uc-tag">${unit.label}</div>
+            <div class="uc-tag">${unit.label}${unit.optional?'<span class="uc-opt-tag">\u05e8\u05e9\u05d5\u05ea</span>':''}</div>
             <div class="uc-name">${unit.title}</div>
           </div>
           <div class="uc-pb-track"><div class="uc-pb-fill" style="width:${pct}%"></div></div>
@@ -2094,7 +2141,7 @@ function renderLessonPanel(uid){
   const teacherChip=isT?`<div style="font-size:.65rem;font-weight:800;padding:.18rem .65rem;border-radius:8px;background:rgba(202,138,4,.12);color:var(--amber);border:1px solid rgba(202,138,4,.2)">🎓 מצב מורה</div>`:'';
   panel.innerHTML=`
     <div class="lp-head">
-      <div class="lp-dot" style="background:${DOT[uid]||'#6366f1'}"></div>
+      <div class="lp-dot" style="background:${unit.color||DOT[uid]||'#6366f1'}"></div>
       <div class="lp-info">
         <div class="lp-tag">${unit.label}</div>
         <div class="lp-name">${unit.title}</div>
