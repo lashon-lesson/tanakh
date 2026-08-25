@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<!-- @copyright-line | © 2026 זכויות יוצרים – ליאור אלמוסלינוס | כל הזכויות שמורות. אין להעתיק, לשכפל או להפיץ ללא אישור בכתב. -->
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="copyright" content="© 2026 זכויות יוצרים – ליאור אלמוסלינוס">
+<meta name="author" content="ליאור אלמוסלינוס">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>שיעור 5 — קין והבל | תנ״ך לתיכון</title>
+<link href="https://fonts.googleapis.com/css2?family=Secular+One&family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<style>
+:root{
+  --bg:#f0f2f7;--surface:#fff;--surface2:#f8f9fb;--surface3:#eef0f5;
+  --border:#e4e7ef;--text:#0d1424;--text-mid:#3d4660;--muted:#6b7594;--subtle:#9aa3be;
+  --green:#15803d;--green-lt:#f0fdf4;--amber:#b45309;--amber-lt:#fffbeb;
+  --red:#dc2626;--red-lt:#fef2f2;--blue:#1a56db;--blue-lt:#eff4ff;
+  --rose:#be185d;--rose-lt:#fff1f2;--purple:#7c3aed;--purple-lt:#faf5ff;
+  --gold:#ca8a04;--gold-lt:#fefce8;
+  --lc:#0891b2;--lc-lt:#ecfeff;--lc-dk:#065f46;
+  --sh1:0 1px 3px rgba(13,20,36,.06);--sh2:0 4px 20px rgba(13,20,36,.08);--sh3:0 12px 40px rgba(13,20,36,.12);
+  --r:14px;--r-lg:20px;--r-xl:26px;--r-pill:999px;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#0b0f17;--surface:#131924;--surface2:#192030;--surface3:#1f2840;
+  --border:#252f47;--text:#d8dfe8;--text-mid:#a0adc5;--muted:#7a8aaa;--subtle:#50607e;
+  --green:#34d875;--green-lt:#0c2618;--amber:#f5a623;--amber-lt:#28200c;
+  --red:#fc8080;--red-lt:#281414;--blue:#4d8aff;--blue-lt:#162040;
+  --rose:#fb7185;--rose-lt:#1f0a0f;--purple:#b09dfa;--purple-lt:#1a1432;
+  --gold:#f5a623;--gold-lt:#28200c;
+  --lc:#34d4c2;--lc-lt:#0c221e;--lc-dk:#5eead4;
+  --sh1:0 1px 3px rgba(0,0,0,.3);--sh2:0 4px 20px rgba(0,0,0,.4);--sh3:0 12px 40px rgba(0,0,0,.5);
+}}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{line-height:1.65;min-height:100vh}
+button,input,select,textarea{font-family:inherit}
+.topbar{position:sticky;top:0;z-index:100;background:var(--surface);border-bottom:1px solid var(--border);padding:.62rem 1.1rem;display:flex;align-items:center;gap:.55rem;min-height:54px;box-shadow:var(--sh1)}
+.btn-back{width:40px;height:40px;border:1.5px solid var(--border);border-radius:11px;background:var(--surface2);font-size:1.05rem;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .14s;flex-shrink:0}
+.btn-back:hover{background:var(--surface3);color:var(--text)}
+.topbar-info{flex:1;min-width:0}
+.topbar-title{font-family:'Secular One',sans-serif;font-size:.9rem;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.topbar-sub{font-size:.6rem;color:var(--subtle);margin-top:.04rem}
+.topbar-actions{display:flex;gap:.38rem;flex-shrink:0;align-items:center}
+.t-chip{font-size:.62rem;font-weight:700;padding:.2rem .68rem;border-radius:var(--r-pill);border:1px solid var(--border);background:var(--surface2);color:var(--muted)}
+.t-chip.lc{color:var(--lc);background:var(--lc-lt);border-color:var(--lc)}
+.t-chip.teacher{color:var(--gold);background:var(--gold-lt);border-color:#fde68a;display:none}
+.btn-print{display:inline-flex;align-items:center;gap:.32rem;padding:.32rem .85rem;border:1.5px solid var(--border);border-radius:var(--r-pill);background:var(--surface2);font-size:.68rem;font-weight:700;color:var(--muted);cursor:pointer;transition:all .14s;white-space:nowrap;min-height:36px}
+.btn-print:hover{background:var(--lc-lt);color:var(--lc);border-color:var(--lc)}
+.tabs-bar{background:var(--surface);border-bottom:1px solid var(--border);display:flex;padding:0 1.1rem;overflow-x:auto;scrollbar-width:none;position:sticky;top:54px;z-index:90}
+.tabs-bar::-webkit-scrollbar{display:none}
+.tab-btn{padding:.68rem 1.2rem;border:none;border-bottom:2.5px solid transparent;background:none;font-size:.82rem;font-weight:600;color:var(--muted);cursor:pointer;white-space:nowrap;min-height:46px;margin-bottom:-1px;flex-shrink:0;transition:color .14s}
+.tab-btn:hover{color:var(--lc)}
+.tab-btn.active{color:var(--lc);border-bottom-color:var(--lc);font-weight:800}
+.tab-pane{display:none}.tab-pane.active{display:block;animation:fadeIn .18s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.lesson-wrap{max-width:800px;margin:0 auto;padding:1.5rem 1.2rem 5rem;width:100%}
+.lesson-hero{background:linear-gradient(135deg,var(--lc-lt) 0%,var(--surface) 68%);border:1px solid var(--border);border-radius:var(--r-xl);padding:1.8rem 1.6rem 1.6rem;margin-bottom:1.8rem;position:relative;overflow:hidden;box-shadow:var(--sh1)}
+.lesson-hero::before{content:'';position:absolute;top:0;right:0;bottom:0;width:5px;background:var(--lc);opacity:.75;border-radius:0 var(--r-xl) var(--r-xl) 0}
+.hero-badge{display:inline-flex;align-items:center;gap:.35rem;font-size:.62rem;font-weight:800;color:var(--lc);text-transform:uppercase;letter-spacing:.07em;background:var(--lc-lt);border:1.5px solid var(--lc);border-radius:var(--r-pill);padding:.22rem .8rem;margin-bottom:.9rem;opacity:.88}
+.hero-emoji{font-size:2.6rem;margin-bottom:.55rem;display:block;line-height:1}
+.hero-title{font-family:'Secular One',sans-serif;font-size:clamp(1.35rem,4vw,1.75rem);color:var(--text);line-height:1.18;margin-bottom:.4rem}
+.hero-desc{font-size:.84rem;color:var(--muted);line-height:1.65;max-width:580px}
+.hero-meta{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;margin-top:1rem}
+.hero-chip{font-size:.63rem;font-weight:700;padding:.22rem .72rem;border-radius:var(--r-pill);border:1px solid var(--border);background:var(--surface);color:var(--muted)}
+.hero-chip.lc{color:var(--lc);background:var(--lc-lt);border-color:var(--lc)}
+.hero-chip.green{color:var(--green);background:var(--green-lt);border-color:#bbf7d0}
+.section-hd{font-family:'Secular One',sans-serif;font-size:1.08rem;color:var(--lc);display:flex;align-items:center;gap:.55rem;margin:2.2rem 0 1rem;padding-bottom:.48rem;border-bottom:2px solid var(--lc-lt)}
+.sn{width:28px;height:28px;border-radius:50%;background:var(--lc);color:#fff;font-size:.75rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:900}
+.sn-icon{font-size:1.3rem;flex-shrink:0;line-height:1}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.3rem 1.4rem;box-shadow:var(--sh1);margin-bottom:1rem}
+.card p{font-size:.9rem;line-height:1.78;color:var(--text-mid)}.card p+p{margin-top:.65rem}
+.card ul{padding-right:1.3rem;margin-top:.42rem}
+.card li{font-size:.9rem;line-height:1.78;color:var(--text-mid);margin-bottom:.22rem}
+.card li strong{color:var(--text)}
+.box{border-radius:var(--r);padding:1rem 1.2rem;font-size:.86rem;line-height:1.72;color:var(--text-mid);margin-bottom:1rem}
+.box strong{font-weight:800}
+.box-lc{background:var(--lc-lt);border:1.5px solid #99f6e4}.box-lc strong{color:var(--lc)}
+.box-amber{background:var(--amber-lt);border:1.5px solid #fde68a}.box-amber strong{color:var(--amber)}
+.box-green{background:var(--green-lt);border:1.5px solid #bbf7d0}.box-green strong{color:var(--green)}
+.box-blue{background:var(--blue-lt);border:1.5px solid #bfdbfe}.box-blue strong{color:var(--blue)}
+.box-purple{background:var(--purple-lt);border:1.5px solid #ddd6fe}.box-purple strong{color:var(--purple)}
+.box-rose{background:var(--rose-lt);border:1.5px solid #fecdd3}.box-rose strong{color:var(--rose)}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:1rem}
+@media(max-width:600px){.grid3{grid-template-columns:1fr}}
+.mini-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:1rem 1.1rem}
+.mini-title{font-size:.78rem;font-weight:800;margin-bottom:.42rem}
+.mini-body{font-size:.8rem;color:var(--text-mid);line-height:1.64}
+.steps-wrap{background:linear-gradient(135deg,var(--lc-lt) 0%,var(--surface2) 100%);border:1.5px solid #99f6e4;border-radius:var(--r-lg);padding:1.4rem 1.5rem;margin-bottom:1rem}
+.steps-title{font-family:'Secular One',sans-serif;font-size:.94rem;color:var(--lc);margin-bottom:1rem}
+.step-item{display:flex;align-items:flex-start;gap:.65rem;font-size:.86rem;color:var(--text-mid);line-height:1.55;margin-bottom:.68rem}
+.step-num{width:26px;height:26px;border-radius:50%;background:var(--lc);color:#fff;font-size:.7rem;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:.1rem}
+.cmp-table{width:100%;border-collapse:collapse;font-size:.82rem;margin-bottom:1rem;border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--sh1)}
+.cmp-table th{padding:.68rem .9rem;text-align:right;font-weight:800;font-size:.76rem}
+.cmp-table th:first-child{background:var(--lc);color:#fff}
+.cmp-table th.col-b{background:var(--lc-dk);color:#fff}
+.cmp-table th.col-c{background:#374151;color:#fff}
+.cmp-table th.col-d{background:#1e293b;color:#fff}
+.cmp-table td{padding:.62rem .9rem;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.58}
+.cmp-table tr:last-child td{border-bottom:none}
+.cmp-table tr:nth-child(even) td{background:var(--surface2)}
+.cmp-table tr:nth-child(odd) td{background:var(--surface)}
+.cmp-table .row-label{font-weight:700;color:var(--lc);background:var(--lc-lt)!important;white-space:nowrap}
+
+/* ── SPEECH MODE PANELS ── */
+.speech-panel{border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--sh2);margin-bottom:1.3rem}
+.sp-head{padding:.9rem 1.3rem;font-family:'Secular One',sans-serif;font-size:.9rem;color:#fff;display:flex;align-items:center;gap:.5rem}
+.sp-body{background:var(--surface);border:1px solid var(--border);border-top:none;padding:1.1rem 1.3rem}
+.sp-original{background:var(--surface2);border-radius:var(--r);padding:.85rem 1.05rem;font-size:.9rem;color:var(--text-mid);line-height:1.72;margin-bottom:.85rem;border-right:4px solid var(--lc)}
+.sp-original .quote-marks{font-size:1.1rem;color:var(--lc);font-weight:900}
+.sp-features{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.75rem}
+.sp-feat{font-size:.65rem;font-weight:700;padding:.22rem .68rem;border-radius:var(--r-pill);border:1.5px solid}
+.sp-rules{font-size:.83rem;color:var(--text-mid);line-height:1.7}
+.sp-rules li{margin-bottom:.28rem}
+.sp-rules strong{color:var(--text)}
+/* colors per type */
+.direct .sp-head{background:#0f766e}
+.direct .sp-feat{background:var(--lc-lt);color:#0f766e;border-color:#99f6e4}
+.indirect .sp-head{background:#1a56db}
+.indirect .sp-feat{background:var(--blue-lt);color:#1a56db;border-color:#bfdbfe}
+.free .sp-head{background:#7c3aed}
+.free .sp-feat{background:var(--purple-lt);color:#7c3aed;border-color:#ddd6fe}
+
+/* ── TRANSFORMATION ARROWS ── */
+.transform-wrap{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-xl);padding:1.3rem 1.4rem;margin-bottom:1.1rem;box-shadow:var(--sh1)}
+.tr-title{font-family:'Secular One',sans-serif;font-size:.85rem;color:var(--lc);margin-bottom:1rem;display:flex;align-items:center;gap:.4rem}
+.tr-row{display:flex;flex-direction:column;gap:.5rem;margin-bottom:.9rem}
+.tr-row:last-child{margin-bottom:0}
+.tr-from,.tr-to{padding:.65rem 1rem;border-radius:var(--r);font-size:.87rem;line-height:1.62;color:var(--text-mid)}
+.tr-from{background:var(--lc-lt);border:1.5px solid #99f6e4;border-right:4px solid var(--lc)}
+.tr-from .tr-label{font-size:.62rem;font-weight:800;color:var(--lc);margin-bottom:.28rem;letter-spacing:.04em}
+.tr-to{background:var(--blue-lt);border:1.5px solid #bfdbfe;border-right:4px solid #1a56db}
+.tr-to .tr-label{font-size:.62rem;font-weight:800;color:#1a56db;margin-bottom:.28rem;letter-spacing:.04em}
+.tr-free{background:var(--purple-lt);border:1.5px solid #ddd6fe;border-right:4px solid #7c3aed}
+.tr-free .tr-label{font-size:.62rem;font-weight:800;color:#7c3aed;margin-bottom:.28rem;letter-spacing:.04em}
+.tr-arrow{font-size:1rem;color:var(--muted);text-align:center;padding:.1rem 0}
+.change-badge{display:inline-flex;align-items:center;gap:.25rem;font-size:.62rem;font-weight:700;padding:.16rem .55rem;border-radius:var(--r-pill);background:var(--amber-lt);color:var(--amber);border:1px solid #fde68a;margin-right:.25rem}
+
+/* reading */
+.reading-text-box{background:var(--surface);border:2px solid var(--lc);border-radius:var(--r-xl);padding:1.5rem 1.6rem;margin-bottom:1.8rem;box-shadow:var(--sh2);position:relative}
+.reading-text-box::before{content:'📄 טקסט לניתוח';position:absolute;top:-12px;right:1.4rem;background:var(--lc);color:#fff;font-size:.65rem;font-weight:800;padding:.22rem .85rem;border-radius:var(--r-pill);letter-spacing:.04em}
+.rt-title{font-family:'Secular One',sans-serif;font-size:1.05rem;color:var(--text);margin-bottom:.28rem}
+.rt-body{font-size:.88rem;line-height:1.88;color:var(--text-mid)}
+.rt-body p{margin-bottom:.85rem}.rt-body p:last-child{margin-bottom:0}
+.rt-body strong{color:var(--lc);font-weight:800}
+/* quiz */
+.quiz-header{background:linear-gradient(135deg,var(--lc-lt) 0%,var(--surface2) 100%);border:1px solid #99f6e4;border-radius:var(--r-lg);padding:1.25rem 1.4rem;margin-bottom:1.5rem}
+.quiz-hd-title{font-family:'Secular One',sans-serif;font-size:.97rem;color:var(--lc);margin-bottom:.32rem}
+.quiz-hd-desc{font-size:.82rem;color:var(--muted)}
+.quiz-prog-bar{height:5px;background:var(--surface3);border-radius:var(--r-pill);overflow:hidden;margin-top:.8rem;border:1px solid var(--border)}
+.quiz-prog-fill{height:100%;background:linear-gradient(90deg,var(--lc),#34d4c2);border-radius:var(--r-pill);transition:width .38s ease}
+.quiz-prog-row{display:flex;justify-content:space-between;margin-top:.38rem;font-size:.7rem;color:var(--muted)}
+.q-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.3rem 1.4rem;margin-bottom:1.25rem;box-shadow:var(--sh1);transition:border-color .2s}
+.q-card.ok{border-color:#bbf7d0}.q-card.wrong{border-color:#fca5a5}
+.q-num{font-size:.66rem;font-weight:800;color:var(--subtle);margin-bottom:.55rem;text-transform:uppercase;letter-spacing:.06em;display:flex;align-items:center;gap:.4rem;flex-wrap:wrap}
+.q-type-badge{font-size:.56rem;font-weight:700;padding:.14rem .52rem;border-radius:var(--r-pill);background:var(--surface3);color:var(--muted);border:1px solid var(--border)}
+.q-text{font-size:.94rem;font-weight:700;color:var(--text);line-height:1.52;margin-bottom:1.05rem}
+.q-excerpt{background:var(--surface2);border:1px solid var(--border);border-right:3px solid var(--lc);border-radius:var(--r);padding:.75rem 1rem;font-size:.86rem;line-height:1.75;color:var(--text-mid);margin-bottom:.85rem;font-style:italic}
+.mc-wrap{display:flex;flex-direction:column;gap:.42rem}
+.mc-btn{width:100%;text-align:right;padding:.78rem 1rem;border:1.5px solid var(--border);border-radius:var(--r);background:var(--surface2);font-size:.86rem;color:var(--text-mid);cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:.68rem;min-height:50px}
+.mc-btn:hover:not(:disabled){border-color:var(--lc);background:var(--lc-lt);color:var(--lc)}
+.mc-btn.sel{border-color:var(--lc);background:var(--lc-lt);color:var(--lc);font-weight:700}
+.mc-btn.correct{border-color:var(--green)!important;background:var(--green-lt)!important;color:var(--green)!important;font-weight:700}
+.mc-btn.wrong{border-color:var(--red)!important;background:var(--red-lt)!important;color:var(--red)!important;font-weight:700}
+.mc-btn:disabled{cursor:default}
+.mc-letter{width:24px;height:24px;border-radius:50%;background:var(--surface3);color:var(--muted);font-size:.7rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.mc-btn.sel .mc-letter{background:var(--lc);color:#fff}
+.mc-btn.correct .mc-letter{background:var(--green);color:#fff}
+.mc-btn.wrong .mc-letter{background:var(--red);color:#fff}
+.tf-row{display:flex;gap:.68rem}
+.tf-btn{flex:1;padding:.8rem;border:1.5px solid var(--border);border-radius:var(--r);background:var(--surface2);font-size:.9rem;font-weight:700;cursor:pointer;transition:all .15s;min-height:54px}
+.tf-btn:hover:not(:disabled){border-color:var(--lc);background:var(--lc-lt);color:var(--lc)}
+.tf-btn.sel{border-color:var(--lc);background:var(--lc-lt);color:var(--lc)}
+.tf-btn.correct{border-color:var(--green)!important;background:var(--green-lt)!important;color:var(--green)!important}
+.tf-btn.wrong{border-color:var(--red)!important;background:var(--red-lt)!important;color:var(--red)!important}
+.tf-btn:disabled{cursor:default}
+.sort-list{display:flex;flex-direction:column;gap:.42rem;margin-bottom:.55rem}
+.sort-item{display:flex;align-items:center;gap:.68rem;padding:.74rem 1rem;border:1.5px solid var(--border);border-radius:var(--r);background:var(--surface2);cursor:grab;transition:all .15s;user-select:none}
+.sort-item:active{cursor:grabbing}
+.sort-item.dragging{opacity:.45}
+.sort-item.drag-over{border-color:var(--lc);background:var(--lc-lt)}
+.sort-handle{font-size:1.1rem;color:var(--muted);flex-shrink:0}
+.sort-text{font-size:.86rem;color:var(--text-mid);flex:1}
+.sort-note{font-size:.7rem;color:var(--muted);margin-bottom:.32rem}
+.q-feedback{margin-top:.72rem;padding:.8rem 1.05rem;border-radius:var(--r);font-size:.83rem;font-weight:600;line-height:1.58;display:none;border-right:3px solid transparent}
+.q-feedback.show{display:block}
+.q-feedback.ok{background:var(--green-lt);color:var(--green);border-color:var(--green)}
+.q-feedback.wrong{background:var(--red-lt);color:var(--red);border-color:var(--red)}
+.results-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);padding:2.2rem 1.8rem;text-align:center;box-shadow:var(--sh2);margin-top:1.5rem}
+.results-emoji{font-size:4rem;margin-bottom:.8rem;display:block}
+.results-score{font-family:'Secular One',sans-serif;font-size:3.4rem;font-weight:800;margin-bottom:.3rem;display:block}
+.results-label{font-size:.9rem;color:var(--muted);margin-bottom:1.5rem;display:block}
+.results-bar{height:10px;background:var(--surface3);border-radius:var(--r-pill);overflow:hidden;margin-bottom:1.6rem;border:1px solid var(--border)}
+.results-bar-fill{height:100%;border-radius:var(--r-pill);transition:width 1.2s cubic-bezier(.22,1,.36,1)}
+.btn-submit{padding:.85rem 2rem;border:none;border-radius:var(--r-pill);background:var(--lc);color:#fff;font-size:.9rem;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(8,145,178,.25);transition:all .15s;min-height:48px}
+.btn-submit:hover{background:var(--lc-dk);transform:translateY(-1px)}
+.btn-reset{padding:.82rem 1.6rem;border:1.5px solid var(--border);border-radius:var(--r-pill);background:var(--surface2);color:var(--muted);font-size:.86rem;font-weight:700;cursor:pointer;transition:all .15s;min-height:48px}
+.btn-send{padding:.82rem 1.8rem;border:none;border-radius:var(--r-pill);background:var(--green);color:#fff;font-size:.86rem;font-weight:700;cursor:pointer;transition:all .15s;min-height:48px}
+.answers-locked{background:var(--surface);border:2px dashed var(--border);border-radius:var(--r-xl);padding:2.5rem 2rem;text-align:center;margin-top:.5rem}
+.answer-row{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.05rem 1.2rem;margin-bottom:.78rem}
+.ans-num{font-size:.66rem;color:var(--subtle);margin-bottom:.35rem;display:flex;align-items:center;gap:.4rem}
+.ans-q{font-size:.88rem;font-weight:700;color:var(--text);margin-bottom:.5rem;line-height:1.45}
+.ans-correct{background:var(--green-lt);border:1.5px solid #bbf7d0;border-radius:9px;padding:.55rem .95rem;font-size:.82rem;color:var(--green);font-weight:700;margin-bottom:.42rem}
+.ans-explain{font-size:.78rem;color:var(--muted);line-height:1.58;border-right:3px solid var(--border);padding-right:.78rem;margin-top:.4rem}
+/* gate */
+#student-gate{background:var(--surface);border:2px solid var(--lc);border-radius:var(--r-xl);padding:0;margin-bottom:1.5rem;box-shadow:var(--sh2);overflow:hidden}
+#student-gate.hidden{display:none}
+.gate-header{background:linear-gradient(135deg,var(--lc-lt) 0%,var(--surface2) 100%);padding:1.4rem 1.5rem 1.2rem;text-align:center;border-bottom:1px solid var(--border)}
+.gate-icon{font-size:2.4rem;display:block;margin-bottom:.55rem}
+.gate-title{font-family:'Secular One',sans-serif;font-size:1.08rem;color:var(--text);margin-bottom:.28rem}
+.gate-desc{font-size:.8rem;color:var(--muted)}
+.gate-body{padding:1.3rem 1.5rem 1.5rem;display:flex;flex-direction:column;gap:.9rem}
+.gate-field label{display:block;font-size:.72rem;font-weight:800;color:var(--muted);margin-bottom:.38rem}
+.gate-input{width:100%;padding:.82rem 1rem;border:1.5px solid var(--border);border-radius:var(--r);background:var(--surface2);font-size:.92rem;color:var(--text);outline:none;transition:border-color .15s;min-height:50px}
+.gate-input::placeholder{color:var(--subtle)}
+.gate-input:focus{border-color:var(--lc);box-shadow:0 0 0 3px rgba(8,145,178,.25)}
+.gate-input.err{border-color:var(--red)}
+.gate-select{width:100%;padding:.82rem 1rem;border:1.5px solid var(--border);border-radius:var(--r);background:var(--surface2);font-size:.92rem;color:var(--text);outline:none;transition:border-color .15s;min-height:50px;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7594' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:left 1rem center}
+.gate-select:focus{border-color:var(--lc);box-shadow:0 0 0 3px rgba(8,145,178,.25)}
+.gate-select.err{border-color:var(--red)}
+.gate-err-msg{font-size:.7rem;color:var(--red);margin-top:.26rem;display:none}
+.gate-err-msg.show{display:block}
+.gate-date-display{padding:.78rem 1rem;background:var(--surface3);border:1.5px solid var(--border);border-radius:var(--r);font-size:.88rem;color:var(--muted)}
+.gate-btn{width:100%;padding:.88rem;border:none;border-radius:var(--r-pill);background:var(--lc);color:#fff;font-size:.92rem;font-weight:700;cursor:pointer;min-height:52px;box-shadow:0 4px 18px rgba(8,145,178,.25);transition:all .15s;display:flex;align-items:center;justify-content:center;gap:.45rem}
+.gate-btn:hover{background:var(--lc-dk);transform:translateY(-1px)}
+#gate-confirmed{display:none;background:var(--lc-lt);border:2px solid #99f6e4;border-radius:var(--r-xl);padding:1rem 1.3rem;margin-bottom:1.5rem;align-items:center;gap:.85rem}
+#gate-confirmed.show{display:flex}
+#gate-confirmed.hidden{display:none!important}
+.gc-avatar{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#0f766e,#065f46);color:#fff;font-size:1.1rem;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.gc-info{flex:1;min-width:0}
+.gc-name{font-size:.92rem;font-weight:800;color:var(--lc)}
+.gc-meta{font-size:.74rem;color:var(--text-mid);margin-top:.15rem}
+.gc-change{font-size:.68rem;font-weight:700;color:var(--muted);cursor:pointer;text-decoration:underline;background:none;border:none;padding:0;margin-top:.22rem;display:block}
+#toast{position:fixed;bottom:1.6rem;left:50%;transform:translateX(-50%) translateY(14px);background:var(--text);color:var(--bg);padding:.58rem 1.4rem;border-radius:var(--r-pill);font-size:.78rem;font-weight:700;box-shadow:var(--sh3);z-index:9999;opacity:0;pointer-events:none;transition:opacity .22s,transform .22s;white-space:nowrap}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media print{.topbar,.tabs-bar,.btn-print,.btn-submit,.btn-reset,.btn-send,#submit-row,#results-container,#toast,#student-gate,#gate-confirmed,.sort-handle{display:none!important}body{background:#fff;color:#000;font-size:10pt;line-height:1.5}html{background:#fff}.tab-pane{display:block!important}.lesson-wrap{padding:.5cm 1cm;max-width:100%}.lesson-hero,.card,.q-card,.reading-text-box,.answer-row,.cmp-table,.speech-panel,.transform-wrap{box-shadow:none;break-inside:avoid}.q-feedback{display:block!important}.mc-btn.correct{display:flex!important}.print-header{display:block!important;text-align:center;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:2px solid #0f766e}.print-header h1{font-size:16pt;color:#0f766e}.print-header p{font-size:10pt;color:#555}#pane-theory{page-break-after:always}#pane-practice{page-break-after:always}@page{margin:1.5cm;size:A4}}
+.print-header{display:none}
+
+/* open q */
+.open-wrap{margin-bottom:.5rem}
+.open-textarea{width:100%;min-height:100px;padding:.8rem 1rem;border:1.5px solid var(--border);border-radius:var(--r,8px);background:var(--surface2,#f8fafc);font-family:'Heebo',sans-serif;font-size:.88rem;color:var(--text,#0d1424);line-height:1.7;resize:vertical;outline:none;transition:border-color .15s}
+.open-textarea:focus{border-color:var(--lc)}
+.open-textarea:disabled{opacity:.65;background:var(--surface3,#f0f2f7)}
+.open-hint{font-size:.72rem;color:var(--muted,#9aa3be);margin-top:.3rem}
+.open-rubric{margin-top:.6rem;background:var(--surface2,#f8fafc);border:1px solid var(--border,#e4e7ef);border-radius:var(--r,8px);padding:.7rem 1rem;font-size:.78rem;line-height:1.55;color:var(--text-mid,#374151)}
+
+.goto-practice-btn{display:block;width:100%;padding:1rem 1.5rem;border:none;border-radius:var(--r-pill,999px);background:#0f766e;color:#fff;font-size:.92rem;font-weight:800;cursor:pointer;transition:all .18s;margin-top:.8rem;text-align:center;box-shadow:0 4px 18px rgba(8,145,178,.25)}
+.goto-practice-btn:hover{transform:translateY(-2px);opacity:.92}
+
+/* ── תוספות תנ״ך v2: חלקים · סעיפי בגרות · תיוג רבדים ── */
+.q-excerpt b{color:var(--lc);font-weight:800;font-size:.72rem;vertical-align:.12em;margin-left:.15rem;font-style:normal}
+.q-excerpt .vref{display:block;font-size:.66rem;font-weight:800;color:var(--lc);letter-spacing:.04em;margin-bottom:.4rem;font-style:normal}
+.section-divider{margin:2rem 0 1.2rem;padding:1.05rem 1.3rem;border-radius:var(--r-lg);background:linear-gradient(135deg,var(--lc-lt) 0%,var(--surface2) 100%);border:1.5px solid var(--lc)}
+.section-divider.sec-b{background:linear-gradient(135deg,var(--gold-lt) 0%,var(--surface2) 100%);border-color:var(--gold)}
+.sd-tag{display:inline-block;font-size:.64rem;font-weight:800;letter-spacing:.05em;padding:.2rem .6rem;border-radius:var(--r-pill);background:var(--lc);color:#fff;margin-bottom:.5rem;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.section-divider.sec-b .sd-tag{background:var(--gold)}
+.sd-title{font-family:'Secular One',sans-serif;font-size:1.05rem;color:var(--text);margin-bottom:.25rem}
+.sd-note{font-size:.78rem;color:var(--text-mid);line-height:1.55}
+.pool-banner{background:var(--surface2);border:1.5px dashed var(--gold);border-radius:var(--r-lg);padding:.85rem 1.15rem;margin:1.1rem 0;display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
+.pool-banner .pb-icon{font-size:1.4rem;line-height:1}
+.pool-banner .pb-text{flex:1;min-width:160px}
+.pool-banner .pb-title{font-family:'Secular One',sans-serif;font-size:.88rem;color:var(--gold);margin-bottom:.15rem}
+.pool-banner .pb-desc{font-size:.75rem;color:var(--text-mid);line-height:1.5}
+.pool-counter{font-size:.72rem;font-weight:800;padding:.32rem .85rem;border-radius:var(--r-pill);background:var(--surface);border:1.5px solid var(--gold);color:var(--gold);white-space:nowrap}
+.pool-counter.done{background:var(--green-lt);border-color:var(--green);color:var(--green)}
+.q-card.bagrut-q{border-right:3px solid var(--gold)}
+.q-total-pts{font-size:.6rem;font-weight:800;padding:.12rem .5rem;border-radius:var(--r-pill);background:var(--gold-lt);color:var(--gold);border:1px solid var(--gold)}
+.bagrut-stem{font-size:.9rem;font-weight:700;color:var(--text);line-height:1.6;margin:.2rem 0 .3rem}
+.bagrut-based{font-size:.72rem;color:var(--muted);font-style:italic;margin-bottom:.7rem}
+.bagrut-part{border-top:1px solid var(--border);padding-top:.8rem;margin-top:.85rem}
+.bagrut-part:first-of-type{border-top:none;padding-top:.2rem;margin-top:.3rem}
+.part-head{display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem;flex-wrap:wrap}
+.part-label{display:inline-flex;width:22px;height:22px;border-radius:50%;background:var(--lc);color:#fff;align-items:center;justify-content:center;font-size:.72rem;font-weight:800;flex-shrink:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.part-points{font-size:.62rem;font-weight:800;padding:.1rem .5rem;border-radius:var(--r-pill);background:var(--gold-lt);color:var(--gold);border:1px solid var(--gold)}
+.part-text{font-size:.86rem;color:var(--text);line-height:1.55;flex:1;min-width:150px}
+.reflective-badge{font-size:.6rem;font-weight:800;padding:.1rem .5rem;border-radius:var(--r-pill);background:var(--green-lt);color:var(--green);border:1px solid #bbf7d0}
+.open-saved{margin-top:.6rem;background:var(--amber-lt);border:1.5px solid #fde68a;border-radius:var(--r);padding:.65rem .95rem;font-size:.8rem;color:var(--amber);font-weight:700}
+.rubric-box{margin-top:.4rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:.7rem .9rem}
+.rubric-part-hd{font-size:.72rem;font-weight:800;color:var(--lc);margin-bottom:.35rem}
+.rubric-model{font-size:.8rem;line-height:1.65;color:var(--text-mid);margin-bottom:.55rem}
+.rubric-model strong{color:var(--green);font-weight:800}
+.rubric-band{display:flex;gap:.5rem;align-items:flex-start;font-size:.76rem;line-height:1.5;margin-bottom:.35rem;color:var(--text-mid)}
+.rubric-band .rb-tag{font-size:.62rem;font-weight:800;padding:.14rem .5rem;border-radius:var(--r-pill);flex-shrink:0;white-space:nowrap}
+.rubric-band.full .rb-tag{background:var(--green-lt);color:var(--green);border:1px solid #bbf7d0}
+.rubric-band.partial .rb-tag{background:var(--amber-lt);color:var(--amber);border:1px solid #fde68a}
+.rubric-pts{display:inline-block;margin-top:.25rem;font-size:.68rem;font-weight:800;color:var(--gold)}
+.ans-excerpt{background:var(--surface2);border-right:3px solid var(--lc);border-radius:var(--r);padding:.55rem .85rem;font-size:.8rem;line-height:1.7;color:var(--text-mid);font-style:italic;margin-bottom:.5rem}
+.layer-tag{display:inline-block;font-size:.6rem;font-weight:800;letter-spacing:.04em;padding:.12rem .5rem;border-radius:var(--r-pill);margin-bottom:.5rem;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.layer-tag.peshat{background:var(--lc-lt);color:var(--lc);border:1px solid var(--lc)}
+.layer-tag.derash{background:var(--purple-lt,#f3e8ff);color:var(--purple,#7c3aed);border:1px solid var(--purple,#7c3aed)}
+.teacher-note-box{background:#fff7ed;border:1.5px solid #fdba74;border-radius:var(--r-lg);padding:1rem 1.2rem;margin:1.4rem 0}.teacher-note-box{display:none}body.is-teacher .teacher-note-box{display:block}
+.tn-tag{display:inline-block;font-size:.62rem;font-weight:800;letter-spacing:.05em;padding:.15rem .55rem;border-radius:var(--r-pill);background:#ea580c;color:#fff;margin-bottom:.5rem;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.teacher-note-box p{font-size:.82rem;color:#7c2d12;line-height:1.65}
+
+/* ── COPYRIGHT ── */
+.copyright-line{padding:1.35rem 1rem .9rem;text-align:center;font-size:.71rem;letter-spacing:.015em;color:var(--muted);opacity:.8;line-height:1.5;user-select:none}
+.copyright-line.pinned{position:absolute;bottom:.7rem;left:0;right:0;z-index:2;opacity:.72}
+@media print{.copyright-line{opacity:1;color:#6b7594}}
+
+</style>
+</head>
+<body>
+<div class="topbar">
+  <button class="btn-back" onclick="goBack()" style="font-family:Arial,sans-serif">←</button>
+  <div class="topbar-info">
+    <div class="topbar-title">🌾 קין והבל</div>
+    <div class="topbar-sub">תנ״ך · יחידה א׳ — ראשית העולם והאנושות · שיעור 5</div>
+  </div>
+  <div class="topbar-actions">
+    <span class="t-chip lc">⏱ 45 דק׳</span>
+    <span class="t-chip teacher" id="role-chip">🎓 מורה</span>
+    <button class="btn-print" onclick="printLesson()">🖨️ הדפסה</button>
+  </div>
+</div>
+<div class="tabs-bar">
+  <button class="tab-btn active" id="btn-theory" onclick="switchTab('theory')">📚 רקע ועיון</button>
+  <button class="tab-btn" id="btn-practice" onclick="switchTab('practice')">✏️ תרגול</button>
+  <button class="tab-btn" id="btn-answers" onclick="switchTab('answers')" style="display:none">🔑 תשובות ומחוון (מורה)</button>
+  <button class="tab-btn" id="btn-answers-student" onclick="switchTab('answers')" style="display:none">💡 תשובות</button>
+</div>
+
+<!-- ═══ THEORY ═══ -->
+<div class="tab-pane active" id="pane-theory">
+<div class="print-header"><h1>קין והבל (בראשית ד׳)</h1><p>תנ״ך · יחידה א׳ — ראשית העולם והאנושות · שיעור 5</p></div>
+<div class="lesson-wrap">
+  <div class="lesson-hero">
+    <div class="hero-badge">יחידה א׳ · שיעור 5</div>
+    <span class="hero-emoji">🌾</span>
+    <h1 class="hero-title">קין והבל</h1>
+    <p class="hero-desc">בראשית ד׳ — שתי מנחות, "וְאַתָּה תִּמְשָׁל בּוֹ", הרצח הראשון, "הֲשֹׁמֵר אָחִי אָנֹכִי" והאות</p>
+    <div class="hero-meta"><span class="hero-chip lc">⏱ 45 דק׳</span><span class="hero-chip">📝 תרגול + בגרות</span><span class="hero-chip green">🌍 ראשית העולם והאנושות</span></div>
+  </div>
+
+  <div style="background:var(--lc-lt);border:2px dashed var(--lc);border-radius:var(--r-xl);padding:1.4rem 1.5rem;margin-bottom:1.8rem"><div style="font-size:.72rem;font-weight:800;color:var(--lc);margin-bottom:.6rem;text-transform:uppercase;letter-spacing:.06em">💭 שאלת פתיחה</div><p style="font-size:.94rem;font-weight:700;color:var(--text);line-height:1.6;margin-bottom:.6rem">בסוף השיעור הקודם גורש האדם מן הגן — אך לא ננטש: האל עשה לו ולאשתו כותנות עור והלבישם. פרק ד׳ נפתח בלידה הראשונה שמחוץ לגן, ומגיע תוך שמונה פסוקים בלבד אל הרצח הראשון.</p><p style="font-size:.82rem;color:var(--muted);line-height:1.6">שימו לב לפסוק ז: <em>לפני</em> שקין מרים יד, הכתוב עוצר את העלילה ומציב לפניו בחירה מפורשת. השאלה שתלווה אותנו לאורך השיעור: מה בדיוק מוצע לקין באותו פסוק — ומה הוא עושה עם ההצעה?</p></div>
+
+  <!-- 1 -->
+  <div class="section-hd"><span class="sn-icon">🌾</span><div class="sn">1</div>שני אחים — שמות, מקצועות, ומילה אחת שחוזרת</div>
+  <div class="card">
+    <p>הפרק נפתח בשני פסוקים בלבד, ובהם כל מה שנדע על שתי הדמויות לפני העימות: <strong>"וְהָאָדָם יָדַע אֶת חַוָּה אִשְׁתּוֹ וַתַּהַר וַתֵּלֶד אֶת קַיִן... וַתֹּסֶף לָלֶדֶת אֶת אָחִיו אֶת הָבֶל"</strong> (ד׳, א–ב).</p>
+    <div class="box box-lc"><span class="layer-tag peshat">רובד הפשט</span><br><strong>קַיִן — שם שמוסבר מיד.</strong> "וַתֹּאמֶר קָנִיתִי אִישׁ אֶת ה׳" (ד׳, א). השם נגזר מן השורש קנ״ה, וחוה עצמה מנמקת אותו. כאן מתממש השם שניתן לה בסוף הפרק הקודם — "אֵם כָּל חָי" (ג׳, כ). הצירוף <strong>"אֶת ה׳"</strong> קשה, ומקובל להבינו במשמעות "בעזרת ה׳" או "יחד עם ה׳" — כלומר הלידה מוצגת כשותפות ביצירה, ולא כמעשה אנושי בלבד.</div>
+    <div class="box box-green"><strong>הֶבֶל — ולו לא ניתן שום הסבר.</strong> שימו לב להבדל: קין מקבל שם, נימוק ומשפט שלם מפי אמו; הבל נולד בחצי פסוק, בלי הסבר ובלי דיבור. גם המספר עצמו נותן לו פחות. המילה <strong>"הֶבֶל"</strong> משמשת במקרא במשמעות של אֵד או משב אוויר — דבר חסר ממשות שחולף מיד. רבים שומעים בשם רמז מוקדם לקוצר חייו; זו קריאה מקובלת ולא אמירה מפורשת של הכתוב, וכדאי להציגה ככזו.</div>
+    <div class="box box-lc"><span class="layer-tag peshat">רובד הפשט</span><br><strong>המקצועות — והמשך ישיר של פרק ג׳.</strong> "וַיְהִי הֶבֶל רֹעֵה צֹאן וְקַיִן הָיָה עֹבֵד אֲדָמָה" (ד׳, ב). עיסוקו של קין הוא בדיוק גזר הדין שנגזר על אביו: "לַעֲבֹד אֶת הָאֲדָמָה אֲשֶׁר לֻקַּח מִשָּׁם" (ג׳, כג), "אֲרוּרָה הָאֲדָמָה בַּעֲבוּרֶךָ בְּעִצָּבוֹן תֹּאכְלֶנָּה" (ג׳, יז). סיפור הדור השני נפתח בתוך עונשו של הדור הראשון — והאדמה, שכבר קוללה שם, תהיה גם כאן הדמות השלישית בעלילה.</div>
+    <div class="box box-amber"><span class="layer-tag derash">רובד הפרשנות · העשרה</span><br><strong>ספרו את המילה "אָח".</strong> בפסוקים א–טז המילה חוזרת <strong>שבע פעמים</strong>: "אֶת אָחִיו אֶת הָבֶל" (ב), "אֶל הֶבֶל אָחִיו" פעמיים (ח), "אֵי הֶבֶל אָחִיךָ" ו"הֲשֹׁמֵר אָחִי אָנֹכִי" (ט), "דְּמֵי אָחִיךָ" (י), "דְּמֵי אָחִיךָ" (יא). המספר אינו מקרי: הכתוב אינו מניח לרגע לשכוח מהי מערכת היחסים שבתוכה מתרחש המעשה. שימו לב גם מי אומר את המילה — קין מזכיר את היות הבל אחיו בדיוק פעם אחת, ודווקא במשפט שבו הוא מתכחש לאחריותו כלפיו.</div>
+  </div>
+
+  <!-- 2 -->
+  <div class="section-hd"><span class="sn-icon">🔥</span><div class="sn">2</div>שתי מנחות — ותשובה אחת</div>
+  <div class="card">
+    <p><strong>"וַיְהִי מִקֵּץ יָמִים וַיָּבֵא קַיִן מִפְּרִי הָאֲדָמָה מִנְחָה לַה׳"</strong> (ד׳, ג). שימו לב מי פותח: היוזמה להביא מנחה אינה באה מן האל אלא מן האדם, והאדם הזה הוא קין.</p>
+    <table class="cmp-table">
+      <tr><th>המקריב</th><th class="col-b">מה הביא — בלשון הכתוב</th><th class="col-c">התגובה</th></tr>
+      <tr><td class="row-label">קַיִן</td><td>"מִפְּרִי הָאֲדָמָה" — בלי כל ציון של איכות או בחירה</td><td>"וְאֶל קַיִן וְאֶל מִנְחָתוֹ לֹא שָׁעָה"</td></tr>
+      <tr><td class="row-label">הֶבֶל</td><td>"מִבְּכֹרוֹת צֹאנוֹ וּמֵחֶלְבֵהֶן" — הבכורות והחלקים המשובחים</td><td>"וַיִּשַׁע ה׳ אֶל הֶבֶל וְאֶל מִנְחָתוֹ"</td></tr>
+    </table>
+    <div class="box box-lc"><span class="layer-tag peshat">רובד הפשט</span><br><strong>שימו לב לסדר המילים בפסוק ד:</strong> "וַיִּשַׁע ה׳ <em>אֶל הֶבֶל</em> וְאֶל מִנְחָתוֹ" — קודם האדם, ורק אחר כך המנחה. הכתוב חוזר על אותו סדר גם בשלילה: "וְאֶל קַיִן וְאֶל מִנְחָתוֹ לֹא שָׁעָה". ההיענות מתוארת כמכוונת אל הנותן לא פחות מאשר אל המתנה.</div>
+    <div class="box box-purple"><span class="layer-tag derash">רובד הפרשנות · מחלוקת</span><br><strong>מדוע לא שעה ה׳ אל מנחת קין? הכתוב אינו אומר.</strong> זו נקודה שחשוב להציג בכיתה כפי שהיא — כשתיקה מכוונת ולא כחידה שיש לה פתרון אחד. שלוש קריאות רווחות:<br>(1) <strong>מן הניסוח</strong> — הבל הביא "מִבְּכֹרוֹת" ו"מֵחֶלְבֵהֶן", כלומר מן המשובח; קין הביא "מִפְּרִי הָאֲדָמָה" בלי כל תיאור. ההבדל הוא באיכות ובכוונה שמאחוריה.<br>(2) <strong>מסדר המילים</strong> — "אֶל הֶבֶל וְאֶל מִנְחָתוֹ": ההיענות נוגעת לאדם, ולא רק למה שהביא.<br>(3) <strong>מן השתיקה עצמה</strong> — הכתוב נמנע מלנמק משום שאין זה עניינו. מרכז הכובד של הפרק אינו בשאלה מדוע נדחתה המנחה, אלא במה שקין עושה עם האכזבה — וכל פסוקים ו–ז מוקדשים בדיוק לכך.<br>אין להכריע ביניהן: שלוש הקריאות נשענות על הכתוב, וההבדל ביניהן הוא בשאלה מה הכתוב מבקש שנשים לב אליו.</div>
+    <div class="box box-green"><strong>התגובה:</strong> "וַיִּחַר לְקַיִן מְאֹד וַיִּפְּלוּ פָּנָיו" (ד׳, ה). שני ביטויים ולא אחד — כעס בוער מזה, ופנים נופלות מזה. שמרו את דימוי הפנים בזיכרון: הוא יחזור מיד בפסוק הבא, וגם התשובה שיציע האל תיאמר בלשון של פנים.</div>
+  </div>
+
+  <div class="teacher-note-box"><span class="tn-tag">הערה למורה · רגישות</span><p>השאלה "למה ה׳ לא קיבל את מנחת קין" נחווית אצל תלמידים רבים כשאלה על צדק, ועלולה להיסחף לוויכוח אישי על אמונה או על "האם זה הוגן". מומלץ להישאר במישור הטקסטואלי: מה הכתוב אומר, מה הוא בוחר שלא לומר, ואילו קריאות קיימות — ולהציג את שלוש הקריאות כלגיטימיות בלי להכריע. להימנע מהצבעה בכיתה ומסקר עמדות על אמונה. נקודה נוספת: הסיטואציה של השוואה בין אחים ושל ילד שחש נדחה או פחות מוערך היא חוויה אישית מאוד עבור חלק מן התלמידים. אין לבקש מתלמידים לשתף בחוויות אישיות של יחס מפלה במשפחה; אפשר וכדאי לדבר על התופעה דרך הדמות שבטקסט בלבד.</p></div>
+
+  <!-- 3 -->
+  <div class="section-hd"><span class="sn-icon">⚖️</span><div class="sn">3</div>"וְאַתָּה תִּמְשָׁל בּוֹ" — הפסוק שבלב הפרק</div>
+  <div class="card">
+    <p>לפני שמשהו קורה, האל פונה אל קין. שימו לב לאופי הפנייה: זו אינה נזיפה על המנחה, אלא שאלה ואחריה הצעה.</p>
+    <div class="box box-lc"><span class="layer-tag peshat">רובד הפשט</span><br><strong>שוב שאלה שאינה שאלת מידע:</strong> "לָמָּה חָרָה לָךְ וְלָמָּה נָפְלוּ פָנֶיךָ" (ד׳, ו). בדיוק כמו "אַיֶּכָּה" בפרק ג׳ — האל פותח בשאלה שמזמינה את האדם לדבר, ולא בגזר דין. ההליך זהה בשני הפרקים: דיבור לפני מעשה.</div>
+    <div class="box box-green"><strong>הפסוק הקשה בפרק:</strong> "הֲלוֹא אִם תֵּיטִיב שְׂאֵת, וְאִם לֹא תֵיטִיב לַפֶּתַח חַטָּאת רֹבֵץ" (ד׳, ז). המילה <strong>"שְׂאֵת"</strong> היא מן השורש נש״א — הרמה; והקריאה הפשוטה כאן היא <em>נשיאת פנים</em>, בניגוד ישיר ל"וַיִּפְּלוּ פָּנָיו" שבפסוק הקודם: אם תיטיב — פניך יורמו בחזרה. ומולה התמונה השנייה: <strong>"לַפֶּתַח חַטָּאת רֹבֵץ"</strong> — החטא מדומה לחיה כורעת בפתח הבית, אורבת ומחכה. הדימוי מציב את החטא <em>מחוץ</em> לאדם: הוא קרוב מאוד, אך אינו בתוכו ואינו הוא.</div>
+    <div class="box box-lc"><span class="layer-tag peshat">רובד הפשט · השוואה לשיעור הקודם</span><br><strong>"וְאֵלֶיךָ תְּשׁוּקָתוֹ וְאַתָּה תִּמְשָׁל בּוֹ" (ד׳, ז) מול "וְאֶל אִישֵׁךְ תְּשׁוּקָתֵךְ וְהוּא יִמְשָׁל בָּךְ" (ג׳, טז).</strong> אותו מבנה תחבירי בדיוק, ואותם שני שורשים — תשוקה ומשל. ההשוואה שימושית מאוד: בפסוק שלנו ברור לגמרי במה מדובר — החטא נמשך אל קין, וקין <em>יכול</em> לשלוט בו. שימו לב להבדל אחד מכריע: בפרק ג׳ נאמר "וְהוּא יִמְשָׁל בָּךְ" — משפט על מצבה של האישה; כאן נאמר "וְאַתָּה תִּמְשָׁל בּוֹ" — היכולת נמסרת לקין עצמו. אותה לשון, וכיוון הפוך.</div>
+    <div class="box box-green"><strong>ומה <em>לא</em> נאמר כאן:</strong> אין בפסוק שום קביעה שקין יחטא. האל מדבר אליו לפני המעשה, מציג לפניו שתי אפשרויות מפורשות ואומר לו במפורש שביכולתו למשול. <strong>זו האמירה המרכזית של הפרק: אין הכרח.</strong> וזה גם מה שהופך את הרצח לחטא ולא לתאונה — בדיוק אותו היגיון שראינו בפרק ג׳, שבו האכילה תוארה כהכרעה מנומקת ולא כפזיזות.</div>
+  </div>
+
+  <!-- 4 -->
+  <div class="section-hd"><span class="sn-icon">🩸</span><div class="sn">4</div>"אֵי הֶבֶל אָחִיךָ" — הרצח והחקירה</div>
+  <div class="card">
+    <p>אחרי כל האזהרה המפורטת, המעשה עצמו נמסר בפסוק אחד קצר — ובתוכו פער בולט.</p>
+    <div class="box box-lc"><span class="layer-tag peshat">רובד הפשט</span><br><strong>הפער בפסוק ח.</strong> "וַיֹּאמֶר קַיִן אֶל הֶבֶל אָחִיו" — <em>והכתוב אינו מוסר מה אמר.</em> שתי דרכי הסבר רווחות: (1) הדברים הושמטו במכוון — אין להם חשיבות, או שאין בהם תוכן של ממש; (2) "ויאמר" כאן במשמעות של דיבור שנועד להוציאו אל השדה. כך או כך, ההמשך מדגיש את המקום: <strong>"וַיְהִי בִּהְיוֹתָם בַּשָּׂדֶה"</strong> — הרחק מן הבית, במקום שאין בו עדים.</div>
+    <div class="box box-green"><strong>אותו הליך, תגובה אחרת.</strong> "וַיֹּאמֶר ה׳ אֶל קַיִן אֵי הֶבֶל אָחִיךָ" (ד׳, ט) — שאלה לפני גזר דין, בדיוק כמו "אַיֶּכָּה" (ג׳, ט). אבל השוו את התשובות: האדם והאישה גלגלו את האחריות הלאה, אך לא הכחישו את העובדות עצמן. קין <strong>משקר במפורש</strong> — "לֹא יָדַעְתִּי" — ומוסיף על השקר שאלה חצופה. ההידרדרות בין הדורות ניכרת בדיוק כאן.</div>
+    <div class="box box-lc"><span class="layer-tag peshat">רובד הפשט</span><br><strong>"הֲשֹׁמֵר אָחִי אָנֹכִי" — והאירוניה שבשאלה.</strong> השורש שמ״ר הוא בדיוק התפקיד שהוטל על האדם בפרק ב׳: "וַיַּנִּחֵהוּ בְגַן עֵדֶן <em>לְעָבְדָהּ וּלְשָׁמְרָהּ</em>" (ב׳, טו). קין שואל שאלה רטורית שכוונתה "ודאי שלא" — אך התשובה לשאלתו כבר ניתנה בפרק ב׳, עוד לפני שנשאלה. שימו לב גם שקין הוא "עֹבֵד אֲדָמָה": את החצי הראשון של התפקיד הוא ירש, ואת החצי השני הוא מכחיש.</div>
+    <div class="box box-green"><strong>"קוֹל דְּמֵי אָחִיךָ צֹעֲקִים אֵלַי מִן הָאֲדָמָה" (ד׳, י).</strong> שימו לב ללשון הרבים — "דְּמֵי", "צֹעֲקִים". קין ניסה להסתיר את המעשה בשדה, ודווקא הקרקע שבשדה נעשית העד. האדמה, שהייתה מקור פרנסתו ומקור מנחתו, היא שמעידה נגדו.</div>
+  </div>
+
+  <!-- 5 -->
+  <div class="section-hd"><span class="sn-icon">🛡️</span><div class="sn">5</div>העונש, האות — ומה קרה אחר כך</div>
+  <div class="card">
+    <p>גם כאן, כמו בפרק ג׳, גזר הדין בנוי כמידה כנגד מידה — והפעם הוא מכוון אל האדמה שקין עבד בה.</p>
+    <table class="cmp-table">
+      <tr><th>לשון הכתוב</th><th class="col-b">מידה כנגד מידה</th></tr>
+      <tr><td class="row-label">"וְעַתָּה אָרוּר אָתָּה מִן הָאֲדָמָה אֲשֶׁר פָּצְתָה אֶת פִּיהָ" (יא)</td><td>קין הוא <strong>האדם הראשון שהמילה "אָרוּר" מופנית אליו</strong>. בפרק ג׳ נתקללו הנחש והאדמה בלבד — לא האדם ולא האישה</td></tr>
+      <tr><td class="row-label">"כִּי תַעֲבֹד אֶת הָאֲדָמָה לֹא תֹסֵף תֵּת כֹּחָהּ לָךְ" (יב)</td><td>הוא עובד אדמה — והאדמה שקיבלה את דם אחיו מסרבת מעתה לתת לו את יבולה</td></tr>
+      <tr><td class="row-label">"נָע וָנָד תִּהְיֶה בָאָרֶץ" (יב)</td><td>האיכר, שכל עולמו קשור לחלקה אחת קבועה, נעשה נווד חסר מקום</td></tr>
+    </table>
+    <div class="box box-lc"><span class="layer-tag peshat">רובד הפשט</span><br><strong>"גָּדוֹל עֲוֺנִי מִנְּשֹׂא" (ד׳, יג) — משפט דו-משמעי.</strong> אפשר לקרוא "עווני גדול מכדי שאוכל לשאת אותו" — כלומר זעקת סבל; ואפשר לקרוא "גדול מכדי שיישא", כלומר מכדי שיימחל — כלומר אמירה על סליחה. שימו לב לשורש: <strong>מִנְּשֹׂא</strong> ו<strong>שְׂאֵת</strong> (פסוק ז) הם אותו שורש נש״א. מה שהוצע לקין כאפשרות — "אִם תֵּיטִיב שְׂאֵת" — חוזר עתה בפיו כדבר שאבד.<br><strong>ושימו לב במיוחד למה שקין אינו אומר:</strong> הוא אינו אומר "חטאתי", ואינו מזכיר את הבל אפילו פעם אחת. כל דבריו (יג–יד) עוסקים בעונשו שלו: הגירוש, ההסתרה, והפחד שיהרגוהו.</div>
+    <div class="box box-green"><strong>האות — הגנה בתוך העונש.</strong> "וַיָּשֶׂם ה׳ לְקַיִן אוֹת לְבִלְתִּי הַכּוֹת אֹתוֹ כָּל מֹצְאוֹ" (ד׳, טו). זהו בדיוק הדפוס שראינו בסוף פרק ג׳: אחרי גזר הדין באה פעולה של שמירה על החיים — שם "כָּתְנוֹת עוֹר" (ג׳, כא), כאן האות. <strong>העונש משנה את תנאי הקיום, אך אינו נטישה ואינו הפקרה.</strong> ולסיום התמונה: "וַיֵּשֶׁב בְּאֶרֶץ נוֹד קִדְמַת עֵדֶן" (טז) — עוד צעד מזרחה, עוד ריחוק; השוו "וַיַּשְׁכֵּן מִקֶּדֶם לְגַן עֵדֶן" (ג׳, כד).</div>
+    <div class="box box-amber"><span class="layer-tag derash">רובד הפרשנות · העשרה</span><br><strong>שושלת קין — ובה נולדת התרבות.</strong> דווקא בצאצאיו של הרוצח נבנה העולם המוכר לנו: "וַיְהִי בֹּנֶה עִיר" (יז); יָבָל "אֲבִי יֹשֵׁב אֹהֶל וּמִקְנֶה" — מרעה ונדודים מסודרים (כ); יוּבָל "אֲבִי כָּל תֹּפֵשׂ כִּנּוֹר וְעוּגָב" — מוזיקה (כא); תּוּבַל קַיִן "לֹטֵשׁ כָּל חֹרֵשׁ נְחֹשֶׁת וּבַרְזֶל" — עבודת מתכת (כב). הכתוב מונה את ההישגים האלה בלי לגנות ובלי לשבח. שווה לשאול בכיתה מדוע דווקא כאן.</div>
+    <div class="box box-green"><strong>ומולם — שירת למך (כג–כד).</strong> "כִּי אִישׁ הָרַגְתִּי לְפִצְעִי וְיֶלֶד לְחַבֻּרָתִי; כִּי שִׁבְעָתַיִם יֻקַּם קָיִן וְלֶמֶךְ שִׁבְעִים וְשִׁבְעָה". שימו לב מה עלה בגורלו של המספר "שבעתיים": ההבטחה שניתנה לקין כ<em>הגנה</em> (טו) הופכת בפי למך לגאווה ולאיום. ההריגה, שבתחילת הפרק הייתה חטא שנחקר ונענש, נעשית כאן שיר שמושר לנשים. זו ההסלמה שתוביל בפרק ו׳ אל "וַתִּמָּלֵא הָאָרֶץ חָמָס" — ואל המבול, נושא השיעור הבא.</div>
+    <div class="box box-lc"><span class="layer-tag peshat">רובד הפשט</span><br><strong>הסיום — קו שני שיוצא מן הפרק.</strong> "וַתִּקְרָא אֶת שְׁמוֹ שֵׁת כִּי שָׁת לִי אֱלֹהִים זֶרַע אַחֵר <em>תַּחַת הֶבֶל</em>" (ד׳, כה) — חוה נותנת שם שלישי, ובנימוק שלו היא מזכירה במפורש את מה שאבד. ואז המשפט האחרון: "וַיִּקְרָא אֶת שְׁמוֹ אֱנוֹשׁ, אָז הוּחַל לִקְרֹא בְּשֵׁם ה׳" (כו). הפרק שנפתח במנחה שהביא אדם מיוזמתו ונגמרה ברצח, נחתם בפנייה מחודשת אל ה׳. <strong>שני קווים יוצאים מפרק ד׳: קו למך וקו שת</strong> — וזו בדיוק השאלה שתעמוד בפתח סיפור המבול.</div>
+  </div>
+
+  <div class="teacher-note-box"><span class="tn-tag">הערה למורה · רגישות</span><p>הפרק עוסק ברצח אח, והוא עלול לגעת בתלמידים שחוו שכול, אלימות במשפחה או אובדן. מומלץ להישאר ברובד הטקסטואלי — מה הכתוב מספר וכיצד הוא בנוי — ולהימנע מהמחזה, ממשחקי תפקידים של הרצח ומשאלות מסוג "איך הייתם מרגישים במקומו". <strong>נקודה שחשוב להקדים לה תשובה:</strong> "אוֹת קַיִן" שימש בעבר בכתבים גזעניים ובהצדקות לעבדות כאילו היה סימן של קללה שעוברת בגזע. בכתוב אין לכך שום אחיזה: האות ניתן כ<em>הגנה</em>, כדי שקין לא ייהרג, אין לו שום תיאור פיזי ואין לו שום משמעות אתנית. אם הביטוי עולה בכיתה — ראוי לומר זאת מפורשות ובקצרה. לבסוף, פסוק יט מזכיר ששתי נשים נשא למך; די להתייחס לכך כאל נתון טקסטואלי בהקשר של הסלמת השושלת, בלי לגלוש לדיון על מבנה המשפחה הראוי, ובלי הצבעות או סקרי עמדות.</p></div>
+
+  <button class="goto-practice-btn" onclick="switchTab('practice')">✏️ עבור לתרגול — תרגול הבנה + סימולציית בגרות</button>
+</div>
+</div>
+
+<!-- ═══ PRACTICE ═══ -->
+<div class="tab-pane" id="pane-practice">
+<div class="print-header"><h1>תרגול — קין והבל</h1><p>תנ״ך לתיכון · יחידה א׳ · שיעור 5</p></div>
+<div class="lesson-wrap">
+  <div id="student-gate">
+    <div class="gate-header"><span class="gate-icon">✏️</span><div class="gate-title">כניסה לתרגול</div><div class="gate-desc">הזינו שם ושיבוץ כיתה</div></div>
+    <div class="gate-body">
+      <div class="gate-field"><label>שם מלא</label><input class="gate-input" id="gate-name" type="text" placeholder="לדוגמה: דנה כהן" autocomplete="off"><div class="gate-err-msg" id="gate-name-err">אנא הזינו שם ושם משפחה</div></div>
+      <div class="gate-field"><label>כיתה</label><select class="gate-select" id="gate-class"><option value="">— בחרו כיתה —</option><option>י׳1</option><option>י׳2</option><option>י׳3</option><option>י׳4</option><option>י״א1</option><option>י״א2</option><option>י״א3</option><option>י״א4</option></select><div class="gate-err-msg" id="gate-class-err">אנא בחרו כיתה</div></div>
+      <div class="gate-field"><label>תאריך</label><div class="gate-date-display" id="gate-date-display"></div></div>
+      <button class="gate-btn" onclick="confirmGate()">✅ כניסה לתרגול</button>
+    </div>
+  </div>
+  <div id="gate-confirmed"><div class="gc-avatar" id="gc-avatar"></div><div class="gc-info"><div class="gc-name" id="gc-name-display"></div><div class="gc-meta" id="gc-meta-display"></div><button class="gc-change" onclick="reopenGate()">שינוי פרטים</button></div></div>
+
+  <div id="practice-content-wrap">
+    <div class="reading-text-box">
+      <div class="rt-title">בראשית ד׳ — הלידות, המנחות ודברי ה׳ אל קין (א–ז)</div>
+      <div class="rt-body" style="font-size:.92rem;line-height:2.05">
+        <p><strong>א</strong> וְהָאָדָם יָדַע אֶת חַוָּה אִשְׁתּוֹ וַתַּהַר וַתֵּלֶד אֶת קַיִן וַתֹּאמֶר קָנִיתִי אִישׁ אֶת ה׳. <strong>ב</strong> וַתֹּסֶף לָלֶדֶת אֶת אָחִיו אֶת הָבֶל וַיְהִי הֶבֶל רֹעֵה צֹאן וְקַיִן הָיָה עֹבֵד אֲדָמָה. <strong>ג</strong> וַיְהִי מִקֵּץ יָמִים וַיָּבֵא קַיִן מִפְּרִי הָאֲדָמָה מִנְחָה לַה׳. <strong>ד</strong> וְהֶבֶל הֵבִיא גַם הוּא מִבְּכֹרוֹת צֹאנוֹ וּמֵחֶלְבֵהֶן וַיִּשַׁע ה׳ אֶל הֶבֶל וְאֶל מִנְחָתוֹ. <strong>ה</strong> וְאֶל קַיִן וְאֶל מִנְחָתוֹ לֹא שָׁעָה וַיִּחַר לְקַיִן מְאֹד וַיִּפְּלוּ פָּנָיו. <strong>ו</strong> וַיֹּאמֶר ה׳ אֶל קָיִן לָמָּה חָרָה לָךְ וְלָמָּה נָפְלוּ פָנֶיךָ. <strong>ז</strong> הֲלוֹא אִם תֵּיטִיב שְׂאֵת וְאִם לֹא תֵיטִיב לַפֶּתַח חַטָּאת רֹבֵץ וְאֵלֶיךָ תְּשׁוּקָתוֹ וְאַתָּה תִּמְשָׁל בּוֹ.</p>
+      </div>
+    </div>
+    <div class="reading-text-box">
+      <div class="rt-title">בראשית ד׳ — הרצח, החקירה, העונש והאות (ח–טז)</div>
+      <div class="rt-body" style="font-size:.92rem;line-height:2.05">
+        <p><strong>ח</strong> וַיֹּאמֶר קַיִן אֶל הֶבֶל אָחִיו וַיְהִי בִּהְיוֹתָם בַּשָּׂדֶה וַיָּקָם קַיִן אֶל הֶבֶל אָחִיו וַיַּהַרְגֵהוּ. <strong>ט</strong> וַיֹּאמֶר ה׳ אֶל קַיִן אֵי הֶבֶל אָחִיךָ וַיֹּאמֶר לֹא יָדַעְתִּי הֲשֹׁמֵר אָחִי אָנֹכִי. <strong>י</strong> וַיֹּאמֶר מֶה עָשִׂיתָ קוֹל דְּמֵי אָחִיךָ צֹעֲקִים אֵלַי מִן הָאֲדָמָה. <strong>יא</strong> וְעַתָּה אָרוּר אָתָּה מִן הָאֲדָמָה אֲשֶׁר פָּצְתָה אֶת פִּיהָ לָקַחַת אֶת דְּמֵי אָחִיךָ מִיָּדֶךָ. <strong>יב</strong> כִּי תַעֲבֹד אֶת הָאֲדָמָה לֹא תֹסֵף תֵּת כֹּחָהּ לָךְ נָע וָנָד תִּהְיֶה בָאָרֶץ. <strong>יג</strong> וַיֹּאמֶר קַיִן אֶל ה׳ גָּדוֹל עֲוֺנִי מִנְּשֹׂא. <strong>יד</strong> הֵן גֵּרַשְׁתָּ אֹתִי הַיּוֹם מֵעַל פְּנֵי הָאֲדָמָה וּמִפָּנֶיךָ אֶסָּתֵר וְהָיִיתִי נָע וָנָד בָּאָרֶץ וְהָיָה כָל מֹצְאִי יַהַרְגֵנִי. <strong>טו</strong> וַיֹּאמֶר לוֹ ה׳ לָכֵן כָּל הֹרֵג קַיִן שִׁבְעָתַיִם יֻקָּם וַיָּשֶׂם ה׳ לְקַיִן אוֹת לְבִלְתִּי הַכּוֹת אֹתוֹ כָּל מֹצְאוֹ. <strong>טז</strong> וַיֵּצֵא קַיִן מִלִּפְנֵי ה׳ וַיֵּשֶׁב בְּאֶרֶץ נוֹד קִדְמַת עֵדֶן.</p>
+      </div>
+    </div>
+    <div class="reading-text-box">
+      <div class="rt-title">בראשית ד׳ — שושלת קין ושירת למך (יז–כד)</div>
+      <div class="rt-body" style="font-size:.92rem;line-height:2.05">
+        <p><strong>יז</strong> וַיֵּדַע קַיִן אֶת אִשְׁתּוֹ וַתַּהַר וַתֵּלֶד אֶת חֲנוֹךְ וַיְהִי בֹּנֶה עִיר וַיִּקְרָא שֵׁם הָעִיר כְּשֵׁם בְּנוֹ חֲנוֹךְ. <strong>יח</strong> וַיִּוָּלֵד לַחֲנוֹךְ אֶת עִירָד וְעִירָד יָלַד אֶת מְחוּיָאֵל וּמְחִיָּיאֵל יָלַד אֶת מְתוּשָׁאֵל וּמְתוּשָׁאֵל יָלַד אֶת לָמֶךְ. <strong>יט</strong> וַיִּקַּח לוֹ לֶמֶךְ שְׁתֵּי נָשִׁים שֵׁם הָאַחַת עָדָה וְשֵׁם הַשֵּׁנִית צִלָּה. <strong>כ</strong> וַתֵּלֶד עָדָה אֶת יָבָל הוּא הָיָה אֲבִי יֹשֵׁב אֹהֶל וּמִקְנֶה. <strong>כא</strong> וְשֵׁם אָחִיו יוּבָל הוּא הָיָה אֲבִי כָּל תֹּפֵשׂ כִּנּוֹר וְעוּגָב. <strong>כב</strong> וְצִלָּה גַם הִוא יָלְדָה אֶת תּוּבַל קַיִן לֹטֵשׁ כָּל חֹרֵשׁ נְחֹשֶׁת וּבַרְזֶל וַאֲחוֹת תּוּבַל קַיִן נַעֲמָה. <strong>כג</strong> וַיֹּאמֶר לֶמֶךְ לְנָשָׁיו עָדָה וְצִלָּה שְׁמַעַן קוֹלִי נְשֵׁי לֶמֶךְ הַאְזֵנָּה אִמְרָתִי כִּי אִישׁ הָרַגְתִּי לְפִצְעִי וְיֶלֶד לְחַבֻּרָתִי. <strong>כד</strong> כִּי שִׁבְעָתַיִם יֻקַּם קָיִן וְלֶמֶךְ שִׁבְעִים וְשִׁבְעָה.</p>
+      </div>
+    </div>
+    <div class="reading-text-box">
+      <div class="rt-title">בראשית ד׳ — שֵׁת ואֱנוֹשׁ (כה–כו)</div>
+      <div class="rt-body" style="font-size:.92rem;line-height:2.05">
+        <p><strong>כה</strong> וַיֵּדַע אָדָם עוֹד אֶת אִשְׁתּוֹ וַתֵּלֶד בֵּן וַתִּקְרָא אֶת שְׁמוֹ שֵׁת כִּי שָׁת לִי אֱלֹהִים זֶרַע אַחֵר תַּחַת הֶבֶל כִּי הֲרָגוֹ קָיִן. <strong>כו</strong> וּלְשֵׁת גַּם הוּא יֻלַּד בֵּן וַיִּקְרָא אֶת שְׁמוֹ אֱנוֹשׁ אָז הוּחַל לִקְרֹא בְּשֵׁם ה׳.</p>
+      </div>
+    </div>
+    <div class="reading-text-box">
+      <div class="rt-title">בראשית ב׳–ג׳ — פסוקים להשוואה (ב׳ טו; ג׳ ט; טז–יז; כ–כא; כג–כד)</div>
+      <div class="rt-body" style="font-size:.92rem;line-height:2.05">
+        <p><strong>ב׳ טו</strong> וַיִּקַּח ה׳ אֱלֹהִים אֶת הָאָדָם וַיַּנִּחֵהוּ בְגַן עֵדֶן לְעָבְדָהּ וּלְשָׁמְרָהּ. <span style="color:var(--muted);font-weight:700">[...]</span> <strong>ג׳ ט</strong> וַיִּקְרָא ה׳ אֱלֹהִים אֶל הָאָדָם וַיֹּאמֶר לוֹ אַיֶּכָּה. <span style="color:var(--muted);font-weight:700">[...]</span> <strong>טז</strong> אֶל הָאִשָּׁה אָמַר הַרְבָּה אַרְבֶּה עִצְּבוֹנֵךְ וְהֵרֹנֵךְ בְּעֶצֶב תֵּלְדִי בָנִים וְאֶל אִישֵׁךְ תְּשׁוּקָתֵךְ וְהוּא יִמְשָׁל בָּךְ. <strong>יז</strong> וּלְאָדָם אָמַר כִּי שָׁמַעְתָּ לְקוֹל אִשְׁתֶּךָ וַתֹּאכַל מִן הָעֵץ אֲשֶׁר צִוִּיתִיךָ לֵאמֹר לֹא תֹאכַל מִמֶּנּוּ אֲרוּרָה הָאֲדָמָה בַּעֲבוּרֶךָ בְּעִצָּבוֹן תֹּאכְלֶנָּה כֹּל יְמֵי חַיֶּיךָ. <span style="color:var(--muted);font-weight:700">[...]</span> <strong>כ</strong> וַיִּקְרָא הָאָדָם שֵׁם אִשְׁתּוֹ חַוָּה כִּי הִוא הָיְתָה אֵם כָּל חָי. <strong>כא</strong> וַיַּעַשׂ ה׳ אֱלֹהִים לְאָדָם וּלְאִשְׁתּוֹ כָּתְנוֹת עוֹר וַיַּלְבִּשֵׁם. <span style="color:var(--muted);font-weight:700">[...]</span> <strong>כג</strong> וַיְשַׁלְּחֵהוּ ה׳ אֱלֹהִים מִגַּן עֵדֶן לַעֲבֹד אֶת הָאֲדָמָה אֲשֶׁר לֻקַּח מִשָּׁם. <strong>כד</strong> וַיְגָרֶשׁ אֶת הָאָדָם וַיַּשְׁכֵּן מִקֶּדֶם לְגַן עֵדֶן אֶת הַכְּרֻבִים וְאֵת לַהַט הַחֶרֶב הַמִּתְהַפֶּכֶת לִשְׁמֹר אֶת דֶּרֶךְ עֵץ הַחַיִּים.</p>
+      </div>
+    </div>
+
+    <div class="quiz-header">
+      <div class="quiz-hd-title">✏️ תרגול — בראשית ד׳</div>
+      <div class="quiz-hd-desc">חלק א׳: תרגול הבנה (סגורות) · חלק ב׳: סימולציית בגרות בפורמט 1261 (ענה על 3 מתוך 5, סעיפים מנוקדים)</div>
+      <div class="quiz-prog-bar"><div class="quiz-prog-fill" id="prog-fill" style="width:0%"></div></div>
+      <div class="quiz-prog-row"><span id="prog-txt">0 מתוך 0 נענו</span><span id="prog-pct">0%</span></div>
+    </div>
+    <div id="questions-container"></div>
+    <div id="submit-row" style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;margin-top:1.5rem">
+      <button class="btn-submit" onclick="submitQuiz()">📤 הגשת התרגול</button>
+      <button class="btn-reset" onclick="resetQuiz()">🔄 אתחול</button>
+    </div>
+    <div id="results-container" style="display:none"></div>
+  </div>
+</div>
+</div>
+
+<!-- ═══ ANSWERS ═══ -->
+<div class="tab-pane" id="pane-answers">
+<div class="lesson-wrap">
+  <div id="answers-locked-msg" class="answers-locked"><div style="font-size:2.5rem;margin-bottom:.8rem">🔒</div><div style="font-family:'Secular One',sans-serif;font-size:1.1rem;margin-bottom:.5rem">התשובות טרם פורסמו על ידי המורה</div><div style="font-size:.85rem;color:var(--muted)">המורה ישחרר את התשובות בתום השיעור</div></div>
+  <div id="answers-visible-content" style="display:none">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem;flex-wrap:wrap;gap:.5rem"><div style="font-family:'Secular One',sans-serif;font-size:1.1rem;color:var(--lc)">🔑 תשובות ומחוון</div><span style="font-size:.72rem;color:var(--muted)" id="answers-source"></span></div>
+    <div id="answers-list"></div>
+  </div>
+</div>
+</div>
+<div class="copyright-line">© 2026 זכויות יוצרים – ליאור אלמוסלינוס</div>
+<div id="toast"></div>
+<script>
+const FB_CFG={apiKey:"AIzaSyA8QKxGi7-72Dm07VgNwLx-fJu7QTPN1Ak",authDomain:"tanakh-project.firebaseapp.com",projectId:"tanakh-project",storageBucket:"tanakh-project.firebasestorage.app",messagingSenderId:"798378782412",appId:"1:798378782412:web:99a44c6771a5afec7d1c69"};
+let _db=null,_lastScore=null,_lastCorrect=0,_gateConfirmed=false;
+const LESSON_ID='reshit_l5',LESSON_TITLE='קין והבל';
+function initFirebase(){try{if(typeof firebase==='undefined')return;if(!firebase.apps.length)firebase.initializeApp(FB_CFG);_db=firebase.firestore();_db.enablePersistence().catch(()=>{});_db.collection('lessons').doc(LESSON_ID).onSnapshot(doc=>{const val=doc.exists?doc.data()?.showAnswers===true:false;const av=LS.get('tanakh2_answers_visible',{});av[LESSON_ID]=val;LS.set('tanakh2_answers_visible',av);ANSWERS_VISIBLE=val;applyAnswersVisibility();});}catch(e){}}
+async function saveScore(score,sn,sc){if(!_db)return;const now=new Date();try{await _db.collection('tanakh2_submissions').add({lessonId:LESSON_ID,lessonTitle:LESSON_TITLE,score,studentName:sn||'תלמיד/ה',className:sc||'',ts:firebase.firestore.FieldValue.serverTimestamp(),submissionDate:now.toLocaleDateString('he-IL'),submissionTime:now.toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'}),read:false,correct:typeof _lastCorrect==='number'?_lastCorrect:undefined,wrong:typeof _lastCorrect==='number'?closedQuestions().length-_lastCorrect:undefined,totalQuestions:closedQuestions().length});await _db.collection('tanakh2_live').doc('latest').set({lessonId:LESSON_ID,score,studentName:sn,className:sc,ts:firebase.firestore.FieldValue.serverTimestamp()});}catch(e){}}
+const LS={get(k,fb=null){try{const v=localStorage.getItem(k);return v!==null?JSON.parse(v):fb}catch{return fb}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}};
+const _p=new URLSearchParams(location.search);
+let STUDENT_NAME=_p.get('student')||LS.get('tanakh2_uname','')||'תלמיד/ה';
+let STUDENT_CLASS=_p.get('class')||LS.get('tanakh2_class','')||'';
+const USER_ROLE=_p.get('role')||LS.get('tanakh2_role','')||localStorage.getItem('userRole')||'student';
+let ANSWERS_VISIBLE=_p.get('answers_visible')==='1';
+const BACK_URL=_p.get('back')||'index.html';
+function applyAnswersVisibility(){const lk=document.getElementById('answers-locked-msg'),vi=document.getElementById('answers-visible-content'),sr=document.getElementById('answers-source');if(USER_ROLE==='teacher'){if(lk)lk.style.display='none';if(vi)vi.style.display='';if(sr)sr.textContent='גישת מורה';document.getElementById('btn-answers')?.style.setProperty('display','');}else if(ANSWERS_VISIBLE){if(lk)lk.style.display='none';if(vi)vi.style.display='';if(sr)sr.textContent='שוחרר ע״י המורה';document.getElementById('btn-answers-student')?.style.setProperty('display','');}else{if(lk)lk.style.display='';if(vi)vi.style.display='none';}}
+
+const QUESTIONS=[
+{id:'q01',type:'mc',section:'א',ref:'בראשית ד׳, א',
+ q:'כיצד מנמק הכתוב את השם "קַיִן"?',
+ opts:['על שם האדמה שאותה עבד','על פי דברי חוה "קָנִיתִי אִישׁ אֶת ה׳"','הכתוב אינו מנמק את השם','על שם המנחה שהביא'],
+ ans:1,
+ explain:`"וַתֵּלֶד אֶת קַיִן וַתֹּאמֶר קָנִיתִי אִישׁ אֶת ה׳" (ד׳, א). השם נגזר מן השורש קנ״ה, וחוה עצמה נותנת את הנימוק. כאן מתממש גם השם שניתן לה בסוף הפרק הקודם — "אֵם כָּל חָי" (ג׳, כ).`,
+ teacherNote:`הצירוף "אֶת ה׳" קשה; מקובל להבינו "בעזרת ה׳" או "יחד עם ה׳" — הלידה כשותפות ביצירה. די להזכיר את הקושי בלי להרחיב.`},
+
+{id:'q02',type:'tf',section:'א',ref:'בראשית ד׳, א–ב',
+ q:'שמו של קין מנומק בפי חוה, ואילו לשמו של הבל אין הכתוב נותן שום הסבר.',
+ ans:true,
+ explain:`קין מקבל שם, נימוק ומשפט שלם מפי אמו; הבל נולד בחצי פסוק — "וַתֹּסֶף לָלֶדֶת אֶת אָחִיו אֶת הָבֶל" — בלי כל הסבר ובלי דיבור. המילה "הֶבֶל" משמשת במקרא במשמעות של אֵד או משב אוויר, ורבים שומעים בשם רמז לקוצר חייו — אך זו קריאה מקובלת ולא אמירה מפורשת של הכתוב.`,
+ teacherNote:`שווה להצביע על כך שגם המספר עצמו "נותן" להבל פחות מקום — הפער הזה חלק מעיצוב הדמויות.`},
+
+{id:'q03',type:'mc',section:'א',ref:'בראשית ג׳, יז; כג — ד׳, ב',
+ q:'מה הקשר בין עיסוקו של קין לבין גזר הדין שנגזר על אביו בפרק ג׳?',
+ opts:['אין קשר — קין בחר בעיסוק חדש לגמרי','קין הוא רועה צאן, ובכך הוא מתרחק מן האדמה שקוללה','קין בונה עיר כדי להימלט מן העבודה','קין הוא "עֹבֵד אֲדָמָה", וזהו בדיוק גזר הדין שנגזר על האדם — "לַעֲבֹד אֶת הָאֲדָמָה"'],
+ ans:3,
+ explain:`"וְקַיִן הָיָה עֹבֵד אֲדָמָה" (ד׳, ב) ממשיך ישירות את "לַעֲבֹד אֶת הָאֲדָמָה אֲשֶׁר לֻקַּח מִשָּׁם" (ג׳, כג) ואת "אֲרוּרָה הָאֲדָמָה בַּעֲבוּרֶךָ בְּעִצָּבוֹן תֹּאכְלֶנָּה" (ג׳, יז). סיפור הדור השני נפתח בתוך עונשו של הדור הראשון — והאדמה תהיה גם כאן דמות מרכזית בעלילה.`,
+ teacherNote:`הרועה הוא דווקא הבל. כדאי להראות שהאדמה מלווה את קין מן הפסוק השני ועד גזר דינו בפסוק יב.`},
+
+{id:'q04',type:'mc',section:'א',ref:'בראשית ד׳, ג–ד',
+ q:'מהו ההבדל בין תיאור מנחת קין לתיאור מנחת הבל?',
+ opts:['קין הביא "מִפְּרִי הָאֲדָמָה" בלי כל ציון של איכות, והבל הביא "מִבְּכֹרוֹת צֹאנוֹ וּמֵחֶלְבֵהֶן"','קין הביא מן הצאן והבל מן הפרי','שניהם הביאו בדיוק אותו סוג של מנחה','הכתוב אינו מפרט מה הביא כל אחד מהם'],
+ ans:0,
+ explain:`"וַיָּבֵא קַיִן מִפְּרִי הָאֲדָמָה מִנְחָה לַה׳" (ג) — ניסוח כללי, בלי כל תיאור של בחירה או איכות. לעומתו "וְהֶבֶל הֵבִיא גַם הוּא מִבְּכֹרוֹת צֹאנוֹ וּמֵחֶלְבֵהֶן" (ד) — הבכורות והחלקים המשובחים. ההבדל הוא בלשון התיאור, ולא בסוג העיסוק.`,
+ teacherNote:`חשוב להדגיש שההבדל שהתלמידים מזהים הוא בניסוח הכתוב; הכתוב עצמו אינו אומר שזו הסיבה.`},
+
+{id:'q05',type:'tf',section:'א',ref:'בראשית ד׳, ג–ה',
+ q:'הכתוב מנמק במפורש מדוע לא שעה ה׳ אל מנחת קין.',
+ ans:false,
+ explain:`הכתוב אומר רק "וְאֶל קַיִן וְאֶל מִנְחָתוֹ לֹא שָׁעָה" — ואינו נותן שום נימוק. זו שתיקה בולטת, ומכאן שלוש הקריאות שהוצגו בעיון: מן הניסוח (איכות המנחה), מסדר המילים ("אֶל הֶבֶל וְאֶל מִנְחָתוֹ" — האדם לפני המתנה), ומן השתיקה עצמה (עניינו של הכתוב אינו בסיבה אלא בתגובה).`,
+ teacherNote:`להציג את שלוש הקריאות כלגיטימיות ולא להכריע; ראו ההערה למורה בסוף חלק זה.`},
+
+{id:'q06',type:'mc',section:'א',ref:'בראשית ד׳, ד–ה',
+ q:'מה מלמד סדר המילים "וַיִּשַׁע ה׳ אֶל הֶבֶל וְאֶל מִנְחָתוֹ"?',
+ opts:['שהמנחה חשובה יותר מן האדם שהביא אותה','שהבל הביא שתי מנחות נפרדות','שההיענות מתוארת כמכוונת אל הנותן ולא רק אל המתנה','שהמנחה הובאה לפני שהבל הגיע'],
+ ans:2,
+ explain:`הכתוב מקדים את האדם למנחה — "אֶל הֶבֶל וְאֶל מִנְחָתוֹ" — וחוזר על אותו סדר גם בשלילה: "וְאֶל קַיִן וְאֶל מִנְחָתוֹ לֹא שָׁעָה". זו אחת הקריאות המרכזיות בשאלה מדוע נדחתה מנחת קין.`,
+ teacherNote:`אפשר לכתוב את שני חצאי הפסוק זה מתחת לזה — ההקבלה נקלטת מיד.`},
+
+{id:'q07',type:'mc',section:'א',ref:'בראשית ד׳, ה–ז',
+ q:'כיצד קשורה המילה "שְׂאֵת" (פסוק ז) לתיאור תגובתו של קין בפסוק ה?',
+ opts:['אין ביניהן קשר','"שְׂאֵת" היא נשיאת פנים — ההפך הישיר מ"וַיִּפְּלוּ פָּנָיו"','"שְׂאֵת" משמעה נשיאת המנחה אל המזבח','"שְׂאֵת" משמעה עזיבת המקום'],
+ ans:1,
+ explain:`בפסוק ה נאמר "וַיִּחַר לְקַיִן מְאֹד וַיִּפְּלוּ פָּנָיו", ובפסוק ז מוצע לו "הֲלוֹא אִם תֵּיטִיב שְׂאֵת" — מן השורש נש״א, במשמעות של נשיאת פנים. כלומר: אם תיטיב, פניך יורמו בחזרה. התשובה ניתנת באותה לשון שבה תוארה הבעיה.`,
+ teacherNote:`אותו שורש נש״א יחזור בפי קין עצמו בפסוק יג — "גָּדוֹל עֲוֺנִי מִנְּשֹׂא". שווה לסמן את שלוש ההופעות.`},
+
+{id:'q08',type:'mc',section:'א',ref:'בראשית ד׳, ז',
+ q:'מה מלמד הדימוי "לַפֶּתַח חַטָּאת רֹבֵץ"?',
+ opts:['שהחטא כבר נעשה ואין דרך חזרה','שהחטא הוא גזרה שנגזרה על קין','שהפתח סגור ואין לקין דרך לצאת','שהחטא מדומה לחיה הכורעת בפתח — קרוב מאוד לאדם, אך מחוץ לו'],
+ ans:3,
+ explain:`"וְאִם לֹא תֵיטִיב לַפֶּתַח חַטָּאת רֹבֵץ" (ד׳, ז). הפועל "רֹבֵץ" מתאר כריעה של בעל חיים, והתמונה מציבה את החטא בפתח הבית — אורב ומחכה. הדימוי חשוב: החטא קרוב מאוד, אך הוא מוצג כדבר שמחוץ לאדם ולא כחלק ממנו.`,
+ teacherNote:`הדימוי הוא שמכשיר את סופו של הפסוק: אם החטא הוא כוח חיצוני, אפשר למשול בו.`},
+
+{id:'q09',type:'mc',section:'א',ref:'בראשית ג׳, טז — ד׳, ז',
+ q:'"וְאֵלֶיךָ תְּשׁוּקָתוֹ וְאַתָּה תִּמְשָׁל בּוֹ" (ד׳, ז) מקביל בלשונו ל"וְאֶל אִישֵׁךְ תְּשׁוּקָתֵךְ וְהוּא יִמְשָׁל בָּךְ" (ג׳, טז). מהו ההבדל המהותי ביניהם?',
+ opts:['בפרק ג׳ נאמר "וְהוּא יִמְשָׁל בָּךְ" — משפט על מצבה של האישה; בפרק ד׳ נאמר "וְאַתָּה תִּמְשָׁל בּוֹ" — היכולת נמסרת לקין עצמו','בפרק ג׳ מדובר בחטא ובפרק ד׳ באדם','אין הבדל — שני הפסוקים אומרים בדיוק אותו דבר','בפרק ד׳ מדובר בעונש ובפרק ג׳ בברכה'],
+ ans:0,
+ explain:`שני הפסוקים בנויים באותו מבנה תחבירי ומאותם שני שורשים — תשוקה ומשל. ההבדל הוא בכיוון: בפרק ג׳ המשילות מופנית אל האישה כתיאור מצב שנוצר, ואילו כאן היכולת למשול ניתנת לקין עצמו — "וְאַתָּה תִּמְשָׁל בּוֹ". אותה לשון, וכיוון הפוך.`,
+ teacherNote:`ההשוואה עוזרת בשני הכיוונים: היא מבהירה את פסוק ז, והיא גם מחדדת את המחלוקת סביב ג׳, טז שנלמדה בשיעור הקודם.`},
+
+{id:'q10',type:'mc',section:'א',ref:'בראשית ד׳, ו–ז',
+ q:'מהי המשמעות העיקרית של כך שדברי ה׳ אל קין נאמרים לפני הרצח?',
+ opts:['הם מוכיחים שהרצח נגזר מראש','הם מלמדים שהאל לא ידע מה עומד לקרות','הם מלמדים שקין הוזהר מפורשות ונאמר לו שביכולתו למשול — ולכן המעשה הוא בחירה ולא הכרח','הם באים במקום העונש'],
+ ans:2,
+ explain:`האל פונה אל קין בשאלה — "לָמָּה חָרָה לָךְ וְלָמָּה נָפְלוּ פָנֶיךָ" — ומציג לפניו שתי אפשרויות מפורשות, ובסופן "וְאַתָּה תִּמְשָׁל בּוֹ". אין בפסוק שום קביעה שקין יחטא. זו האמירה המרכזית של הפרק: אין הכרח, ולכן יש אחריות.`,
+ teacherNote:`אותו היגיון בדיוק כמו בפרק ג׳: האכילה תוארה כהכרעה מנומקת, ולכן היא חטא ולא תאונה.`},
+
+{id:'q11',type:'mc',section:'א',ref:'בראשית ד׳, ח',
+ q:'מה בולט בתיאור הרצח בפסוק ח?',
+ opts:['הכתוב מפרט את דברי קין אל הבל באריכות','נאמר "וַיֹּאמֶר קַיִן אֶל הֶבֶל אָחִיו" — ואין הכתוב מוסר מה אמר','הרצח מתרחש בתוך הבית לעיני ההורים','הבל מנסה להתגונן ונאבק בקין'],
+ ans:1,
+ explain:`הכתוב פותח "וַיֹּאמֶר קַיִן אֶל הֶבֶל אָחִיו" ואינו מוסר את תוכן הדברים. שתי דרכי הסבר רווחות: הדברים הושמטו במכוון, או ש"ויאמר" כאן במשמעות של דיבור שנועד להוציאו אל השדה. ההמשך מדגיש את המקום — "וַיְהִי בִּהְיוֹתָם בַּשָּׂדֶה" — הרחק מעדים.`,
+ teacherNote:`שווה לשאול מה מרוויח הכתוב מן ההשמטה. אין תשובה אחת; זו הזדמנות טובה לדבר על פערים מכוונים בסיפור המקראי.`},
+
+{id:'q12',type:'mc',section:'א',ref:'בראשית ג׳, ט — ד׳, ט',
+ q:'מה משותף ל"אַיֶּכָּה" (ג׳, ט) ול"אֵי הֶבֶל אָחִיךָ" (ד׳, ט), ובמה שונה תגובתו של קין מתגובת אדם וחוה?',
+ opts:['שתיהן שאלות מידע, וקין עונה עליהן בכנות','שתיהן נאמרות אחרי גזר הדין','אין ביניהן דמיון','שתיהן שאלות שפותחות פתח להודאה; אך אדם וחוה גלגלו אחריות בלי להכחיש עובדות, ואילו קין משקר במפורש — "לֹא יָדַעְתִּי"'],
+ ans:3,
+ explain:`בשני הפרקים ההליך זהה: שאלה לפני גזר דין, שאינה מבקשת מידע אלא פותחת פתח להודאה. ההבדל הוא בתשובה — האדם והאישה גלגלו את האחריות הלאה אך לא הכחישו את העובדות, ואילו קין משקר ("לֹא יָדַעְתִּי") ומוסיף על כך שאלה חצופה. ההידרדרות בין הדורות ניכרת בדיוק כאן.`,
+ teacherNote:`להעמיד את שלוש התשובות זו לצד זו: "הָאִשָּׁה... נָתְנָה לִּי", "הַנָּחָשׁ הִשִּׁיאַנִי", "לֹא יָדַעְתִּי הֲשֹׁמֵר אָחִי אָנֹכִי".`},
+
+{id:'q13',type:'mc',section:'א',ref:'בראשית ב׳, טו — ד׳, ט',
+ q:'מהי האירוניה שבשאלת קין "הֲשֹׁמֵר אָחִי אָנֹכִי"?',
+ opts:['קין באמת לא ידע היכן הבל','קין היה רועה צאן ותפקידו היה לשמור','השורש שמ״ר הוא בדיוק התפקיד שהוטל על האדם בפרק ב׳ — "לְעָבְדָהּ וּלְשָׁמְרָהּ" — כך שהתשובה לשאלתו כבר ניתנה לפני שנשאלה','האירוניה היא שהבל הוא ששמר על קין'],
+ ans:2,
+ explain:`בפרק ב׳ הוצב האדם בגן "לְעָבְדָהּ וּלְשָׁמְרָהּ" (ב׳, טו) — שמירה היא התפקיד האנושי הראשון. קין שואל שאלה רטורית שכוונתה "ודאי שלא", אך התשובה כבר נאמרה בפרק ב׳. שימו לב גם שקין הוא "עֹבֵד אֲדָמָה": את החצי הראשון של התפקיד הוא ירש, ואת החצי השני הוא מכחיש.`,
+ teacherNote:`הבחנה שחוזרת בשאלות בגרות; כדאי לסמן את שתי המילים "לעבדה ולשמרה" בפרק ב׳ ולחזור אליהן כאן.`},
+
+{id:'q14',type:'mc',section:'א',ref:'בראשית ג׳, יד; יז — ד׳, יא–יב',
+ q:'מהו החידוש בעונשו של קין לעומת גזרי הדין שבפרק ג׳?',
+ opts:['קין הוא האדם הראשון שהמילה "אָרוּר" מופנית אליו — בפרק ג׳ קוללו הנחש והאדמה בלבד','קין הוא היחיד שנענש במיתה מיידית','קין הוא היחיד שלא נענש כלל','בפרק ג׳ קוללו האדם והאישה, וקין לא'],
+ ans:0,
+ explain:`"וְעַתָּה אָרוּר אָתָּה מִן הָאֲדָמָה" (ד׳, יא). בפרק ג׳ המילה "ארור" הופנתה אל הנחש ("אָרוּר אַתָּה מִכָּל הַבְּהֵמָה") ואל האדמה ("אֲרוּרָה הָאֲדָמָה בַּעֲבוּרֶךָ") — אך לא אל האדם ולא אל האישה. קין הוא האדם הראשון שנושא את הקללה עצמו.`,
+ teacherNote:`זו בדיוק ההבחנה שנלמדה בשיעור הקודם, וכאן היא נפרעת. שווה להחזיר לפרק ג׳ ולהראות את ההבדל.`},
+
+{id:'q15',type:'mc',section:'א',ref:'בראשית ד׳, טו; כג–כד',
+ q:'מה עושה שירת למך להבטחה "כָּל הֹרֵג קַיִן שִׁבְעָתַיִם יֻקָּם"?',
+ opts:['היא מבטלת אותה לגמרי','היא חוזרת עליה כלשונה בלי לשנות','היא מייחסת אותה להבל במקום לקין','היא הופכת הבטחת הגנה לגאווה ולאיום — "כִּי שִׁבְעָתַיִם יֻקַּם קָיִן וְלֶמֶךְ שִׁבְעִים וְשִׁבְעָה"'],
+ ans:3,
+ explain:`בפסוק טו ניתנה ההבטחה כהגנה על חיי קין. למך נוטל את אותו מספר ומגדיל אותו פי כמה — "וְלֶמֶךְ שִׁבְעִים וְשִׁבְעָה" — ומשתמש בו כדי להתפאר בהריגה: "כִּי אִישׁ הָרַגְתִּי לְפִצְעִי וְיֶלֶד לְחַבֻּרָתִי". ההריגה, שבתחילת הפרק נחקרה ונענשה, נעשית כאן שיר. זו ההסלמה שתוביל בפרק ו׳ אל "וַתִּמָּלֵא הָאָרֶץ חָמָס".`,
+ teacherNote:`קו ההסלמה הוא הגשר לשיעור הבא על נח והמבול. כדאי לסיים בו את חלק העיון.`},
+
+{id:'q16',type:'bagrut',section:'ב',ref:'בראשית ד׳, ג–ה',
+ excerpt:`קרא/י את בראשית ד׳, ג–ה שלפניך.`,
+ q:`שתי המנחות מתוארות בפסוקים סמוכים, ובלשון שונה זו מזו.`,
+ parts:[
+  {label:'א',text:`ציין/י שני הבדלים בין תיאור מנחת קין לתיאור מנחת הבל, ובסס/י כל אחד על לשון הכתוב.`,points:5,
+   rubric:{model:`(1) תיאור המנחה עצמה: קין הביא "מִפְּרִי הָאֲדָמָה" — ניסוח כללי בלי כל ציון של איכות או בחירה; הבל הביא "מִבְּכֹרוֹת צֹאנוֹ וּמֵחֶלְבֵהֶן" — הבכורות והחלקים המשובחים. (2) סדר המילים בתגובה: "וַיִּשַׁע ה׳ אֶל הֶבֶל וְאֶל מִנְחָתוֹ" — האדם מוקדם למנחה, ואותו סדר חוזר גם בשלילה "וְאֶל קַיִן וְאֶל מִנְחָתוֹ לֹא שָׁעָה". (3) אפשר להוסיף: קין הוא היוזם — "וַיָּבֵא קַיִן... מִנְחָה" — והבל "הֵבִיא גַם הוּא", כלומר בעקבותיו. די בשניים.`,full:`שני הבדלים מדויקים + ציטוט מבסס לכל אחד = ניקוד מלא`,partial:`הבדל אחד בלבד, או שניים בלי ציטוט = ניקוד חלקי`}},
+  {label:'ב',text:`הכתוב אינו מנמק מדוע לא שעה ה׳ אל מנחת קין. הצג/י שתי קריאות אפשריות לשאלה זו, ובסס/י כל אחת על הכתוב.`,points:5,
+   rubric:{model:`ראשית יש לומר במפורש שהכתוב שותק ואינו נותן נימוק. קריאות אפשריות: (1) מן הניסוח — ההבדל הוא באיכות המנחה ובכוונה שמאחוריה: "מִבְּכֹרוֹת צֹאנוֹ וּמֵחֶלְבֵהֶן" מול "מִפְּרִי הָאֲדָמָה" בלי כל תיאור. (2) מסדר המילים — "אֶל הֶבֶל וְאֶל מִנְחָתוֹ": ההיענות מכוונת אל הנותן ולא רק אל המתנה. (3) מן השתיקה עצמה — הכתוב נמנע מלנמק משום שאין זה עניינו: מרכז הכובד הוא בתגובת קין, וכל פסוקים ו–ז מוקדשים לה. די בשתיים.`,full:`אמירה שהכתוב אינו מנמק + שתי קריאות מבוססות בכתוב = ניקוד מלא`,partial:`קריאה אחת בלבד, או שתיים בלי עיגון בכתוב = ניקוד חלקי`}}
+ ]},
+
+{id:'q17',type:'bagrut',section:'ב',ref:'בראשית ד׳, ו–ז',
+ excerpt:`קרא/י: "וַיֹּאמֶר ה׳ אֶל קָיִן לָמָּה חָרָה לָךְ וְלָמָּה נָפְלוּ פָנֶיךָ. הֲלוֹא אִם תֵּיטִיב שְׂאֵת וְאִם לֹא תֵיטִיב לַפֶּתַח חַטָּאת רֹבֵץ וְאֵלֶיךָ תְּשׁוּקָתוֹ וְאַתָּה תִּמְשָׁל בּוֹ" (ד׳, ו–ז).`,
+ q:`לפני הרצח פונה האל אל קין, ודבריו הם לב הפרק.`,
+ parts:[
+  {label:'א',text:`הסבר/י את שני חלקי פסוק ז — "אִם תֵּיטִיב שְׂאֵת" ו"לַפֶּתַח חַטָּאת רֹבֵץ" — ומה מציע האל לקין.`,points:5,
+   rubric:{model:`"שְׂאֵת" מן השורש נש״א, במשמעות של נשיאת פנים — ההפך הישיר מ"וַיִּפְּלוּ פָּנָיו" שבפסוק ה: אם תיטיב, פניך יורמו בחזרה. התשובה ניתנת באותה לשון שבה תוארה הבעיה. "לַפֶּתַח חַטָּאת רֹבֵץ" — דימוי של חיה הכורעת בפתח הבית, אורבת ומחכה; הדימוי מציב את החטא קרוב מאוד לאדם אך מחוץ לו. ההצעה עצמה היא בסיום: "וְאֵלֶיךָ תְּשׁוּקָתוֹ וְאַתָּה תִּמְשָׁל בּוֹ" — האל מציג לפני קין שתי אפשרויות ואומר לו במפורש שביכולתו לשלוט. אין בדברים שום קביעה שקין יחטא.`,full:`הסבר שני החלקים בציטוט + זיהוי ההצעה כאפשרות בחירה = ניקוד מלא`,partial:`הסבר חלק אחד בלבד, או תיאור כללי בלי הצמדה ללשון הפסוק = ניקוד חלקי`}},
+  {label:'ב',text:`השווה/י את הביטוי "וְאֵלֶיךָ תְּשׁוּקָתוֹ וְאַתָּה תִּמְשָׁל בּוֹ" לביטוי "וְאֶל אִישֵׁךְ תְּשׁוּקָתֵךְ וְהוּא יִמְשָׁל בָּךְ" (ג׳, טז): מה משותף להם ומה ההבדל המהותי?`,points:5,
+   rubric:{model:`המשותף: מבנה תחבירי זהה ואותם שני שורשים — תשוקה ומשל; בשני הפסוקים מתוארת מערכת יחסים שבה צד אחד נמשך אל השני והשני מושל בו. ההבדל המהותי: בפרק ג׳ נאמר "וְהוּא יִמְשָׁל בָּךְ" — אמירה על מצבה של האישה בעקבות החטא, ואין בה הצעה או בחירה; ואילו כאן נאמר "וְאַתָּה תִּמְשָׁל בּוֹ" — היכולת נמסרת לקין עצמו, כאפשרות שפתוחה לפניו לפני המעשה. אותה לשון בדיוק, וכיוון הפוך: שם משפט על המצב, כאן מסירת שליטה.`,full:`זיהוי הזהות הלשונית + ניסוח מדויק של ההבדל בכיוון = ניקוד מלא`,partial:`ציון הדמיון הלשוני בלבד, בלי ההבדל = ניקוד חלקי`}}
+ ]},
+
+{id:'q18',type:'bagrut',section:'ב',ref:'בראשית ד׳, ח–י',
+ excerpt:`קרא/י את בראשית ד׳, ח–י, והשווה/י לחקירה שבבראשית ג׳, ט–יג.`,
+ q:`גם כאן, כמו בפרק הקודם, המעשה נחקר לפני שנגזר הדין.`,
+ parts:[
+  {label:'א',text:`ציין/י נקודת דמיון אחת ונקודת שוני אחת בין החקירה בפרק ד׳ לחקירה בפרק ג׳, ובסס/י את דבריך על הכתוב.`,points:5,
+   rubric:{model:`דמיון: בשני הפרקים האל פותח בשאלה שאינה שאלת מידע אלא פתח להודאה — "אַיֶּכָּה" (ג׳, ט) מול "אֵי הֶבֶל אָחִיךָ" (ד׳, ט); ובשניהם השאלה קודמת לגזר הדין. שוני: האדם והאישה גלגלו את האחריות הלאה אך לא הכחישו את העובדות — "הָאִשָּׁה... הִוא נָתְנָה לִּי מִן הָעֵץ וָאֹכֵל", "הַנָּחָשׁ הִשִּׁיאַנִי וָאֹכֵל"; ואילו קין מכחיש במפורש — "לֹא יָדַעְתִּי" — ומוסיף על השקר שאלה חצופה, "הֲשֹׁמֵר אָחִי אָנֹכִי". ההידרדרות בין הדורות ניכרת בתשובה.`,full:`דמיון אחד ושוני אחד, שניהם מבוססים בציטוט = ניקוד מלא`,partial:`רק דמיון או רק שוני, או שניהם בלי ציטוט = ניקוד חלקי`}},
+  {label:'ב',text:`הסבר/י את האירוניה שבשאלת קין "הֲשֹׁמֵר אָחִי אָנֹכִי" לאור בראשית ב׳, טו.`,points:5,
+   rubric:{model:`בפרק ב׳ הוצב האדם בגן "לְעָבְדָהּ וּלְשָׁמְרָהּ" (ב׳, טו) — כלומר השמירה היא התפקיד האנושי הראשון שהוטל על האדם. קין שואל שאלה רטורית שכוונתה "ודאי שאיני שומרו", אך התשובה לשאלתו כבר ניתנה בפרק ב׳, עוד לפני שנשאלה. האירוניה מתחדדת בכך שקין עצמו הוא "עֹבֵד אֲדָמָה" (ד׳, ב): את החצי הראשון של התפקיד — העבודה — הוא ירש והמשיך, ואת החצי השני — השמירה — הוא מכחיש בפה מלא. אפשר להוסיף שהתשובה בפועל ניתנת לו בפסוק י: "קוֹל דְּמֵי אָחִיךָ צֹעֲקִים אֵלַי מִן הָאֲדָמָה".`,full:`הצמדת השורש שמ״ר לב׳, טו + ניסוח האירוניה = ניקוד מלא`,partial:`אמירה כללית על אחריות בלי הקישור לב׳, טו = ניקוד חלקי`}}
+ ]},
+
+{id:'q19',type:'bagrut',section:'ב',ref:'בראשית ד׳, יא–טז',
+ excerpt:`קרא/י את בראשית ד׳, יא–טז — גזר הדין, תגובת קין והאות.`,
+ q:`העונש בנוי כמידה כנגד מידה, ולצדו ניתנת לקין הגנה.`,
+ parts:[
+  {label:'א',text:`הסבר/י כיצד עונשו של קין הוא מידה כנגד מידה, וציין/י מה מחדש גזר הדין הזה לעומת גזרי הדין שבפרק ג׳.`,points:5,
+   rubric:{model:`מידה כנגד מידה: קין הוא "עֹבֵד אֲדָמָה" (ד׳, ב), והאדמה היא שקיבלה את דם אחיו — "הָאֲדָמָה אֲשֶׁר פָּצְתָה אֶת פִּיהָ לָקַחַת אֶת דְּמֵי אָחִיךָ מִיָּדֶךָ" (יא); לפיכך העונש נוגע בדיוק בה: "כִּי תַעֲבֹד אֶת הָאֲדָמָה לֹא תֹסֵף תֵּת כֹּחָהּ לָךְ" (יב). ונוסף על כך "נָע וָנָד תִּהְיֶה בָאָרֶץ" — האיכר, שכל עולמו קשור לחלקה קבועה, נעשה נווד. החידוש: "וְעַתָּה אָרוּר אָתָּה מִן הָאֲדָמָה" — קין הוא האדם הראשון שהמילה "ארור" מופנית אליו; בפרק ג׳ קוללו הנחש והאדמה בלבד, ולא האדם ולא האישה.`,full:`הסבר המידה כנגד מידה בציטוט + זיהוי החידוש שב"ארור" = ניקוד מלא`,partial:`רק המידה כנגד מידה, או רק החידוש = ניקוד חלקי`}},
+  {label:'ב',text:`מהו תפקידו של האות שניתן לקין (פסוק טו), וכיצד הוא מתקשר ל"כָּתְנוֹת עוֹר" שבבראשית ג׳, כא?`,points:5,
+   rubric:{model:`תפקיד האות מפורש בכתוב: "וַיָּשֶׂם ה׳ לְקַיִן אוֹת לְבִלְתִּי הַכּוֹת אֹתוֹ כָּל מֹצְאוֹ" — הגנה על חייו, בתגובה לחששו "וְהָיָה כָל מֹצְאִי יַהַרְגֵנִי" (יד). זהו אותו דפוס שבסוף פרק ג׳: מיד אחרי גזר הדין באה פעולה של שמירה על החיים — שם "וַיַּעַשׂ ה׳ אֱלֹהִים לְאָדָם וּלְאִשְׁתּוֹ כָּתְנוֹת עוֹר וַיַּלְבִּשֵׁם", וכאן האות. המסקנה המשותפת: העונש משנה את תנאי הקיום — גירוש, נדודים, ריחוק — אך אינו נטישה ואינו הפקרה.`,full:`ציטוט תכלית האות + ההקבלה לכותנות עור + ניסוח הדפוס המשותף = ניקוד מלא`,partial:`הסבר האות בלי ההקבלה לפרק ג׳ = ניקוד חלקי`}}
+ ]},
+
+{id:'q20',type:'bagrut',section:'ב',ref:'עיון — בראשית ד׳, יז–כו',
+ excerpt:`קרא/י את בראשית ד׳, יז–כו — שושלת קין, שירת למך, ולידת שת ואנוש.`,
+ q:`סופו של הפרק מציג שני קווים היוצאים מן הסיפור.`,
+ parts:[
+  {label:'א',text:`הסבר/י את היחס בין הישגי התרבות המנויים בשושלת קין (פסוקים יז; כ–כב) ובין שירת למך (כג–כד). בסס/י את דבריך על הכתוב.`,points:6,
+   rubric:{model:`בשושלת קין נמנים דווקא הישגי התרבות: בניית עיר — "וַיְהִי בֹּנֶה עִיר" (יז); מרעה ומגורים — יָבָל "אֲבִי יֹשֵׁב אֹהֶל וּמִקְנֶה" (כ); מוזיקה — יוּבָל "אֲבִי כָּל תֹּפֵשׂ כִּנּוֹר וְעוּגָב" (כא); ועבודת מתכת — תּוּבַל קַיִן "לֹטֵשׁ כָּל חֹרֵשׁ נְחֹשֶׁת וּבַרְזֶל" (כב). הכתוב מונה אותם בלי לגנות ובלי לשבח. ומיד לצדם באה שירת למך, ובה ההיפוך: ההבטחה שניתנה לקין כהגנה — "כָּל הֹרֵג קַיִן שִׁבְעָתַיִם יֻקָּם" (טו) — נלקחת ומוגדלת לכדי איום והתפארות: "כִּי אִישׁ הָרַגְתִּי לְפִצְעִי וְיֶלֶד לְחַבֻּרָתִי; כִּי שִׁבְעָתַיִם יֻקַּם קָיִן וְלֶמֶךְ שִׁבְעִים וְשִׁבְעָה". כלומר: התרבות מתפתחת, והאלימות מתפתחת יחד אִתה — ההריגה שבתחילת הפרק נחקרה ונענשה, נעשית כאן שיר שמושר לנשים. זהו קו ההסלמה שיוביל בפרק ו׳ אל "וַתִּמָּלֵא הָאָרֶץ חָמָס".`,full:`מניית ההישגים בציטוט + זיהוי היפוך מספר "שבעתיים" מהגנה להתפארות + ניסוח היחס בין השניים = ניקוד מלא`,partial:`תיאור ההישגים או השירה בלבד, בלי היחס ביניהם = ניקוד חלקי`}},
+  {label:'ב',text:`הפרק נחתם בלידת שת ובמשפט "אָז הוּחַל לִקְרֹא בְּשֵׁם ה׳" (כו). מה לדעתך מבקש הכתוב להשיג בסיום כזה דווקא, ומדוע? נמק/י את עמדתך.`,points:4,reflective:true,
+   rubric:{model:`תשובה פתוחה. מצופה שהתלמיד יעגן את עמדתו בשני הפסוקים האחרונים: "וַתִּקְרָא אֶת שְׁמוֹ שֵׁת כִּי שָׁת לִי אֱלֹהִים זֶרַע אַחֵר תַּחַת הֶבֶל כִּי הֲרָגוֹ קָיִן" (כה) — נימוק השם מזכיר במפורש את מה שאבד, כך שההתחלה החדשה אינה מוחקת את האובדן; ו"אָז הוּחַל לִקְרֹא בְּשֵׁם ה׳" (כו). כיוונים אפשריים: הכתוב מציב קו שני לצד קו למך, כדי שהפרק לא ייחתם בהסלמת האלימות; הפרק שנפתח במנחה שהביא אדם מיוזמתו ונגמרה ברצח נחתם בפנייה מחודשת אל ה׳, כלומר במעין תיקון; או שהסיום מכין את הקורא לסיפור המבול, שבו תעמוד בדיוק השאלה איזה משני הקווים גובר. אין תשובה אחת נכונה — מעריכים את עומק ההנמקה ואת עיגונה בפסוקים.`,full:`עמדה מנומקת + קישור מפורש לפסוק כה או כו = ניקוד מלא`,partial:`אמירה כללית על תקווה או התחלה חדשה בלי עיגון בכתוב = ניקוד חלקי`}}
+ ]}
+];
+
+const POOLS=[{id:'poolA',title:'מאגר בחירה — שאלות בגרות',answer:3,of:5,member:['q16','q17','q18','q19','q20']}];
+
+
+const SECTIONS={'א':{tag:'חלק א׳',title:'תרגול הבנה',note:'שאלות סגורות לתרגול ולבדיקה עצמית. נכללות באחוז ההצלחה — אך אינן בפורמט בגרות.',cls:''},'ב':{tag:'חלק ב׳',title:'סימולציית בגרות · שאלון 1261',note:'שאלות פתוחות בפורמט הבגרות. ענה/י על 3 מתוך 5 השאלות; בכל שאלה ענה/י על כל הסעיפים ובסס/י את דבריך על הכתוב. כל שאלה שווה 10 נק׳ — 30 נק׳ בסך הכול. נבדקות ומנוקדות ע״י המורה.',cls:'sec-b'}};
+
+const QS={answers:{},submitted:false};
+
+function closedQuestions(){return QUESTIONS.filter(q=>q.type==='mc'||q.type==='tf');}
+function bagrutQuestions(){return QUESTIONS.filter(q=>q.type==='bagrut');}
+function poolOf(qid){return POOLS.find(p=>p.member.includes(qid));}
+function isBagrutAnswered(qid){const a=QS.answers[qid];return !!(a&&a.parts&&Object.keys(a.parts).length>0);}
+function poolAnsweredCount(p){return p.member.filter(id=>isBagrutAnswered(id)).length;}
+function qPoints(q){return (q.parts||[]).reduce((s,p)=>s+(p.points||0),0);}
+function requiredCount(){let n=closedQuestions().length;POOLS.forEach(p=>n+=p.answer);return n;}
+function countedAnswered(){let n=closedQuestions().filter(q=>QS.answers[q.id]!==undefined).length;POOLS.forEach(p=>n+=Math.min(poolAnsweredCount(p),p.answer));return n;}
+
+function switchTab(t){['theory','practice','answers'].forEach(x=>{document.getElementById('pane-'+x)?.classList.toggle('active',x===t);document.getElementById('btn-'+x)?.classList.toggle('active',x===t);document.getElementById('btn-'+x+'-student')?.classList.toggle('active',x===t);});if(t==='practice'&&USER_ROLE==='teacher'){document.getElementById('student-gate')?.classList.add('hidden');const tw=document.getElementById('practice-content-wrap');if(tw)tw.style.display='';}if(t==='practice'&&USER_ROLE==='student'){const dd=document.getElementById('gate-date-display');if(dd)dd.textContent=new Date().toLocaleDateString('he-IL',{weekday:'long',year:'numeric',month:'long',day:'numeric'});const gate=document.getElementById('student-gate'),conf=document.getElementById('gate-confirmed'),wrap=document.getElementById('practice-content-wrap');const ne=document.getElementById('gate-name'),ce=document.getElementById('gate-class');if(!_gateConfirmed){if(ne&&STUDENT_NAME&&STUDENT_NAME!=='תלמיד/ה')ne.value=STUDENT_NAME;if(ce&&STUDENT_CLASS)ce.value=STUDENT_CLASS;if(gate)gate.classList.remove('hidden');if(conf)conf.classList.add('hidden');if(wrap)wrap.style.display='none';}else{if(gate)gate.classList.add('hidden');if(conf)conf.classList.remove('hidden');if(wrap)wrap.style.display='';}}}
+
+function confirmGate(){const ne=document.getElementById('gate-name'),ce=document.getElementById('gate-class');const nv=(ne?.value||'').trim(),cv=ce?.value||'';let ok=true;if(nv.split(/\s+/).filter(Boolean).length<2){ne?.classList.add('err');document.getElementById('gate-name-err')?.classList.add('show');ok=false;}else{ne?.classList.remove('err');document.getElementById('gate-name-err')?.classList.remove('show');}if(!cv){ce?.classList.add('err');document.getElementById('gate-class-err')?.classList.add('show');ok=false;}else{ce?.classList.remove('err');document.getElementById('gate-class-err')?.classList.remove('show');}if(!ok)return;STUDENT_NAME=nv;STUDENT_CLASS=cv;LS.set('tanakh2_uname',nv);LS.set('tanakh2_class',cv);_gateConfirmed=true;const av=document.getElementById('gc-avatar'),nm=document.getElementById('gc-name-display'),mt=document.getElementById('gc-meta-display');if(av)av.textContent=nv[0].toUpperCase();if(nm)nm.textContent=nv;if(mt)mt.textContent='כיתה '+cv+' · '+new Date().toLocaleDateString('he-IL');document.getElementById('student-gate')?.classList.add('hidden');document.getElementById('gate-confirmed')?.classList.remove('hidden');const wrap=document.getElementById('practice-content-wrap');if(wrap){wrap.style.display='';wrap.scrollIntoView({behavior:'smooth',block:'start'});}}
+function reopenGate(){_gateConfirmed=false;document.getElementById('gate-confirmed')?.classList.add('hidden');const g=document.getElementById('student-gate');if(g){g.classList.remove('hidden');g.scrollIntoView({behavior:'smooth',block:'start'});}}
+
+function renderQuestions(){const c=document.getElementById('questions-container');if(!c)return;let html='',curSec=null,poolsSeen={},closedNum=0,bagrutNum=0;QUESTIONS.forEach(q=>{const sec=q.section||'א';if(sec!==curSec){curSec=sec;const s=SECTIONS[sec];html+=`<div class="section-divider ${s.cls}"><span class="sd-tag">${s.tag}</span><div class="sd-title">${s.title}</div><div class="sd-note">${s.note}</div></div>`;}const p=poolOf(q.id);if(p&&!poolsSeen[p.id]){poolsSeen[p.id]=true;html+=poolBanner(p);}let label;if(q.type==='bagrut'){bagrutNum++;label='שאלה '+bagrutNum;}else{closedNum++;label='שאלה '+closedNum;}html+=buildCard(q,label);});c.innerHTML=html;renderAnswers();updateProgress();}
+
+function poolBanner(p){return `<div class="pool-banner"><span class="pb-icon">🎯</span><div class="pb-text"><div class="pb-title">${p.title}</div><div class="pb-desc">כמו בבגרות: ענה/י על <strong>${p.answer}</strong> מתוך <strong>${p.of}</strong> השאלות הבאות (מותר יותר — ייבדקו הטובות). כל שאלה שווה 10 נק׳.</div></div><span class="pool-counter" id="poolc-${p.id}">0 / ${p.answer}</span></div>`;}
+
+function buildCard(q,label){let input='';const L=['א','ב','ג','ד'];if(q.type==='mc'){input=`<div class="mc-wrap">${q.opts.map((o,oi)=>`<button class="mc-btn" id="${q.id}_o${oi}" onclick="pickMC('${q.id}',${oi})"><span class="mc-letter">${L[oi]}</span><span>${o}</span></button>`).join('')}</div>`;}else if(q.type==='tf'){input=`<div class="tf-row"><button class="tf-btn" id="${q.id}_t" onclick="pickTF('${q.id}',true)">✅ נכון</button><button class="tf-btn" id="${q.id}_f" onclick="pickTF('${q.id}',false)">❌ לא נכון</button></div>`;}else if(q.type==='bagrut'){const exc=q.excerpt?`<div class="q-excerpt">${q.excerpt}</div>`:'';const based=q.based?`<div class="bagrut-based">📖 ${q.based} · ענה/י על כל הסעיפים · בסס/י את דבריך על הכתוב</div>`:'';const stem=q.q?`<div class="bagrut-stem">${q.q}</div>`:'';const parts=q.parts.map((p,pi)=>`<div class="bagrut-part"><div class="part-head"><span class="part-label">${p.label}</span><span class="part-text">${p.text}</span>${p.reflective?'<span class="reflective-badge">שאלת עיון</span>':''}<span class="part-points">${p.points} נק׳</span></div><textarea class="open-textarea" id="${q.id}_p${pi}" rows="4" placeholder="תשובה לסעיף ${p.label}..." oninput="pickPart('${q.id}',${pi})"></textarea></div>`).join('');input=`${exc}${based}${stem}<div class="open-wrap">${parts}</div>`;}
+  const badge=(q.type==='bagrut')?`<span class="q-total-pts">${qPoints(q)} נק׳</span>`:'';
+  return `<div class="q-card${q.type==='bagrut'?' bagrut-q':''}" id="${q.id}_card"><div class="q-num">${label} <span class="q-type-badge">${q.ref}</span>${badge}</div>${q.type!=='bagrut'?`<div class="q-text">${q.q}</div>`:''}${input}<div class="q-feedback" id="${q.id}_fb"></div></div>`;}
+
+function pickMC(qid,idx){if(QS.submitted)return;QS.answers[qid]={sel:idx};QUESTIONS.find(x=>x.id===qid).opts.forEach((_,oi)=>{const b=document.getElementById(qid+'_o'+oi);if(b)b.classList.toggle('sel',oi===idx);});updateProgress();}
+function pickTF(qid,val){if(QS.submitted)return;QS.answers[qid]={sel:val};['t','f'].forEach(k=>{const b=document.getElementById(qid+'_'+k);if(b)b.classList.toggle('sel',k==='t'?val:!val);});updateProgress();}
+function pickPart(qid,pi){if(QS.submitted)return;const el=document.getElementById(qid+'_p'+pi);if(!el)return;if(!QS.answers[qid]||!QS.answers[qid].parts)QS.answers[qid]={parts:{}};const v=(el.value||'').trim();if(v.length>0)QS.answers[qid].parts[pi]=v;else delete QS.answers[qid].parts[pi];if(!QS.answers[qid].parts||Object.keys(QS.answers[qid].parts).length===0)delete QS.answers[qid];updateProgress();}
+
+function updateProgress(){const done=countedAnswered(),req=requiredCount(),pct=req?Math.round(done/req*100):0;document.getElementById('prog-fill')?.style.setProperty('width',Math.min(pct,100)+'%');const pt=document.getElementById('prog-txt');if(pt)pt.textContent=`${done} מתוך ${req} נענו`;const pp=document.getElementById('prog-pct');if(pp)pp.textContent=Math.min(pct,100)+'%';POOLS.forEach(p=>{const el=document.getElementById('poolc-'+p.id);if(el){const c=Math.min(poolAnsweredCount(p),p.answer);el.textContent=`${c} / ${p.answer}`;el.classList.toggle('done',c>=p.answer);}});}
+
+function submitQuiz(){const closed=closedQuestions();const cMissing=closed.filter(q=>QS.answers[q.id]===undefined);if(cMissing.length){toast(`בחלק א׳ חסרות ${cMissing.length} שאלות. ענה/י על כולן.`);return;}for(const p of POOLS){if(poolAnsweredCount(p)<p.answer){toast(`בחלק ב׳ ענה/י על לפחות ${p.answer} שאלות (כולל כל הסעיפים).`);return;}}QS.submitted=true;let correct=0;QUESTIONS.forEach(q=>{const a=QS.answers[q.id];let ok=false;if(q.type==='mc'&&a?.sel!==undefined){ok=a.sel===q.ans;q.opts.forEach((_,oi)=>{const b=document.getElementById(q.id+'_o'+oi);if(!b)return;b.disabled=true;if(oi===q.ans)b.classList.add('correct');else if(oi===a.sel&&!ok)b.classList.add('wrong');});}else if(q.type==='tf'&&a?.sel!==undefined){ok=a.sel===q.ans;['t','f'].forEach(k=>{const b=document.getElementById(q.id+'_'+k);if(!b)return;b.disabled=true;const bv=k==='t';if(bv===q.ans)b.classList.add('correct');else if(bv===a.sel&&!ok)b.classList.add('wrong');});}if((q.type==='mc'||q.type==='tf')&&ok)correct++;const fb=document.getElementById(q.id+'_fb');if(q.type==='bagrut'){(q.parts||[]).forEach((_,pi)=>{const ta=document.getElementById(q.id+'_p'+pi);if(ta)ta.disabled=true;});if(isBagrutAnswered(q.id)&&fb){fb.className='q-feedback show';fb.innerHTML='<div class="open-saved">✍️ תשובתך נשמרה ונמסרה לבדיקת המורה. המחוון ייחשף לאחר שחרור התשובות.</div>';}}else if(fb&&(q.type==='mc'||q.type==='tf')){fb.className='q-feedback show '+(ok?'ok':'wrong');fb.innerHTML=(ok?'✅ נכון! ':'❌ לא נכון. ')+q.explain;document.getElementById(q.id+'_card')?.classList.add(ok?'ok':'wrong');}});_lastCorrect=correct;_lastScore=closed.length?Math.round(correct/closed.length*100):0;const pct=_lastScore,emoji=pct>=90?'🏆':pct>=75?'⭐':pct>=60?'👍':'💪',color=pct>=90?'#15803d':pct>=75?'#0f766e':pct>=60?'#1a56db':'#dc2626';let bAns=0,bPts=0;bagrutQuestions().forEach(q=>{if(isBagrutAnswered(q.id)){bAns++;bPts+=qPoints(q);}});const rc=document.getElementById('results-container');if(rc){rc.style.display='';rc.innerHTML=`<div class="results-card"><span class="results-emoji">${emoji}</span><span class="results-score" style="color:${color}">${pct}%</span><span class="results-label">חלק א׳ (תרגול הבנה): ${correct} מתוך ${closed.length} נכונות</span><div class="results-bar"><div class="results-bar-fill" style="width:0%;background:${color}" id="res-fill"></div></div><div style="font-size:.82rem;color:var(--muted);margin-bottom:1.2rem">📝 חלק ב׳ (בגרות): ${bAns} שאלות נמסרו לבדיקת המורה (${bPts} נקודות אפשריות). אינן נכללות באחוז זה.</div><button class="btn-send" onclick="sendResults()">📤 שליחה למורה</button></div>`;}document.getElementById('submit-row')?.remove();setTimeout(()=>{const rf=document.getElementById('res-fill');if(rf)rf.style.width=pct+'%';},80);rc?.scrollIntoView({behavior:'smooth',block:'start'});}
+
+async function sendResults(){await saveScore(_lastScore,STUDENT_NAME,STUDENT_CLASS);toast('✅ התוצאה נשלחה למורה!');}
+
+function resetQuiz(){QS.answers={};QS.submitted=false;_lastScore=null;_lastCorrect=0;renderQuestions();const rc=document.getElementById('results-container');if(rc){rc.style.display='none';rc.innerHTML='';}if(!document.getElementById('submit-row')){const sw=document.getElementById('practice-content-wrap');if(sw){const d=document.createElement('div');d.id='submit-row';d.style.cssText='display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;margin-top:1.5rem';d.innerHTML='<button class="btn-submit" onclick="submitQuiz()">📤 הגשת התרגול</button><button class="btn-reset" onclick="resetQuiz()">🔄 אתחול</button>';sw.appendChild(d);}}}
+
+function renderAnswers(){const al=document.getElementById('answers-list');if(!al)return;const L=['א','ב','ג','ד'];let curSec=null,html='';QUESTIONS.forEach(q=>{const sec=q.section||'א';if(sec!==curSec){curSec=sec;const s=SECTIONS[sec];html+=`<div class="section-divider ${s.cls}"><span class="sd-tag">${s.tag}</span><div class="sd-title">${s.title}</div></div>`;}let block='';if(q.type==='mc'){block=`<div class="ans-correct">✅ ${L[q.ans]}. ${q.opts[q.ans]}</div><div class="ans-explain">💡 ${q.explain}</div>`;}else if(q.type==='tf'){block=`<div class="ans-correct">✅ ${q.ans?'נכון':'לא נכון'}</div><div class="ans-explain">💡 ${q.explain}</div>`;}else if(q.type==='bagrut'){const exc=q.excerpt?`<div class="ans-excerpt">${q.excerpt}</div>`:'';const parts=q.parts.map(p=>{const r=p.rubric||{};return `<div class="rubric-box"><div class="rubric-part-hd">סעיף ${p.label} · ${p.points} נק׳${p.reflective?' · שאלת עיון':''}</div><div class="rubric-model"><strong>תשובה לדוגמה:</strong> ${r.model||''}</div>${r.full?`<div class="rubric-band full"><span class="rb-tag">ניקוד מלא</span><span>${r.full}</span></div>`:''}${r.partial?`<div class="rubric-band partial"><span class="rb-tag">ניקוד חלקי</span><span>${r.partial}</span></div>`:''}</div>`;}).join('');const stem=q.q?`<div class="bagrut-stem">${q.q}</div>`:'';const parttexts=q.parts.map(p=>`<div style="font-size:.82rem;margin:.2rem 0;color:var(--text-mid)"><strong>${p.label}.</strong> ${p.text}</div>`).join('');block=`${exc}${stem}${parttexts}<div class="rubric-pts">ניקוד כולל לשאלה: ${qPoints(q)} נק׳</div>${parts}`;}html+=`<div class="answer-row"><div class="ans-num">${q.type==='bagrut'?'שאלת בגרות':'שאלה'} <span style="color:var(--lc)">${q.ref}</span></div>${q.type!=='bagrut'?`<div class="ans-q">${q.q}</div>`:''}${block}</div>`;});al.innerHTML=html;}
+
+function printLesson(){
+  var pw=window.open('','_blank','width=960,height=760');
+  if(!pw){alert('popup blocked');return;}
+  var isTeacher=(USER_ROLE==='teacher');
+  var L=['א','ב','ג','ד'];
+  var theoryHtml=(document.getElementById('pane-theory')||{innerHTML:''}).innerHTML||'';
+  var closedNum=0,bagrutNum=0,curSec=null;
+  var qHtml=QUESTIONS.map(function(q){
+    var secHtml='';var sec=q.section||'א';if(sec!==curSec){curSec=sec;secHtml='<div style="background:#f0fdfa;border:1px solid #ccc;border-radius:8px;padding:.5rem .8rem;margin:1rem 0 .6rem;font-weight:800;color:#0f766e;font-size:11pt">'+SECTIONS[sec].tag+' — '+SECTIONS[sec].title+'</div>';}
+    var h=secHtml+'<div style="border:1px solid #e4e7ef;border-radius:8px;padding:.7rem .9rem;margin-bottom:.6rem;break-inside:avoid">';
+    if(q.type==='bagrut'){bagrutNum++;h+='<div style="font-size:8pt;color:#ca8a04;font-weight:700">שאלה '+bagrutNum+' · '+q.ref+' · '+qPoints(q)+' נק׳</div>';if(q.excerpt)h+='<div style="background:#f8f9fb;border-right:3px solid #0891b2;border-radius:6px;padding:.4rem .7rem;font-size:8.5pt;font-style:italic;margin:.3rem 0">'+q.excerpt+'</div>';if(q.q)h+='<div style="font-size:9.5pt;font-weight:700;margin-bottom:.3rem">'+q.q+'</div>';q.parts.forEach(function(p){h+='<div style="font-size:9pt;font-weight:700;margin-top:.5rem">'+p.label+'. '+p.text+' <span style="color:#ca8a04">('+p.points+' נק׳)</span></div>';if(isTeacher){var r=p.rubric||{};h+='<div style="font-size:8.5pt;background:#f8f9fb;border:1px solid #e4e7ef;border-radius:6px;padding:.4rem .7rem;margin-top:.25rem"><strong style="color:#15803d">תשובה לדוגמה:</strong> '+(r.model||'')+(r.full?'<br><strong>מלא:</strong> '+r.full:'')+(r.partial?'<br><strong>חלקי:</strong> '+r.partial:'')+'</div>';}else{h+='<div style="border:1px dashed #cbd5e1;border-radius:6px;height:50px;margin-top:.25rem"></div>';}});}
+    else{closedNum++;h+='<div style="font-size:7.5pt;color:#0f766e">שאלה '+closedNum+' · '+q.ref+'</div><div style="font-size:9.5pt;font-weight:700;margin:.2rem 0 .3rem">'+q.q+'</div>';if(isTeacher){if(q.type==='mc')h+='<div style="font-size:9pt;padding:.3rem .65rem;background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;border-radius:6px"><strong>✅ תשובה:</strong> '+L[q.ans]+'. '+q.opts[q.ans]+'</div>';else h+='<div style="font-size:9pt;padding:.3rem .65rem;background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;border-radius:6px"><strong>✅ תשובה:</strong> '+(q.ans?'נכון':'לא נכון')+'</div>';}}
+    h+='</div>';return h;
+  }).join('');
+  var studentLine=(!isTeacher&&STUDENT_NAME&&STUDENT_NAME!=='תלמיד/ה')?'<div style="font-size:11pt;font-weight:700;margin-top:.5rem">תלמיד/ה: '+STUDENT_NAME+(STUDENT_CLASS?' | כיתה: '+STUDENT_CLASS:'')+' | '+new Date().toLocaleDateString('he-IL')+'</div>':'<div style="font-size:10pt;color:#6b7594;margin-top:.4rem">'+new Date().toLocaleDateString('he-IL')+'</div>';
+  var css='*{box-sizing:border-box;margin:0;padding:0}body{font-family:Heebo,sans-serif;direction:rtl;background:#fff;color:#0d1424;font-size:10pt;line-height:1.6}@page{margin:1.5cm 1.5cm 2.4cm;size:A4}.print-cr{position:fixed;bottom:0;left:0;right:0;text-align:center;font-size:7pt;color:#8a92a8;padding-top:.12cm;border-top:1px solid #e8ebf2;background:#fff}.doc{max-width:210mm;margin:0 auto;padding:1cm}.doc-header{text-align:center;padding-bottom:1.2rem;border-bottom:3px solid #0f766e;margin-bottom:1.5rem}.doc-header h1{font-size:18pt;color:#0f766e}.doc-header p{font-size:9pt;color:#555}.sec-title{font-size:13pt;color:#0f766e;border-bottom:2px solid #ecfeff;padding-bottom:.4rem;margin:1.5rem 0 1rem;page-break-after:avoid}.card,.box,.cmp-table,.steps-wrap,.teacher-note-box{border:1px solid #e4e7ef;border-radius:8px;padding:.7rem .9rem;margin-bottom:.6rem;break-inside:avoid}.section-hd{font-size:11pt;color:#0f766e;font-weight:800;margin:1rem 0 .5rem}.cmp-table{width:100%;border-collapse:collapse;font-size:.8rem}.cmp-table th{background:#0f766e;color:#fff;padding:.4rem .6rem;-webkit-print-color-adjust:exact;print-color-adjust:exact}.cmp-table td{padding:.4rem .6rem;border-bottom:1px solid #e4e7ef}.lesson-hero::before,.hero-badge,.hero-meta,.btn-print,.goto-practice-btn,.print-header,.sn-icon,.layer-tag,.tn-tag{display:none!important}.lesson-hero{background:#f0fdfa;border:1px solid #ccc;border-radius:10px;padding:1rem;margin-bottom:1rem}.sn{display:inline-flex;width:22px;height:22px;border-radius:50%;background:#0f766e;color:#fff;align-items:center;justify-content:center;font-size:.7rem;-webkit-print-color-adjust:exact;print-color-adjust:exact}';
+  var titleTag=isTeacher?' — גרסת מורה (כולל מחוון)':'';if(!isTeacher){css+='.teacher-note-box{display:none}';}
+  var bodyHtml='<div class="doc"><div class="doc-header"><h1>קין והבל'+titleTag+'</h1><p>תנ״ך לתיכון · יחידה א׳ — ראשית העולם והאנושות · שיעור 5 · בראשית ד׳</p>'+studentLine+'</div><div class="sec-title">חלק א — רקע ועיון</div><div>'+theoryHtml+'</div><div class="sec-title" style="page-break-before:always">חלק ב — שאלות</div>'+qHtml+'</div>';
+  var fullHtml='<!DOCTYPE html><html lang="he" dir="rtl"><head><meta charset="UTF-8"><title>קין והבל</title><link href="https://fonts.googleapis.com/css2?family=Secular+One&family=Heebo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>'+css+'</style></head><body>'+bodyHtml+'<div class="print-cr">© 2026 זכויות יוצרים – ליאור אלמוסלינוס</div><'+'script>document.fonts.ready.then(function(){setTimeout(function(){window.print();},300);}).catch(function(){setTimeout(function(){window.print();},1200);});<'+'/script></body></html>';
+  pw.document.write(fullHtml);pw.document.close();
+}
+
+let _tt;
+function toast(m){const e=document.getElementById('toast');e.textContent=m;e.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>e.classList.remove('show'),3200);}
+function goBack(){if(window.opener){try{window.opener.postMessage({type:'lessonDone',lid:LESSON_ID},'*')}catch{}window.close();return;}window.location.href=BACK_URL;}
+function init(){initFirebase();if(USER_ROLE==='teacher'){document.body.classList.add('is-teacher');document.getElementById('role-chip')?.style.setProperty('display','');document.getElementById('btn-answers')?.style.setProperty('display','');_gateConfirmed=true;const w=document.getElementById('practice-content-wrap');if(w)w.style.display='';document.getElementById('student-gate')?.classList.add('hidden');}else{const w=document.getElementById('practice-content-wrap');if(w)w.style.display='none';if(STUDENT_NAME&&STUDENT_NAME!=='תלמיד/ה'&&STUDENT_CLASS){_gateConfirmed=true;if(w)w.style.display='';document.getElementById('student-gate')?.classList.add('hidden');const av=document.getElementById('gc-avatar'),nm=document.getElementById('gc-name-display'),mt=document.getElementById('gc-meta-display');if(av)av.textContent=STUDENT_NAME[0].toUpperCase();if(nm)nm.textContent=STUDENT_NAME;if(mt)mt.textContent='כיתה '+STUDENT_CLASS+' · '+new Date().toLocaleDateString('he-IL');document.getElementById('gate-confirmed')?.classList.remove('hidden');}}applyAnswersVisibility();renderQuestions();}
+init();
+</script>
+</body>
+</html>
