@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<!-- @copyright-line | © 2026 זכויות יוצרים – ליאור אלמוסלינוס | כל הזכויות שמורות. אין להעתיק, לשכפל או להפיץ ללא אישור בכתב. -->
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="copyright" content="© 2026 זכויות יוצרים – ליאור אלמוסלינוס">
+<meta name="author" content="ליאור אלמוסלינוס">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>שיעור 8 — הרפורמה החברתית | תנ״ך לתיכון</title>
+<link href="https://fonts.googleapis.com/css2?family=Secular+One&family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<style>
+:root{
+  --bg:#f0f2f7;--surface:#fff;--surface2:#f8f9fb;--surface3:#eef0f5;
+  --border:#e4e7ef;--text:#0d1424;--text-mid:#3d4660;--muted:#6b7594;--subtle:#9aa3be;
+  --green:#15803d;--green-lt:#f0fdf4;--amber:#b45309;--amber-lt:#fffbeb;
+  --red:#dc2626;--red-lt:#fef2f2;--blue:#1a56db;--blue-lt:#eff4ff;
+  --rose:#be185d;--rose-lt:#fff1f2;--purple:#7c3aed;--purple-lt:#faf5ff;
+  --gold:#ca8a04;--gold-lt:#fefce8;
+  --lc:#0891b2;--lc-lt:#ecfeff;--lc-dk:#065f46;
+  --sh1:0 1px 3px rgba(13,20,36,.06);--sh2:0 4px 20px rgba(13,20,36,.08);--sh3:0 12px 40px rgba(13,20,36,.12);
+  --r:14px;--r-lg:20px;--r-xl:26px;--r-pill:999px;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#0b0f17;--surface:#131924;--surface2:#192030;--surface3:#1f2840;
+  --border:#252f47;--text:#d8dfe8;--text-mid:#a0adc5;--muted:#7a8aaa;--subtle:#50607e;
+  --green:#34d875;--green-lt:#0c2618;--amber:#f5a623;--amber-lt:#28200c;
+  --red:#fc8080;--red-lt:#281414;--blue:#4d8aff;--blue-lt:#162040;
+  --rose:#fb7185;--rose-lt:#1f0a0f;--purple:#b09dfa;--purple-lt:#1a1432;
+  --gold:#f5a623;--gold-lt:#28200c;
+  --lc:#34d4c2;--lc-lt:#0c221e;--lc-dk:#5eead4;
+  --sh1:0 1px 3px rgba(0,0,0,.3);--sh2:0 4px 20px rgba(0,0,0,.4);--sh3:0 12px 40px rgba(0,0,0,.5);
+}}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{line-height:1.65;min-height:100vh}
+button,input,select,textarea{font-family:inherit}
+.topbar{position:sticky;top:0;z-index:100;background:var(--surface);border-bottom:1px solid var(--border);padding:.62rem 1.1rem;display:flex;align-items:center;gap:.55rem;min-height:54px;box-shadow:var(--sh1)}
+.btn-back{width:40px;height:40px;border:1.5px solid var(--border);border-radius:11px;background:var(--surface2);font-size:1.05rem;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .14s;flex-shrink:0}
+.btn-back:hover{background:var(--surface3);color:var(--text)}
+.topbar-info{flex:1;min-width:0}
+.topbar-title{font-family:'Secular One',sans-serif;font-size:.9rem;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.topbar-sub{font-size:.6rem;color:var(--subtle);margin-top:.04rem}
+.topbar-actions{display:flex;gap:.38rem;flex-shrink:0;align-items:center}
+.t-chip{font-size:.62rem;font-weight:700;padding:.2rem .68rem;border-radius:var(--r-pill);border:1px solid var(--border);background:var(--surface2);color:var(--muted)}
+.t-chip.lc{color:var(--lc);background:var(--lc-lt);border-color:var(--lc)}
+.t-chip.teacher{color:var(--gold);background:var(--gold-lt);border-color:#fde68a;display:none}
+.btn-print{display:inline-flex;align-items:center;gap:.32rem;padding:.32rem .85rem;border:1.5px solid var(--border);border-radius:var(--r-pill);background:var(--surface2);font-size:.68rem;font-weight:700;color:var(--muted);cursor:pointer;transition:all .14s;white-space:nowrap;min-height:36px}
+.btn-print:hover{background:var(--lc-lt);color:var(--lc);border-color:var(--lc)}
+.tabs-bar{background:var(--surface);border-bottom:1px solid var(--border);display:flex;padding:0 1.1rem;overflow-x:auto;scrollbar-width:none;position:sticky;top:54px;z-index:90}
+.tabs-bar::-webkit-scrollbar{display:none}
+.tab-btn{padding:.68rem 1.2rem;border:none;border-bottom:2.5px solid transparent;background:none;font-size:.82rem;font-weight:600;color:var(--muted);cursor:pointer;white-space:nowrap;min-height:46px;margin-bottom:-1px;flex-shrink:0;transition:color .14s}
+.tab-btn:hover{color:var(--lc)}
+.tab-btn.active{color:var(--lc);border-bottom-color:var(--lc);font-weight:800}
+.tab-pane{display:none}.tab-pane.active{display:block;animation:fadeIn .18s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.lesson-wrap{max-width:800px;margin:0 auto;padding:1.5rem 1.2rem 5rem;width:100%}
+.lesson-hero{background:linear-gradient(135deg,var(--lc-lt) 0%,var(--surface) 68%);border:1px solid var(--border);border-radius:var(--r-xl);padding:1.8rem 1.6rem 1.6rem;margin-bottom:1.8rem;position:relative;overflow:hidden;box-shadow:var(--sh1)}
+.lesson-hero::before{content:'';position:absolute;top:0;right:0;bottom:0;width:5px;background:var(--lc);opacity:.75;border-radius:0 var(--r-xl) var(--r-xl) 0}
+.hero-badge{display:inline-flex;align-items:center;gap:.35rem;font-size:.62rem;font-weight:800;color:var(--lc);text-transform:uppercase;letter-spacing:.07em;background:var(--lc-lt);border:1.5px solid var(--lc);border-radius:var(--r-pill);padding:.22rem .8rem;margin-bottom:.9rem;opacity:.88}
+.hero-emoji{font-size:2.6rem;margin-bottom:.55rem;display:block;line-height:1}
+.hero-title{font-family:'Secular One',sans-serif;font-size:clamp(1.35rem,4vw,1.75rem);color:var(--text);line-height:1.18;margin-bottom:.4rem}
+.hero-desc{font-size:.84rem;color:var(--muted);line-height:1.65;max-width:580px}
+.hero-meta{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;margin-top:1rem}
+.hero-chip{font-size:.63rem;font-weight:700;padding:.22rem .72rem;border-radius:var(--r-pill);border:1px solid var(--border);background:var(--surface);color:var(--muted)}
+.hero-chip.lc{color:var(--lc);background:var(--lc-lt);border-color:var(--lc)}
+.hero-chip.green{color:var(--green);background:var(--green-lt);border-color:#bbf7d0}
+.section-hd{font-family:'Secular One',sans-serif;font-size:1.08rem;color:var(--lc);display:flex;align-items:center;gap:.55rem;margin:2.2rem 0 1rem;padding-bottom:.48rem;border-bottom:2px solid var(--lc-lt)}
+.sn{width:28px;height:28px;border-radius:50%;background:var(--lc);color:#fff;font-size:.75rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:900}
+.sn-icon{font-size:1.3rem;flex-shrink:0;line-height:1}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.3rem 1.4rem;box-shadow:var(--sh1);margin-bottom:1rem}
+.card p{font-size:.9rem;line-height:1.78;color:var(--text-mid)}.card p+p{margin-top:.65rem}
+.card ul{padding-right:1.3rem;margin-top:.42rem}
+.card li{font-size:.9rem;line-height:1.78;color:var(--text-mid);margin-bottom:.22rem}
+.card li strong{color:var(--text)}
+.box{border-radius:var(--r);padding:1rem 1.2rem;font-size:.86rem;line-height:1.72;color:var(--text-mid);margin-bottom:1rem}
+.box strong{font-weight:800}
+.box-lc{background:var(--lc-lt);border:1.5px solid #99f6e4}.box-lc strong{color:var(--lc)}
+.box-amber{background:var(--amber-lt);border:1.5px solid #fde68a}.box-amber strong{color:var(--amber)}
+.box-green{background:var(--green-lt);border:1.5px solid #bbf7d0}.box-green strong{color:var(--green)}
+.box-blue{background:var(--blue-lt);border:1.5px solid #bfdbfe}.box-blue strong{color:var(--blue)}
+.box-purple{background:var(--purple-lt);border:1.5px solid #ddd6fe}.box-purple strong{color:var(--purple)}
+.box-rose{background:var(--rose-lt);border:1.5px solid #fecdd3}.box-rose strong{color:var(--rose)}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:1rem}
+@media(max-width:600px){.grid3{grid-template-columns:1fr}}
+.mini-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:1rem 1.1rem}
+.mini-title{font-size:.78rem;font-weight:800;margin-bottom:.42rem}
+.mini-body{font-size:.8rem;color:var(--text-mid);line-height:1.64}
+.steps-wrap{background:linear-gradient(135deg,var(--lc-lt) 0%,var(--surface2) 100%);border:1.5px solid #99f6e4;border-radius:var(--r-lg);padding:1.4rem 1.5rem;margin-bottom:1rem}
+.steps-title{font-family:'Secular One',sans-serif;font-size:.94rem;color:var(--lc);margin-bottom:1rem}
+.step-item{display:flex;align-items:flex-start;gap:.65rem;font-size:.86rem;color:var(--text-mid);line-height:1.55;margin-bottom:.68rem}
+.step-num{width:26px;height:26px;border-radius:50%;background:var(--lc);color:#fff;font-size:.7rem;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:.1rem}
+.cmp-table{width:100%;border-collapse:collapse;font-size:.82rem;margin-bottom:1rem;border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--sh1)}
+.cmp-table th{padding:.68rem .9rem;text-align:right;font-weight:800;font-size:.76rem}
+.cmp-table th:first-child{background:var(--lc);color:#fff}
+.cmp-table th.col-b{background:var(--lc-dk);color:#fff}
+.cmp-table th.col-c{background:#374151;color:#fff}
+.cmp-table th.col-d{background:#1e293b;color:#fff}
+.cmp-table td{padding:.62rem .9rem;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.58}
+.cmp-table tr:last-child td{border-bottom:none}
+.cmp-table tr:nth-child(even) td{background:var(--surface2)}
+.cmp-table tr:nth-child(odd) td{background:var(--surface)}
+.cmp-table .row-label{font-weight:700;color:var(--lc);background:var(--lc-lt)!important;white-space:nowrap}
+
+/* ── SPEECH MODE PANELS ── */
+.speech-panel{border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--sh2);margin-bottom:1.3rem}
+.sp-head{padding:.9rem 1.3rem;font-family:'Secular One',sans-serif;font-size:.9rem;color:#fff;display:flex;align-items:center;gap:.5rem}
+.sp-body{background:var(--surface);border:1px solid var(--border);border-top:none;padding:1.1rem 1.3rem}
+.sp-original{background:var(--surface2);border-radius:var(--r);padding:.85rem 1.05rem;font-size:.9rem;color:var(--text-mid);line-height:1.72;margin-bottom:.85rem;border-right:4px solid var(--lc)}
+.sp-original .quote-marks{font-size:1.1rem;color:var(--lc);font-weight:900}
+.sp-features{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.75rem}
+.sp-feat{font-size:.65rem;font-weight:700;padding:.22rem .68rem;border-radius:var(--r-pill);border:1.5px solid}
+.sp-rules{font-size:.83rem;color:var(--text-mid);line-height:1.7}
+.sp-rules li{margin-bottom:.28rem}
+.sp-rules strong{color:var(--text)}
+/* colors per type */
+.direct .sp-head{background:#0f766e}
+.direct .sp-feat{background:var(--lc-lt);color:#0f766e;border-color:#99f6e4}
+.indirect .sp-head{background:#1a56db}
+.indirect .sp-feat{background:var(--blue-lt);color:#1a56db;border-color:#bfdbfe}
+.free .sp-head{background:#7c3aed}
+.free .sp-feat{background:var(--purple-lt);color:#7c3aed;border-color:#ddd6fe}
+
+/* ── TRANSFORMATION ARROWS ── */
+.transform-wrap{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-xl);padding:1.3rem 1.4rem;margin-bottom:1.1rem;box-shadow:var(--sh1)}
+.tr-title{font-family:'Secular One',sans-serif;font-size:.85rem;color:var(--lc);margin-bottom:1rem;display:flex;align-items:center;gap:.4rem}
+.tr-row{display:flex;flex-direction:column;gap:.5rem;margin-bottom:.9rem}
+.tr-row:last-child{margin-bottom:0}
+.tr-from,.tr-to{padding:.65rem 1rem;border-radius:var(--r);font-size:.87rem;line-height:1.62;color:var(--text-mid)}
+.tr-from{background:var(--lc-lt);border:1.5px solid #99f6e4;border-right:4px solid var(--lc)}
+.tr-from .tr-label{font-size:.62rem;font-weight:800;color:var(--lc);margin-bottom:.28rem;letter-spacing:.04em}
+.tr-to{background:var(--blue-lt);border:1.5px solid #bfdbfe;border-right:4px solid #1a56db}
+.tr-to .tr-label{font-size:.62rem;font-weight:800;color:#1a56db;margin-bottom:.28rem;letter-spacing:.04em}
+.tr-free{background:var(--purple-lt);border:1.5px solid #ddd6fe;border-right:4px solid #7c3aed}
+.tr-free .tr-label{font-size:.62rem;font-weight:800;color:#7c3aed;margin-bottom:.28rem;letter-spacing:.04em}
+.tr-arrow{font-size:1rem;color:var(--muted);text-align:center;padding:.1rem 0}
+.change-badge{display:inline-flex;align-items:center;gap:.25rem;font-size:.62rem;font-weight:700;padding:.16rem .55rem;border-radius:var(--r-pill);background:var(--amber-lt);color:var(--amber);border:1px solid #fde68a;margin-right:.25rem}
+
+/* reading */
+.reading-text-box{background:var(--surface);border:2px solid var(--lc);border-radius:var(--r-xl);padding:1.5rem 1.6rem;margin-bottom:1.8rem;box-shadow:var(--sh2);position:relative}
+.reading-text-box::before{content:'📄 טקסט לניתוח';position:absolute;top:-12px;right:1.4rem;background:var(--lc);color:#fff;font-size:.65rem;font-weight:800;padding:.22rem .85rem;border-radius:var(--r-pill);letter-spacing:.04em}
+.rt-title{font-family:'Secular One',sans-serif;font-size:1.05rem;color:var(--text);margin-bottom:.28rem}
+.rt-body{font-size:.88rem;line-height:1.88;color:var(--text-mid)}
+.rt-body p{margin-bottom:.85rem}.rt-body p:last-child{margin-bottom:0}
+.rt-body strong{color:var(--lc);font-weight:800}
+/* quiz */
+.quiz-header{background:linear-gradient(135deg,var(--lc-lt) 0%,var(--surface2) 100%);border:1px solid #99f6e4;border-radius:var(--r-lg);padding:1.25rem 1.4rem;margin-bottom:1.5rem}
+.quiz-hd-title{font-family:'Secular One',sans-serif;font-size:.97rem;color:var(--lc);margin-bottom:.32rem}
+.quiz-hd-desc{font-size:.82rem;color:var(--muted)}
+.quiz-prog-bar{height:5px;background:var(--surface3);border-radius:var(--r-pill);overflow:hidden;margin-top:.8rem;border:1px solid var(--border)}
+.quiz-prog-fill{height:100%;background:linear-gradient(90deg,var(--lc),#34d4c2);border-radius:var(--r-pill);transition:width .38s ease}
+.quiz-prog-row{display:flex;justify-content:space-between;margin-top:.38rem;font-size:.7rem;color:var(--muted)}
+.q-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.3rem 1.4rem;margin-bottom:1.25rem;box-shadow:var(--sh1);transition:border-color .2s}
+.q-card.ok{border-color:#bbf7d0}.q-card.wrong{border-color:#fca5a5}
+.q-num{font-size:.66rem;font-weight:800;color:var(--subtle);margin-bottom:.55rem;text-transform:uppercase;letter-spacing:.06em;display:flex;align-items:center;gap:.4rem;flex-wrap:wrap}
+.q-type-badge{font-size:.56rem;font-weight:700;padding:.14rem .52rem;border-radius:var(--r-pill);background:var(--surface3);color:var(--muted);border:1px solid var(--border)}
+.q-text{font-size:.94rem;font-weight:700;color:var(--text);line-height:1.52;margin-bottom:1.05rem}
+.q-excerpt{background:var(--surface2);border:1px solid var(--border);border-right:3px solid var(--lc);border-radius:var(--r);padding:.75rem 1rem;font-size:.86rem;line-height:1.75;color:var(--text-mid);margin-bottom:.85rem;font-style:italic}
+.mc-wrap{display:flex;flex-direction:column;gap:.42rem}
+.mc-btn{width:100%;text-align:right;padding:.78rem 1rem;border:1.5px solid var(--border);border-radius:var(--r);background:var(--surface2);font-size:.86rem;color:var(--text-mid);cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:.68rem;min-height:50px}
+.mc-btn:hover:not(:disabled){border-color:var(--lc);background:var(--lc-lt);color:var(--lc)}
+.mc-btn.sel{border-color:var(--lc);background:var(--lc-lt);color:var(--lc);font-weight:700}
+.mc-btn.correct{border-color:var(--green)!important;background:var(--green-lt)!important;color:var(--green)!important;font-weight:700}
+.mc-btn.wrong{border-color:var(--red)!important;background:var(--red-lt)!important;color:var(--red)!important;font-weight:700}
+.mc-btn:disabled{cursor:default}
+.mc-letter{width:24px;height:24px;border-radius:50%;background:var(--surface3);color:var(--muted);font-size:.7rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.mc-btn.sel .mc-letter{background:var(--lc);color:#fff}
+.mc-btn.correct .mc-letter{background:var(--green);color:#fff}
+.mc-btn.wrong .mc-letter{background:var(--red);color:#fff}
+.tf-row{display:flex;gap:.68rem}
+.tf-btn{flex:1;padding:.8rem;border:1.5px solid var(--border);border-radius:var(--r);background:var(--surface2);font-size:.9rem;font-weight:700;cursor:pointer;transition:all .15s;min-height:54px}
+.tf-btn:hover:not(:disabled){border-color:var(--lc);background:var(--lc-lt);color:var(--lc)}
+.tf-btn.sel{border-color:var(--lc);background:var(--lc-lt);color:var(--lc)}
+.tf-btn.correct{border-color:var(--green)!important;background:var(--green-lt)!important;color:var(--green)!important}
+.tf-btn.wrong{border-color:var(--red)!important;background:var(--red-lt)!important;color:var(--red)!important}
+.tf-btn:disabled{cursor:default}
+.sort-list{display:flex;flex-direction:column;gap:.42rem;margin-bottom:.55rem}
+.sort-item{display:flex;align-items:center;gap:.68rem;padding:.74rem 1rem;border:1.5px solid var(--border);border-radius:var(--r);background:var(--surface2);cursor:grab;transition:all .15s;user-select:none}
+.sort-item:active{cursor:grabbing}
+.sort-item.dragging{opacity:.45}
+.sort-item.drag-over{border-color:var(--lc);background:var(--lc-lt)}
+.sort-handle{font-size:1.1rem;color:var(--muted);flex-shrink:0}
+.sort-text{font-size:.86rem;color:var(--text-mid);flex:1}
+.sort-note{font-size:.7rem;color:var(--muted);margin-bottom:.32rem}
+.q-feedback{margin-top:.72rem;padding:.8rem 1.05rem;border-radius:var(--r);font-size:.83rem;font-weight:600;line-height:1.58;display:none;border-right:3px solid transparent}
+.q-feedback.show{display:block}
+.q-feedback.ok{background:var(--green-lt);color:var(--green);border-color:var(--green)}
+.q-feedback.wrong{background:var(--red-lt);color:var(--red);border-color:var(--red)}
+.results-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);padding:2.2rem 1.8rem;text-align:center;box-shadow:var(--sh2);margin-top:1.5rem}
+.results-emoji{font-size:4rem;margin-bottom:.8rem;display:block}
+.results-score{font-family:'Secular One',sans-serif;font-size:3.4rem;font-weight:800;margin-bottom:.3rem;display:block}
+.results-label{font-size:.9rem;color:var(--muted);margin-bottom:1.5rem;display:block}
+.results-bar{height:10px;background:var(--surface3);border-radius:var(--r-pill);overflow:hidden;margin-bottom:1.6rem;border:1px solid var(--border)}
+.results-bar-fill{height:100%;border-radius:var(--r-pill);transition:width 1.2s cubic-bezier(.22,1,.36,1)}
+.btn-submit{padding:.85rem 2rem;border:none;border-radius:var(--r-pill);background:var(--lc);color:#fff;font-size:.9rem;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(8,145,178,.25);transition:all .15s;min-height:48px}
+.btn-submit:hover{background:var(--lc-dk);transform:translateY(-1px)}
+.btn-reset{padding:.82rem 1.6rem;border:1.5px solid var(--border);border-radius:var(--r-pill);background:var(--surface2);color:var(--muted);font-size:.86rem;font-weight:700;cursor:pointer;transition:all .15s;min-height:48px}
+.btn-send{padding:.82rem 1.8rem;border:none;border-radius:var(--r-pill);background:var(--green);color:#fff;font-size:.86rem;font-weight:700;cursor:pointer;transition:all .15s;min-height:48px}
+.answers-locked{background:var(--surface);border:2px dashed var(--border);border-radius:var(--r-xl);padding:2.5rem 2rem;text-align:center;margin-top:.5rem}
+.answer-row{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.05rem 1.2rem;margin-bottom:.78rem}
+.ans-num{font-size:.66rem;color:var(--subtle);margin-bottom:.35rem;display:flex;align-items:center;gap:.4rem}
+.ans-q{font-size:.88rem;font-weight:700;color:var(--text);margin-bottom:.5rem;line-height:1.45}
+.ans-correct{background:var(--green-lt);border:1.5px solid #bbf7d0;border-radius:9px;padding:.55rem .95rem;font-size:.82rem;color:var(--green);font-weight:700;margin-bottom:.42rem}
+.ans-explain{font-size:.78rem;color:var(--muted);line-height:1.58;border-right:3px solid var(--border);padding-right:.78rem;margin-top:.4rem}
+/* gate */
+#student-gate{background:var(--surface);border:2px solid var(--lc);border-radius:var(--r-xl);padding:0;margin-bottom:1.5rem;box-shadow:var(--sh2);overflow:hidden}
+#student-gate.hidden{display:none}
+.gate-header{background:linear-gradient(135deg,var(--lc-lt) 0%,var(--surface2) 100%);padding:1.4rem 1.5rem 1.2rem;text-align:center;border-bottom:1px solid var(--border)}
+.gate-icon{font-size:2.4rem;display:block;margin-bottom:.55rem}
+.gate-title{font-family:'Secular One',sans-serif;font-size:1.08rem;color:var(--text);margin-bottom:.28rem}
+.gate-desc{font-size:.8rem;color:var(--muted)}
+.gate-body{padding:1.3rem 1.5rem 1.5rem;display:flex;flex-direction:column;gap:.9rem}
+.gate-field label{display:block;font-size:.72rem;font-weight:800;color:var(--muted);margin-bottom:.38rem}
+.gate-input{width:100%;padding:.82rem 1rem;border:1.5px solid var(--border);border-radius:var(--r);background:var(--surface2);font-size:.92rem;color:var(--text);outline:none;transition:border-color .15s;min-height:50px}
+.gate-input::placeholder{color:var(--subtle)}
+.gate-input:focus{border-color:var(--lc);box-shadow:0 0 0 3px rgba(8,145,178,.25)}
+.gate-input.err{border-color:var(--red)}
+.gate-select{width:100%;padding:.82rem 1rem;border:1.5px solid var(--border);border-radius:var(--r);background:var(--surface2);font-size:.92rem;color:var(--text);outline:none;transition:border-color .15s;min-height:50px;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7594' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:left 1rem center}
+.gate-select:focus{border-color:var(--lc);box-shadow:0 0 0 3px rgba(8,145,178,.25)}
+.gate-select.err{border-color:var(--red)}
+.gate-err-msg{font-size:.7rem;color:var(--red);margin-top:.26rem;display:none}
+.gate-err-msg.show{display:block}
+.gate-date-display{padding:.78rem 1rem;background:var(--surface3);border:1.5px solid var(--border);border-radius:var(--r);font-size:.88rem;color:var(--muted)}
+.gate-btn{width:100%;padding:.88rem;border:none;border-radius:var(--r-pill);background:var(--lc);color:#fff;font-size:.92rem;font-weight:700;cursor:pointer;min-height:52px;box-shadow:0 4px 18px rgba(8,145,178,.25);transition:all .15s;display:flex;align-items:center;justify-content:center;gap:.45rem}
+.gate-btn:hover{background:var(--lc-dk);transform:translateY(-1px)}
+#gate-confirmed{display:none;background:var(--lc-lt);border:2px solid #99f6e4;border-radius:var(--r-xl);padding:1rem 1.3rem;margin-bottom:1.5rem;align-items:center;gap:.85rem}
+#gate-confirmed.show{display:flex}
+#gate-confirmed.hidden{display:none!important}
+.gc-avatar{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#0f766e,#065f46);color:#fff;font-size:1.1rem;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.gc-info{flex:1;min-width:0}
+.gc-name{font-size:.92rem;font-weight:800;color:var(--lc)}
+.gc-meta{font-size:.74rem;color:var(--text-mid);margin-top:.15rem}
+.gc-change{font-size:.68rem;font-weight:700;color:var(--muted);cursor:pointer;text-decoration:underline;background:none;border:none;padding:0;margin-top:.22rem;display:block}
+#toast{position:fixed;bottom:1.6rem;left:50%;transform:translateX(-50%) translateY(14px);background:var(--text);color:var(--bg);padding:.58rem 1.4rem;border-radius:var(--r-pill);font-size:.78rem;font-weight:700;box-shadow:var(--sh3);z-index:9999;opacity:0;pointer-events:none;transition:opacity .22s,transform .22s;white-space:nowrap}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media print{.topbar,.tabs-bar,.btn-print,.btn-submit,.btn-reset,.btn-send,#submit-row,#results-container,#toast,#student-gate,#gate-confirmed,.sort-handle{display:none!important}body{background:#fff;color:#000;font-size:10pt;line-height:1.5}html{background:#fff}.tab-pane{display:block!important}.lesson-wrap{padding:.5cm 1cm;max-width:100%}.lesson-hero,.card,.q-card,.reading-text-box,.answer-row,.cmp-table,.speech-panel,.transform-wrap{box-shadow:none;break-inside:avoid}.q-feedback{display:block!important}.mc-btn.correct{display:flex!important}.print-header{display:block!important;text-align:center;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:2px solid #0f766e}.print-header h1{font-size:16pt;color:#0f766e}.print-header p{font-size:10pt;color:#555}#pane-theory{page-break-after:always}#pane-practice{page-break-after:always}@page{margin:1.5cm;size:A4}}
+.print-header{display:none}
+
+/* open q */
+.open-wrap{margin-bottom:.5rem}
+.open-textarea{width:100%;min-height:100px;padding:.8rem 1rem;border:1.5px solid var(--border);border-radius:var(--r,8px);background:var(--surface2,#f8fafc);font-family:'Heebo',sans-serif;font-size:.88rem;color:var(--text,#0d1424);line-height:1.7;resize:vertical;outline:none;transition:border-color .15s}
+.open-textarea:focus{border-color:var(--lc)}
+.open-textarea:disabled{opacity:.65;background:var(--surface3,#f0f2f7)}
+.open-hint{font-size:.72rem;color:var(--muted,#9aa3be);margin-top:.3rem}
+.open-rubric{margin-top:.6rem;background:var(--surface2,#f8fafc);border:1px solid var(--border,#e4e7ef);border-radius:var(--r,8px);padding:.7rem 1rem;font-size:.78rem;line-height:1.55;color:var(--text-mid,#374151)}
+
+.goto-practice-btn{display:block;width:100%;padding:1rem 1.5rem;border:none;border-radius:var(--r-pill,999px);background:#0f766e;color:#fff;font-size:.92rem;font-weight:800;cursor:pointer;transition:all .18s;margin-top:.8rem;text-align:center;box-shadow:0 4px 18px rgba(8,145,178,.25)}
+.goto-practice-btn:hover{transform:translateY(-2px);opacity:.92}
+
+/* ── תוספות תנ״ך v2: חלקים · סעיפי בגרות · תיוג רבדים ── */
+.q-excerpt b{color:var(--lc);font-weight:800;font-size:.72rem;vertical-align:.12em;margin-left:.15rem;font-style:normal}
+.q-excerpt .vref{display:block;font-size:.66rem;font-weight:800;color:var(--lc);letter-spacing:.04em;margin-bottom:.4rem;font-style:normal}
+.section-divider{margin:2rem 0 1.2rem;padding:1.05rem 1.3rem;border-radius:var(--r-lg);background:linear-gradient(135deg,var(--lc-lt) 0%,var(--surface2) 100%);border:1.5px solid var(--lc)}
+.section-divider.sec-b{background:linear-gradient(135deg,var(--gold-lt) 0%,var(--surface2) 100%);border-color:var(--gold)}
+.sd-tag{display:inline-block;font-size:.64rem;font-weight:800;letter-spacing:.05em;padding:.2rem .6rem;border-radius:var(--r-pill);background:var(--lc);color:#fff;margin-bottom:.5rem;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.section-divider.sec-b .sd-tag{background:var(--gold)}
+.sd-title{font-family:'Secular One',sans-serif;font-size:1.05rem;color:var(--text);margin-bottom:.25rem}
+.sd-note{font-size:.78rem;color:var(--text-mid);line-height:1.55}
+.pool-banner{background:var(--surface2);border:1.5px dashed var(--gold);border-radius:var(--r-lg);padding:.85rem 1.15rem;margin:1.1rem 0;display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
+.pool-banner .pb-icon{font-size:1.4rem;line-height:1}
+.pool-banner .pb-text{flex:1;min-width:160px}
+.pool-banner .pb-title{font-family:'Secular One',sans-serif;font-size:.88rem;color:var(--gold);margin-bottom:.15rem}
+.pool-banner .pb-desc{font-size:.75rem;color:var(--text-mid);line-height:1.5}
+.pool-counter{font-size:.72rem;font-weight:800;padding:.32rem .85rem;border-radius:var(--r-pill);background:var(--surface);border:1.5px solid var(--gold);color:var(--gold);white-space:nowrap}
+.pool-counter.done{background:var(--green-lt);border-color:var(--green);color:var(--green)}
+.q-card.bagrut-q{border-right:3px solid var(--gold)}
+.q-total-pts{font-size:.6rem;font-weight:800;padding:.12rem .5rem;border-radius:var(--r-pill);background:var(--gold-lt);color:var(--gold);border:1px solid var(--gold)}
+.bagrut-stem{font-size:.9rem;font-weight:700;color:var(--text);line-height:1.6;margin:.2rem 0 .3rem}
+.bagrut-based{font-size:.72rem;color:var(--muted);font-style:italic;margin-bottom:.7rem}
+.bagrut-part{border-top:1px solid var(--border);padding-top:.8rem;margin-top:.85rem}
+.bagrut-part:first-of-type{border-top:none;padding-top:.2rem;margin-top:.3rem}
+.part-head{display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem;flex-wrap:wrap}
+.part-label{display:inline-flex;width:22px;height:22px;border-radius:50%;background:var(--lc);color:#fff;align-items:center;justify-content:center;font-size:.72rem;font-weight:800;flex-shrink:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.part-points{font-size:.62rem;font-weight:800;padding:.1rem .5rem;border-radius:var(--r-pill);background:var(--gold-lt);color:var(--gold);border:1px solid var(--gold)}
+.part-text{font-size:.86rem;color:var(--text);line-height:1.55;flex:1;min-width:150px}
+.reflective-badge{font-size:.6rem;font-weight:800;padding:.1rem .5rem;border-radius:var(--r-pill);background:var(--green-lt);color:var(--green);border:1px solid #bbf7d0}
+.open-saved{margin-top:.6rem;background:var(--amber-lt);border:1.5px solid #fde68a;border-radius:var(--r);padding:.65rem .95rem;font-size:.8rem;color:var(--amber);font-weight:700}
+.rubric-box{margin-top:.4rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:.7rem .9rem}
+.rubric-part-hd{font-size:.72rem;font-weight:800;color:var(--lc);margin-bottom:.35rem}
+.rubric-model{font-size:.8rem;line-height:1.65;color:var(--text-mid);margin-bottom:.55rem}
+.rubric-model strong{color:var(--green);font-weight:800}
+.rubric-band{display:flex;gap:.5rem;align-items:flex-start;font-size:.76rem;line-height:1.5;margin-bottom:.35rem;color:var(--text-mid)}
+.rubric-band .rb-tag{font-size:.62rem;font-weight:800;padding:.14rem .5rem;border-radius:var(--r-pill);flex-shrink:0;white-space:nowrap}
+.rubric-band.full .rb-tag{background:var(--green-lt);color:var(--green);border:1px solid #bbf7d0}
+.rubric-band.partial .rb-tag{background:var(--amber-lt);color:var(--amber);border:1px solid #fde68a}
+.rubric-pts{display:inline-block;margin-top:.25rem;font-size:.68rem;font-weight:800;color:var(--gold)}
+.ans-excerpt{background:var(--surface2);border-right:3px solid var(--lc);border-radius:var(--r);padding:.55rem .85rem;font-size:.8rem;line-height:1.7;color:var(--text-mid);font-style:italic;margin-bottom:.5rem}
+.layer-tag{display:inline-block;font-size:.6rem;font-weight:800;letter-spacing:.04em;padding:.12rem .5rem;border-radius:var(--r-pill);margin-bottom:.5rem;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.layer-tag.peshat{background:var(--lc-lt);color:var(--lc);border:1px solid var(--lc)}
+.layer-tag.derash{background:var(--purple-lt,#f3e8ff);color:var(--purple,#7c3aed);border:1px solid var(--purple,#7c3aed)}
+.teacher-note-box{background:#fff7ed;border:1.5px solid #fdba74;border-radius:var(--r-lg);padding:1rem 1.2rem;margin:1.4rem 0}.teacher-note-box{display:none}body.is-teacher .teacher-note-box{display:block}
+.tn-tag{display:inline-block;font-size:.62rem;font-weight:800;letter-spacing:.05em;padding:.15rem .55rem;border-radius:var(--r-pill);background:#ea580c;color:#fff;margin-bottom:.5rem;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.teacher-note-box p{font-size:.82rem;color:#7c2d12;line-height:1.65}
+
+/* ── COPYRIGHT ── */
+.copyright-line{padding:1.35rem 1rem .9rem;text-align:center;font-size:.71rem;letter-spacing:.015em;color:var(--muted);opacity:.8;line-height:1.5;user-select:none}
+.copyright-line.pinned{position:absolute;bottom:.7rem;left:0;right:0;z-index:2;opacity:.72}
+@media print{.copyright-line{opacity:1;color:#6b7594}}
+
+</style>
+</head>
+<body>
+<div class="topbar">
+  <button class="btn-back" onclick="goBack()" style="font-family:Arial,sans-serif">←</button>
+  <div class="topbar-info">
+    <div class="topbar-title">⚖️ הרפורמה החברתית</div>
+    <div class="topbar-sub">תנ״ך · יחידה — שיבת ציון · שיעור 8</div>
+  </div>
+  <div class="topbar-actions">
+    <span class="t-chip lc">⏱ 45 דק׳</span>
+    <span class="t-chip teacher" id="role-chip">🎓 מורה</span>
+    <button class="btn-print" onclick="printLesson()">🖨️ הדפסה</button>
+  </div>
+</div>
+<div class="tabs-bar">
+  <button class="tab-btn active" id="btn-theory" onclick="switchTab('theory')">📚 רקע ועיון</button>
+  <button class="tab-btn" id="btn-practice" onclick="switchTab('practice')">✏️ תרגול</button>
+  <button class="tab-btn" id="btn-answers" onclick="switchTab('answers')" style="display:none">🔑 תשובות ומחוון (מורה)</button>
+  <button class="tab-btn" id="btn-answers-student" onclick="switchTab('answers')" style="display:none">💡 תשובות</button>
+</div>
+
+<!-- ═══ THEORY ═══ -->
+<div class="tab-pane active" id="pane-theory">
+<div class="print-header"><h1>הרפורמה החברתית (נחמיה ה׳)</h1><p>תנ״ך · יחידה — שיבת ציון · שיעור 8</p></div>
+<div class="lesson-wrap">
+  <div class="lesson-hero">
+    <div class="hero-badge">שיבת ציון · שיעור 8</div>
+    <span class="hero-emoji">⚖️</span>
+    <h1 class="hero-title">הרפורמה החברתית</h1>
+    <p class="hero-desc">נחמיה יְהוָה — "וַתְּהִי צַעֲקַת הָעָם", תוכחה מול בעלי הכוח, "נַעַזְבָה נָּא" ו"לֶחֶם הַפֶּחָה לֹא אָכַלְתִּי"</p>
+    <div class="hero-meta"><span class="hero-chip lc">⏱ 45 דק׳</span><span class="hero-chip">📝 תרגול + בגרות</span><span class="hero-chip green">🏛️ שיבת ציון</span></div>
+  </div>
+
+  <div style="background:var(--lc-lt);border:2px dashed var(--lc);border-radius:var(--r-xl);padding:1.4rem 1.5rem;margin-bottom:1.8rem"><div style="font-size:.72rem;font-weight:800;color:var(--lc);margin-bottom:.6rem;text-transform:uppercase;letter-spacing:.06em">💭 שאלת פתיחה</div><p style="font-size:.94rem;font-weight:700;color:var(--text);line-height:1.6;margin-bottom:.6rem">נחמיה עסוק בבניית חומת ירושלים ובהדיפת אויבים מבחוץ — ובאמצע המלאכה פורצת <strong>צעקה מבפנים</strong>. לא מן האויבים: "וַתְּהִי צַעֲקַת הָעָם וּנְשֵׁיהֶם גְּדוֹלָה <em>אֶל אֲחֵיהֶם הַיְּהוּדִים</em>".</p><p style="font-size:.82rem;color:var(--muted);line-height:1.6">שימו לב לדבר אחד לאורך הפרק: נחמיה אינו אומר לעשירים "אתם". בפסוק י הוא אומר "<strong>וְגַם אֲנִי</strong>", ובפסוקים יד–יט הוא מספר מה הוא עצמו ויתר עליו במשך שתים עשרה שנה. השאלה שתלווה אותנו: מדוע דוגמה אישית היא חלק מן התוכחה ולא נספח לה?</p></div>
+
+  <!-- 1 -->
+  <div class="section-hd"><span class="sn-icon">📣</span><div class="sn">1</div>"וַתְּהִי צַעֲקַת הָעָם" — המשבר שמבפנים (א–ה)</div>
+  <div class="card">
+    <p>לפני שנקרא את הפרק, כדאי לדעת מה קרה בין פרק א׳ (השיעור הקודם) ובין פרקנו.</p>
+    <div class="box box-amber"><span class="layer-tag derash">רקע · מה קרה בפרקים ב׳–ד׳</span><br>אחרי התפילה שבפרק א׳ מקבל נחמיה רשות מן המלך ארתחשסתא ויוצא לירושלים; הוא סוקר את החומות ההרוסות <em>בלילה ובחשאי</em>, ואחר כך מארגן את העם לבנייה — משפחה משפחה, שער שער. הבנייה נתקלת בהתנגדות חיצונית: סנבלט, טוביה וגשם מלעיגים, מאיימים ואף זוממים להתקיף, ונחמיה מעמיד שומרים ומחלק את העם כך ש"בְּאַחַת יָדוֹ עֹשֶׂה בַמְּלָאכָה וְאַחַת מַחֲזֶקֶת הַשָּׁלַח". ואז, בעיצומה של המלאכה, נעצרת העלילה — ופרק ה׳ מפנה את המבט פנימה.</div>
+    <div class="box box-lc"><span class="layer-tag peshat">רובד הפשט</span><br><strong>המילה "צְעָקָה" אינה מקרית.</strong> במקרא זו לשונם של המדוכאים הפונים אל האל — "וְאֶת <em>צַעֲקָתָם</em> שָׁמַעְתִּי מִפְּנֵי נֹגְשָׂיו" (שמות ג׳, ז). והנה כאן הצעקה מופנית "<strong>אֶל אֲחֵיהֶם הַיְּהוּדִים</strong>": <em>הנוגשים הם האחים</em>. בעוד נחמיה נלחם באויבים שמחוץ לחומה, החברה מתפוררת בתוכה.</div>
+    <div class="box box-green"><strong>שלוש קבוצות, שלוש מצוקות (ב–ד):</strong><br><strong>(1)</strong> "בָּנֵינוּ וּבְנֹתֵינוּ אֲנַחְנוּ רַבִּים וְנִקְחָה דָגָן וְנֹאכְלָה וְנִחְיֶה" — משפחות גדולות שאין להן אוכל;<br><strong>(2)</strong> "שְׂדֹתֵינוּ וּכְרָמֵינוּ וּבָתֵּינוּ אֲנַחְנוּ עֹרְבִים וְנִקְחָה דָגָן <em>בָּרָעָב</em>" — מי שכבר מִשכן את רכושו כדי לקנות תבואה;<br><strong>(3)</strong> "לָוִינוּ כֶסֶף לְמִדַּת הַמֶּלֶךְ שְׂדֹתֵינוּ וּכְרָמֵינוּ" — מי שלווה כדי לשלם את מס המלך הפרסי.<br>הסדר עולה בחומרתו: מרעב, דרך משכון, ועד חוב שאין ממנו מוצא.</div>
+    <div class="box box-lc"><span class="layer-tag peshat">רובד הפשט · שיא הטענה</span><br><strong>"וְעַתָּה כִּבְשַׂר אַחֵינוּ בְּשָׂרֵנוּ כִּבְנֵיהֶם בָּנֵינוּ" (ה)</strong> — הטענה אינה כלכלית אלא <em>טענת שוויון</em>: אנחנו מאותו בשר, ילדינו כילדיהם. ומיד: "וְהִנֵּה אֲנַחְנוּ <strong>כֹבְשִׁים</strong> אֶת בָּנֵינוּ וְאֶת בְּנֹתֵינוּ לַעֲבָדִים, וְיֵשׁ מִבְּנֹתֵינוּ <strong>נִכְבָּשׁוֹת</strong>, וְאֵין לְאֵל יָדֵנוּ". <strong>והאירוניה קשה מנשוא:</strong> עם ששב זה עתה מגלות בבל אל חירותו — משעבד את בניו לאחיו. "וְאֵין לְאֵל יָדֵנוּ" — אין בכוחנו לעשות דבר.</div>
+  </div>
+
+  <!-- 2 -->
+  <div class="section-hd"><span class="sn-icon">😤</span><div class="sn">2</div>"וַיִּחַר לִי מְאֹד" — כעס, ואחריו שיקול דעת (ו–ט)</div>
+  <div class="card">
+    <p>שני חצאי פסוק, ובהם כל תורת המנהיגות של הפרק.</p>
+    <div class="box box-lc"><span class="layer-tag peshat">רובד הפשט</span><br><strong>"וַיִּחַר לִי מְאֹד כַּאֲשֶׁר שָׁמַעְתִּי אֶת זַעֲקָתָם" (ו) — ומיד: "<span style="color:var(--lc)">וַיִּמָּלֵךְ לִבִּי עָלַי</span>" (ז).</strong> הביטוי משמעו נמלכתי בדעתי, שקלתי בדבר. כלומר נחמיה כועס — ואינו פועל מתוך הכעס. הוא עוצר, שוקל, ורק אז מגיב. שימו לב שהכתוב טורח למסור את שני השלבים; הכעס עצמו אינו מגונה, אך הוא אינו מספיק.</div>
+    <div class="box box-green"><strong>ומול מי הוא יוצא?</strong> "וָאָרִיבָה אֶת <strong>הַחֹרִים וְאֶת הַסְּגָנִים</strong>" (ז) — לא מול העם החלש אלא מול בעלי המעמד והשררה. "מַשָּׁא אִישׁ בְּאָחִיו אַתֶּם נֹשִׁים" — אתם נושים בְּאָח. ומיד: "וָאֶתֵּן עֲלֵיהֶם <strong>קְהִלָּה גְדוֹלָה</strong>" — הוא מכנס אספה פומבית. התוכחה אינה שיחה פרטית מאחורי דלתיים; היא נעשית לעיני הכול.</div>
+    <div class="box box-purple"><span class="layer-tag derash">רובד הפרשנות · הטיעון שמשתיק</span><br><strong>"אֲנַחְנוּ קָנִינוּ אֶת אַחֵינוּ הַיְּהוּדִים הַנִּמְכָּרִים לַגּוֹיִם כְּדֵי בָנוּ, וְגַם אַתֶּם תִּמְכְּרוּ אֶת אֲחֵיכֶם וְנִמְכְּרוּ לָנוּ?" (ח).</strong> הטיעון הוא מעגל אבסורדי: אנחנו פודים יהודים שנמכרו לעבדות אצל הגויים — ואתם מוכרים את אחיכם, וכך ניאלץ לפדות אותם שוב, מכם. תגובת החורים והסגנים נמסרת בשלוש מילים: <strong>"וַיַּחֲרִישׁוּ וְלֹא מָצְאוּ דָּבָר"</strong> — שתקו, ולא הייתה להם תשובה.</div>
+    <div class="box box-lc"><span class="layer-tag peshat">רובד הפשט</span><br><strong>שני נימוקים בפסוק אחד (ט):</strong> "לֹא טוֹב הַדָּבָר אֲשֶׁר אַתֶּם עֹשִׂים; הֲלוֹא <strong>בְּיִרְאַת אֱלֹהֵינוּ</strong> תֵּלֵכוּ, <strong>מֵחֶרְפַּת הַגּוֹיִם אוֹיְבֵינוּ</strong>". האחד פנימי ומוסרי — יראת אלוהים; והשני חיצוני — החרפה שבעיני העמים שסביב. שימו לב שנחמיה אינו מסתפק בנימוק אחד, ושהוא יחזור על "יראת אלוהים" בפסוק טו — הפעם ביחס לעצמו.</div>
+  </div>
+
+  <!-- 3 -->
+  <div class="section-hd"><span class="sn-icon">⚖️</span><div class="sn">3</div>"הָשִׁיבוּ נָא לָהֶם" — מתוכחה לרפורמה (י–יג)</div>
+  <div class="card">
+    <p>וכאן נחמיה עושה את הדבר שהופך נאום לרפורמה: הוא כולל את עצמו, ומוסיף מנגנון אכיפה.</p>
+    <div class="box box-green"><strong>"וְגַם אֲנִי אַחַי וּנְעָרַי נֹשִׁים בָּהֶם כֶּסֶף וְדָגָן — <span style="color:var(--lc)">נַעַזְבָה נָּא</span> אֶת הַמַּשָּׁא הַזֶּה" (י).</strong> קראו שוב את הניסוח: לא "עִזבו" אלא "<em>נעזבה</em>" — בגוף ראשון רבים. נחמיה מודה שגם הוא ואנשיו הלוו, ומציב את עצמו בתוך הקבוצה שנדרשת לוותר. <strong>זהו הרגע שבו התוכחה נעשית אמינה:</strong> הוא אינו דורש מאחרים מה שאינו דורש מעצמו.</div>
+    <div class="box box-lc"><span class="layer-tag peshat">רובד הפשט</span><br><strong>הדרישה המעשית (יא):</strong> "הָשִׁיבוּ נָא לָהֶם כְּהַיּוֹם שְׂדֹתֵיהֶם, כַּרְמֵיהֶם, זֵיתֵיהֶם וּבָתֵּיהֶם, וּמְאַת הַכֶּסֶף וְהַדָּגָן הַתִּירוֹשׁ וְהַיִּצְהָר אֲשֶׁר אַתֶּם נֹשִׁים בָּהֶם". שימו לב שהדרישה כפולה: <em>להחזיר את הקרקעות</em> — כלומר להשיב את בסיס הפרנסה — <em>וגם לוותר על החוב עצמו</em>. אין כאן פריסת תשלומים אלא מחיקה והשבה.</div>
+    <div class="box box-green"><strong>ולא די בהסכמה.</strong> הם עונים "נָשִׁיב וּמֵהֶם לֹא נְבַקֵּשׁ, כֵּן נַעֲשֶׂה כַּאֲשֶׁר אַתָּה אוֹמֵר" (יב) — ונחמיה אינו מסתפק בכך: "<strong>וָאֶקְרָא אֶת הַכֹּהֲנִים וָאַשְׁבִּיעֵם</strong> לַעֲשׂוֹת כַּדָּבָר הַזֶּה". הוא הופך הבטחה שבעל פה להתחייבות מחייבת בפני עדים. מנהיג שיודע שהתלהבות חולפת.</div>
+    <div class="box box-purple"><span class="layer-tag derash">רובד הפרשנות · מעשה סמלי</span><br><strong>"גַּם חָצְנִי נָעַרְתִּי וָאֹמְרָה: כָּכָה יְנַעֵר הָאֱלֹהִים אֶת כָּל הָאִישׁ אֲשֶׁר לֹא יָקִים אֶת הַדָּבָר הַזֶּה מִבֵּיתוֹ וּמִיגִיעוֹ, וְכָכָה יִהְיֶה נָעוּר וָרֵק" (יג).</strong> "חֹצֶן" הוא קפל הבגד שנשאו בו חפצים; נחמיה מנער אותו לעיני הקהל — וכשם שהקפל מתרוקן, כך יתרוקן מי שיפר. זהו <em>מעשה סמלי</em>, סוגה מוכרת מן הנביאים: פעולה גופנית שממחישה את המסר. והתגובה נמסרת בשלושה שלבים: "וַיֹּאמְרוּ כָל הַקָּהָל <strong>אָמֵן</strong>, וַיְהַלְלוּ אֶת יְהוָה, <strong>וַיַּעַשׂ הָעָם כַּדָּבָר הַזֶּה</strong>" — אמרו, הודו, ובעיקר: <em>עשו</em>.</div>
+  </div>
+
+  <div class="teacher-note-box"><span class="tn-tag">הערה למורה · רגישות</span><p>הפרק עוסק בחובות, במשכון בתים ובעוני — נושאים שאינם תיאורטיים עבור חלק מן התלמידים. מומלץ לדבר על <em>המנגנון</em> שהפרק מתאר ועל החוקים שברקע, ולא לבקש דוגמאות מן החיים או שיתוף אישי. נקודה שנייה: הפרק נשאב בקלות אל ויכוחים בני זמננו — ריבית, פערים כלכליים, מדיניות רווחה — וההשוואה מתבקשת, אך היא עלולה להפוך שיעור תנ״ך לזירה פוליטית שבה לתלמידים עמדות מהבית. ההמלצה: להישאר בשאלה מה נחמיה עושה וכיצד, ואם עולה השוואה לימינו — להכיר בה ולהחזיר את הדיון אל הפסוקים; בלי הצבעות ובלי סקר עמדות. ולבסוף, הביטוי "מֵחֶרְפַּת הַגּוֹיִם אוֹיְבֵינוּ" (ט) אינו אמירה על גויים אלא על <em>המוניטין</em> של הקהילה ועל חילול השם שבהתנהגות; כדאי להבהיר זאת כדי שהדיון לא יגלוש לכיוון אחר.</p></div>
+
+  <!-- 4 -->
+  <div class="section-hd"><span class="sn-icon">🍞</span><div class="sn">4</div>"לֶחֶם הַפֶּחָה לֹא אָכַלְתִּי" — שתים עשרה שנה של דוגמה (יד–יט)</div>
+  <div class="card">
+    <p>הפרק אינו נחתם ברפורמה. נחמיה מוסיף חשבון אישי, והוא ארוך מן הרפורמה עצמה.</p>
+    <table class="cmp-table">
+      <tr><th>הפחות שקדמו לו</th><th class="col-b">נחמיה</th></tr>
+      <tr><td class="row-label">"הִכְבִּידוּ עַל הָעָם וַיִּקְחוּ מֵהֶם בְּלֶחֶם וָיַיִן אַחַר כֶּסֶף שְׁקָלִים אַרְבָּעִים" (טו)</td><td>"לֶחֶם הַפֶּחָה לֹא אָכַלְתִּי" — שתים עשרה שנה (יד)</td></tr>
+      <tr><td class="row-label">"גַּם נַעֲרֵיהֶם שָׁלְטוּ עַל הָעָם" (טו)</td><td>"וְכָל נְעָרַי קְבוּצִים שָׁם עַל הַמְּלָאכָה" (טז)</td></tr>
+      <tr><td class="row-label">ניצלו את מעמדם לרכישת נכסים</td><td>"וְשָׂדֶה לֹא קָנִינוּ" (טז)</td></tr>
+    </table>
+    <div class="box box-lc"><span class="layer-tag peshat">רובד הפשט</span><br><strong>"וְשָׂדֶה לֹא קָנִינוּ" — הפרט החד ביותר.</strong> חשבו על ההקשר: בפרק הזה בדיוק אנשים ממשכנים ומוכרים את שדותיהם בשל הרעב והחובות. פֶּחָה — המושל מטעם המלך — היה יכול לרכוש קרקעות בזול, וזה היה חוקי לגמרי. נחמיה נמנע. <strong>הוא אינו רק נמנע מלקחת מן העם; הוא נמנע גם ממה שמותר, מפני שהוא יוצר ניגוד עניינים.</strong></div>
+    <div class="box box-green"><strong>והנימוק זהה לזה שנתן לאחרים:</strong> "וַאֲנִי לֹא עָשִׂיתִי כֵן <strong>מִפְּנֵי יִרְאַת אֱלֹהִים</strong>" (טו). בפסוק ט הוא אמר לחורים ולסגנים "הֲלוֹא בְּיִרְאַת אֱלֹהֵינוּ תֵּלֵכוּ" — ובפסוק טו הוא מודד את עצמו באותה אמת מידה בדיוק. אין אמת מידה אחת למנהיג ואחת לנתינים.</div>
+    <div class="box box-lc"><span class="layer-tag peshat">רובד הפשט</span><br><strong>ומה כן היה על שולחנו (יז–יח):</strong> מאה וחמישים איש מן היהודים והסגנים, ועוד אורחים מן העמים שסביב, אכלו אצלו דרך קבע — שור אחד וששה צאן ליום ועוד עופות, ואחת לעשרה ימים יין. כלומר נחמיה נשא בהוצאה ציבורית כבדה <em>מכיסו</em>. והנימוק: "וְעִם זֶה לֶחֶם הַפֶּחָה לֹא בִקַּשְׁתִּי, <strong>כִּי כָבְדָה הָעֲבֹדָה עַל הָעָם הַזֶּה</strong>".</div>
+    <div class="box box-green"><strong>והפסוק החותם:</strong> "<strong>זָכְרָה לִּי אֱלֹהַי לְטוֹבָה</strong> כֹּל אֲשֶׁר עָשִׂיתִי עַל הָעָם הַזֶּה" (יט). זו אחת מ"תפילות הזיכרון" שנחמיה משבץ לאורך ספרו. שימו לב למי הן מופנות: לא לעם ולא להיסטוריה אלא לאל בלבד — נחמיה מבקש שכר משמים ולא הכרה מבני אדם.</div>
+  </div>
+
+  <!-- 5 -->
+  <div class="section-hd"><span class="sn-icon">📜</span><div class="sn">5</div>החוק שברקע, ומודל המנהיגות</div>
+  <div class="card">
+    <p>נחמיה אינו מצטט פסוק — אך כל תוכחתו עומדת על חוקי התורה שהתלמידים כבר מכירים.</p>
+    <div class="box box-lc"><span class="layer-tag peshat">רובד הפשט · איסורי הריבית</span><br><strong>"אִם כֶּסֶף תַּלְוֶה אֶת עַמִּי אֶת הֶעָנִי עִמָּךְ, לֹא תִהְיֶה לוֹ כְּנֹשֶׁה, לֹא תְשִׂימוּן עָלָיו נֶשֶׁךְ"</strong> (שמות כ״ב, כד); <strong>"אַל תִּקַּח מֵאִתּוֹ נֶשֶׁךְ וְתַרְבִּית <em>וְיָרֵאתָ מֵאֱלֹהֶיךָ</em>, וְחֵי אָחִיךָ עִמָּךְ"</strong> (ויקרא כ״ה, לו); <strong>"לֹא תַשִּׁיךְ לְאָחִיךָ"</strong> (דברים כ״ג, כ). שימו לב לשתי נקודות: (1) המילה "<em>אָחִיךָ</em>" חוזרת בכל המקורות — וזו בדיוק המילה שנחמיה נאחז בה, "מַשָּׁא אִישׁ בְּאָחִיו אַתֶּם נֹשִׁים"; (2) הצירוף "וְיָרֵאתָ מֵאֱלֹהֶיךָ" בויקרא הוא בדיוק הנימוק שנחמיה נותן בפסוקים ט ו-טו.</div>
+    <div class="box box-green"><strong>ומן החוק בדברים ט״ו — שכבר נלמד ביחידת חוק וחברה:</strong> "לֹא תְאַמֵּץ אֶת לְבָבְךָ וְלֹא תִקְפֹּץ אֶת יָדְךָ מֵאָחִיךָ הָאֶבְיוֹן, כִּי פָתֹחַ תִּפְתַּח אֶת יָדְךָ לוֹ" (ז–ח). אותו עולם מושגים בדיוק. נחמיה אינו מחדש דין — הוא מחזיר לתוקף דין קיים שהופר.</div>
+    <div class="box box-purple"><span class="layer-tag derash">רובד הפרשנות · מודל המנהיגות</span><br><strong>אפשר לסכם את הפרק כשבעה שלבים:</strong> (1) <em>שומע</em> את הצעקה ואינו מתעלם; (2) <em>כועס</em> — "וַיִּחַר לִי מְאֹד"; (3) <em>שוקל</em> ואינו פועל בסערה — "וַיִּמָּלֵךְ לִבִּי עָלַי"; (4) <em>מוכיח בפומבי</em> ומול בעלי הכוח דווקא — "קְהִלָּה גְדוֹלָה"; (5) <em>כולל את עצמו</em> — "וְגַם אֲנִי... נַעַזְבָה נָּא"; (6) <em>מעגן במנגנון</em> — שבועה לפני כוהנים ומעשה סמלי; (7) <em>מדגים לאורך זמן</em> — שתים עשרה שנה. שווה לשאול בכיתה איזה מן השלבים הוא הקשה ביותר, ומה היה קורה אילו דילג על אחד מהם.</div>
+    <div class="box box-lc"><span class="layer-tag peshat">רובד הפשט · הקשר ליחידה</span><br><strong>ולסיום, שימו לב למקומו של הפרק ביחידה.</strong> בשיעור הקודם ראינו את נחמיה בשושן — מנהיג רחוק ששומע, מתאבל ומתפלל. כאן אנחנו רואים אותו בשטח, מכריע בין אינטרסים ומוותר מכיסו. ובשיעור הבא (נחמיה ח׳) יתכנס העם "כְּאִישׁ אֶחָד" לשמוע את התורה. שלושת השלבים יחד — תפילה, צדק חברתי, ותורה — הם למעשה תוכנית השיקום של הקהילה השבה מן הגולה: אין די בחומה שמסביב אם מה שבתוכה מתפורר.</div>
+  </div>
+
+  <button class="goto-practice-btn" onclick="switchTab('practice')">✏️ עבור לתרגול — תרגול הבנה + סימולציית בגרות</button>
+</div>
+</div>
+
+<!-- ═══ PRACTICE ═══ -->
+<div class="tab-pane" id="pane-practice">
+<div class="print-header"><h1>תרגול — הרפורמה החברתית</h1><p>תנ״ך לתיכון · שיבת ציון · שיעור 8</p></div>
+<div class="lesson-wrap">
+  <div id="student-gate">
+    <div class="gate-header"><span class="gate-icon">✏️</span><div class="gate-title">כניסה לתרגול</div><div class="gate-desc">הזינו שם ושיבוץ כיתה</div></div>
+    <div class="gate-body">
+      <div class="gate-field"><label>שם מלא</label><input class="gate-input" id="gate-name" type="text" placeholder="לדוגמה: דנה כהן" autocomplete="off"><div class="gate-err-msg" id="gate-name-err">אנא הזינו שם ושם משפחה</div></div>
+      <div class="gate-field"><label>כיתה</label><select class="gate-select" id="gate-class"><option value="">— בחרו כיתה —</option><option>י׳1</option><option>י׳2</option><option>י׳3</option><option>י׳4</option><option>י״א1</option><option>י״א2</option><option>י״א3</option><option>י״א4</option></select><div class="gate-err-msg" id="gate-class-err">אנא בחרו כיתה</div></div>
+      <div class="gate-field"><label>תאריך</label><div class="gate-date-display" id="gate-date-display"></div></div>
+      <button class="gate-btn" onclick="confirmGate()">✅ כניסה לתרגול</button>
+    </div>
+  </div>
+  <div id="gate-confirmed"><div class="gc-avatar" id="gc-avatar"></div><div class="gc-info"><div class="gc-name" id="gc-name-display"></div><div class="gc-meta" id="gc-meta-display"></div><button class="gc-change" onclick="reopenGate()">שינוי פרטים</button></div></div>
+
+  <div id="practice-content-wrap">
+    <div class="reading-text-box">
+      <div class="rt-title">נחמיה ה׳ — הצעקה והמשבר (א–ה)</div>
+      <div class="rt-body" style="font-size:.92rem;line-height:2.05">
+        <p><strong>א</strong> וַתְּהִי צַעֲקַת הָעָם וּנְשֵׁיהֶם גְּדוֹלָה אֶל אֲחֵיהֶם הַיְּהוּדִים. <strong>ב</strong> וְיֵשׁ אֲשֶׁר אֹמְרִים בָּנֵינוּ וּבְנֹתֵינוּ אֲנַחְנוּ רַבִּים וְנִקְחָה דָגָן וְנֹאכְלָה וְנִחְיֶה. <strong>ג</strong> וְיֵשׁ אֲשֶׁר אֹמְרִים שְׂדֹתֵינוּ וּכְרָמֵינוּ וּבָתֵּינוּ אֲנַחְנוּ עֹרְבִים וְנִקְחָה דָגָן בָּרָעָב. <strong>ד</strong> וְיֵשׁ אֲשֶׁר אֹמְרִים לָוִינוּ כֶסֶף לְמִדַּת הַמֶּלֶךְ שְׂדֹתֵינוּ וּכְרָמֵינוּ. <strong>ה</strong> וְעַתָּה כִּבְשַׂר אַחֵינוּ בְּשָׂרֵנוּ כִּבְנֵיהֶם בָּנֵינוּ וְהִנֵּה אֲנַחְנוּ כֹבְשִׁים אֶת בָּנֵינוּ וְאֶת בְּנֹתֵינוּ לַעֲבָדִים וְיֵשׁ מִבְּנֹתֵינוּ נִכְבָּשׁוֹת וְאֵין לְאֵל יָדֵנוּ וּשְׂדֹתֵינוּ וּכְרָמֵינוּ לַאֲחֵרִים.</p>
+      </div>
+    </div>
+    <div class="reading-text-box">
+      <div class="rt-title">נחמיה ה׳ — התוכחה והרפורמה (ו–יג)</div>
+      <div class="rt-body" style="font-size:.92rem;line-height:2.05">
+        <p><strong>ו</strong> וַיִּחַר לִי מְאֹד כַּאֲשֶׁר שָׁמַעְתִּי אֶת זַעֲקָתָם וְאֵת הַדְּבָרִים הָאֵלֶּה. <strong>ז</strong> וַיִּמָּלֵךְ לִבִּי עָלַי וָאָרִיבָה אֶת הַחֹרִים וְאֶת הַסְּגָנִים וָאֹמְרָה לָהֶם מַשָּׁא אִישׁ בְּאָחִיו אַתֶּם נֹשִׁים וָאֶתֵּן עֲלֵיהֶם קְהִלָּה גְדוֹלָה. <strong>ח</strong> וָאֹמְרָה לָהֶם אֲנַחְנוּ קָנִינוּ אֶת אַחֵינוּ הַיְּהוּדִים הַנִּמְכָּרִים לַגּוֹיִם כְּדֵי בָנוּ וְגַם אַתֶּם תִּמְכְּרוּ אֶת אֲחֵיכֶם וְנִמְכְּרוּ לָנוּ וַיַּחֲרִישׁוּ וְלֹא מָצְאוּ דָּבָר. <strong>ט</strong> וָאוֹמַר לֹא טוֹב הַדָּבָר אֲשֶׁר אַתֶּם עֹשִׂים הֲלוֹא בְּיִרְאַת אֱלֹהֵינוּ תֵּלֵכוּ מֵחֶרְפַּת הַגּוֹיִם אוֹיְבֵינוּ. <strong>י</strong> וְגַם אֲנִי אַחַי וּנְעָרַי נֹשִׁים בָּהֶם כֶּסֶף וְדָגָן נַעַזְבָה נָּא אֶת הַמַּשָּׁא הַזֶּה. <strong>יא</strong> הָשִׁיבוּ נָא לָהֶם כְּהַיּוֹם שְׂדֹתֵיהֶם כַּרְמֵיהֶם זֵיתֵיהֶם וּבָתֵּיהֶם וּמְאַת הַכֶּסֶף וְהַדָּגָן הַתִּירוֹשׁ וְהַיִּצְהָר אֲשֶׁר אַתֶּם נֹשִׁים בָּהֶם. <strong>יב</strong> וַיֹּאמְרוּ נָשִׁיב וּמֵהֶם לֹא נְבַקֵּשׁ כֵּן נַעֲשֶׂה כַּאֲשֶׁר אַתָּה אוֹמֵר וָאֶקְרָא אֶת הַכֹּהֲנִים וָאַשְׁבִּיעֵם לַעֲשׂוֹת כַּדָּבָר הַזֶּה. <strong>יג</strong> גַּם חָצְנִי נָעַרְתִּי וָאֹמְרָה כָּכָה יְנַעֵר הָאֱלֹהִים אֶת כָּל הָאִישׁ אֲשֶׁר לֹא יָקִים אֶת הַדָּבָר הַזֶּה מִבֵּיתוֹ וּמִיגִיעוֹ וְכָכָה יִהְיֶה נָעוּר וָרֵק וַיֹּאמְרוּ כָל הַקָּהָל אָמֵן וַיְהַלְלוּ אֶת יְהוָה וַיַּעַשׂ הָעָם כַּדָּבָר הַזֶּה.</p>
+      </div>
+    </div>
+    <div class="reading-text-box">
+      <div class="rt-title">נחמיה ה׳ — הדוגמה האישית (יד–יט)</div>
+      <div class="rt-body" style="font-size:.92rem;line-height:2.05">
+        <p><strong>יד</strong> גַּם מִיּוֹם אֲשֶׁר צִוָּה אוֹתִי לִהְיוֹת פֶּחָם בְּאֶרֶץ יְהוּדָה מִשְּׁנַת עֶשְׂרִים וְעַד שְׁנַת שְׁלֹשִׁים וּשְׁתַּיִם לְאַרְתַּחְשַׁסְתְּא הַמֶּלֶךְ שָׁנִים שְׁתֵּים עֶשְׂרֵה אֲנִי וְאַחַי לֶחֶם הַפֶּחָה לֹא אָכַלְתִּי. <strong>טו</strong> וְהַפַּחוֹת הָרִאשֹׁנִים אֲשֶׁר לְפָנַי הִכְבִּידוּ עַל הָעָם וַיִּקְחוּ מֵהֶם בְּלֶחֶם וָיַיִן אַחַר כֶּסֶף שְׁקָלִים אַרְבָּעִים גַּם נַעֲרֵיהֶם שָׁלְטוּ עַל הָעָם וַאֲנִי לֹא עָשִׂיתִי כֵן מִפְּנֵי יִרְאַת אֱלֹהִים. <strong>טז</strong> וְגַם בִּמְלֶאכֶת הַחוֹמָה הַזֹּאת הֶחֱזַקְתִּי וְשָׂדֶה לֹא קָנִינוּ וְכָל נְעָרַי קְבוּצִים שָׁם עַל הַמְּלָאכָה. <strong>יז</strong> וְהַיְּהוּדִים וְהַסְּגָנִים מֵאָה וַחֲמִשִּׁים אִישׁ וְהַבָּאִים אֵלֵינוּ מִן הַגּוֹיִם אֲשֶׁר סְבִיבֹתֵינוּ עַל שֻׁלְחָנִי. <strong>יח</strong> וַאֲשֶׁר הָיָה נַעֲשֶׂה לְיוֹם אֶחָד שׁוֹר אֶחָד צֹאן שֵׁשׁ בְּרֻרוֹת וְצִפֳּרִים נַעֲשׂוּ לִי וּבֵין עֲשֶׂרֶת יָמִים בְּכָל יַיִן לְהַרְבֵּה וְעִם זֶה לֶחֶם הַפֶּחָה לֹא בִקַּשְׁתִּי כִּי כָבְדָה הָעֲבֹדָה עַל הָעָם הַזֶּה. <strong>יט</strong> זָכְרָה לִּי אֱלֹהַי לְטוֹבָה כֹּל אֲשֶׁר עָשִׂיתִי עַל הָעָם הַזֶּה.</p>
+      </div>
+    </div>
+    <div class="reading-text-box">
+      <div class="rt-title">חוקי התורה שברקע — שמות כ״ב; ויקרא כ״ה; דברים כ״ג; דברים ט״ו; שמות ג׳</div>
+      <div class="rt-body" style="font-size:.92rem;line-height:2.05">
+        <p><strong>שמות כ״ב, כד</strong> אִם כֶּסֶף תַּלְוֶה אֶת עַמִּי אֶת הֶעָנִי עִמָּךְ לֹא תִהְיֶה לוֹ כְּנֹשֶׁה לֹא תְשִׂימוּן עָלָיו נֶשֶׁךְ. <strong>כה</strong> אִם חָבֹל תַּחְבֹּל שַׂלְמַת רֵעֶךָ עַד בֹּא הַשֶּׁמֶשׁ תְּשִׁיבֶנּוּ לוֹ. <span style="color:var(--muted);font-weight:700">[...]</span> <strong>ויקרא כ״ה, לה</strong> וְכִי יָמוּךְ אָחִיךָ וּמָטָה יָדוֹ עִמָּךְ וְהֶחֱזַקְתָּ בּוֹ גֵּר וְתוֹשָׁב וָחַי עִמָּךְ. <strong>לו</strong> אַל תִּקַּח מֵאִתּוֹ נֶשֶׁךְ וְתַרְבִּית וְיָרֵאתָ מֵאֱלֹהֶיךָ וְחֵי אָחִיךָ עִמָּךְ. <strong>לז</strong> אֶת כַּסְפְּךָ לֹא תִתֵּן לוֹ בְּנֶשֶׁךְ וּבְמַרְבִּית לֹא תִתֵּן אָכְלֶךָ. <span style="color:var(--muted);font-weight:700">[...]</span> <strong>דברים כ״ג, כ</strong> לֹא תַשִּׁיךְ לְאָחִיךָ נֶשֶׁךְ כֶּסֶף נֶשֶׁךְ אֹכֶל נֶשֶׁךְ כָּל דָּבָר אֲשֶׁר יִשָּׁךְ. <span style="color:var(--muted);font-weight:700">[...]</span> <strong>דברים ט״ו, ז</strong> כִּי יִהְיֶה בְךָ אֶבְיוֹן מֵאַחַד אַחֶיךָ בְּאַחַד שְׁעָרֶיךָ בְּאַרְצְךָ אֲשֶׁר יְהוָה אֱלֹהֶיךָ נֹתֵן לָךְ לֹא תְאַמֵּץ אֶת לְבָבְךָ וְלֹא תִקְפֹּץ אֶת יָדְךָ מֵאָחִיךָ הָאֶבְיוֹן. <strong>ח</strong> כִּי פָתֹחַ תִּפְתַּח אֶת יָדְךָ לוֹ וְהַעֲבֵט תַּעֲבִיטֶנּוּ דֵּי מַחְסֹרוֹ אֲשֶׁר יֶחְסַר לוֹ. <span style="color:var(--muted);font-weight:700">[...]</span> <strong>שמות ג׳, ז</strong> וַיֹּאמֶר יְהוָה רָאֹה רָאִיתִי אֶת עֳנִי עַמִּי אֲשֶׁר בְּמִצְרָיִם וְאֶת צַעֲקָתָם שָׁמַעְתִּי מִפְּנֵי נֹגְשָׂיו כִּי יָדַעְתִּי אֶת מַכְאֹבָיו.</p>
+      </div>
+    </div>
+
+    <div class="quiz-header">
+      <div class="quiz-hd-title">✏️ תרגול — נחמיה ה׳</div>
+      <div class="quiz-hd-desc">חלק א׳: תרגול הבנה (סגורות) · חלק ב׳: סימולציית בגרות בפורמט 1261 (ענה על 3 מתוך 5, סעיפים מנוקדים)</div>
+      <div class="quiz-prog-bar"><div class="quiz-prog-fill" id="prog-fill" style="width:0%"></div></div>
+      <div class="quiz-prog-row"><span id="prog-txt">0 מתוך 0 נענו</span><span id="prog-pct">0%</span></div>
+    </div>
+    <div id="questions-container"></div>
+    <div id="submit-row" style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;margin-top:1.5rem">
+      <button class="btn-submit" onclick="submitQuiz()">📤 הגשת התרגול</button>
+      <button class="btn-reset" onclick="resetQuiz()">🔄 אתחול</button>
+    </div>
+    <div id="results-container" style="display:none"></div>
+  </div>
+</div>
+</div>
+
+<!-- ═══ ANSWERS ═══ -->
+<div class="tab-pane" id="pane-answers">
+<div class="lesson-wrap">
+  <div id="answers-locked-msg" class="answers-locked"><div style="font-size:2.5rem;margin-bottom:.8rem">🔒</div><div style="font-family:'Secular One',sans-serif;font-size:1.1rem;margin-bottom:.5rem">התשובות טרם פורסמו על ידי המורה</div><div style="font-size:.85rem;color:var(--muted)">המורה ישחרר את התשובות בתום השיעור</div></div>
+  <div id="answers-visible-content" style="display:none">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem;flex-wrap:wrap;gap:.5rem"><div style="font-family:'Secular One',sans-serif;font-size:1.1rem;color:var(--lc)">🔑 תשובות ומחוון</div><span style="font-size:.72rem;color:var(--muted)" id="answers-source"></span></div>
+    <div id="answers-list"></div>
+  </div>
+</div>
+</div>
+<div class="copyright-line">© 2026 זכויות יוצרים – ליאור אלמוסלינוס</div>
+<div id="toast"></div>
+<script>
+const FB_CFG={apiKey:"AIzaSyA8QKxGi7-72Dm07VgNwLx-fJu7QTPN1Ak",authDomain:"tanakh-project.firebaseapp.com",projectId:"tanakh-project",storageBucket:"tanakh-project.firebasestorage.app",messagingSenderId:"798378782412",appId:"1:798378782412:web:99a44c6771a5afec7d1c69"};
+let _db=null,_lastScore=null,_lastCorrect=0,_gateConfirmed=false;
+const LESSON_ID='shivat_l8',LESSON_TITLE='הרפורמה החברתית';
+function initFirebase(){try{if(typeof firebase==='undefined')return;if(!firebase.apps.length)firebase.initializeApp(FB_CFG);_db=firebase.firestore();_db.enablePersistence().catch(()=>{});_db.collection('lessons').doc(LESSON_ID).onSnapshot(doc=>{const val=doc.exists?doc.data()?.showAnswers===true:false;const av=LS.get('tanakh2_answers_visible',{});av[LESSON_ID]=val;LS.set('tanakh2_answers_visible',av);ANSWERS_VISIBLE=val;applyAnswersVisibility();});}catch(e){}}
+async function saveScore(score,sn,sc){if(!_db)return;const now=new Date();try{await _db.collection('tanakh2_submissions').add({lessonId:LESSON_ID,lessonTitle:LESSON_TITLE,score,studentName:sn||'תלמיד/ה',className:sc||'',ts:firebase.firestore.FieldValue.serverTimestamp(),submissionDate:now.toLocaleDateString('he-IL'),submissionTime:now.toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'}),read:false,correct:typeof _lastCorrect==='number'?_lastCorrect:undefined,wrong:typeof _lastCorrect==='number'?closedQuestions().length-_lastCorrect:undefined,totalQuestions:closedQuestions().length});await _db.collection('tanakh2_live').doc('latest').set({lessonId:LESSON_ID,score,studentName:sn,className:sc,ts:firebase.firestore.FieldValue.serverTimestamp()});}catch(e){}}
+const LS={get(k,fb=null){try{const v=localStorage.getItem(k);return v!==null?JSON.parse(v):fb}catch{return fb}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}};
+const _p=new URLSearchParams(location.search);
+let STUDENT_NAME=_p.get('student')||LS.get('tanakh2_uname','')||'תלמיד/ה';
+let STUDENT_CLASS=_p.get('class')||LS.get('tanakh2_class','')||'';
+const USER_ROLE=_p.get('role')||LS.get('tanakh2_role','')||localStorage.getItem('userRole')||'student';
+let ANSWERS_VISIBLE=_p.get('answers_visible')==='1';
+const BACK_URL=_p.get('back')||'index.html';
+function applyAnswersVisibility(){const lk=document.getElementById('answers-locked-msg'),vi=document.getElementById('answers-visible-content'),sr=document.getElementById('answers-source');if(USER_ROLE==='teacher'){if(lk)lk.style.display='none';if(vi)vi.style.display='';if(sr)sr.textContent='גישת מורה';document.getElementById('btn-answers')?.style.setProperty('display','');}else if(ANSWERS_VISIBLE){if(lk)lk.style.display='none';if(vi)vi.style.display='';if(sr)sr.textContent='שוחרר ע״י המורה';document.getElementById('btn-answers-student')?.style.setProperty('display','');}else{if(lk)lk.style.display='';if(vi)vi.style.display='none';}}
+
+const QUESTIONS=[
+{id:'q01',type:'mc',section:'א',ref:'שמות ג׳, ז — נחמיה ה׳, א',
+ q:'מה מיוחד בכך שהצעקה בפסוק א מופנית "אֶל אֲחֵיהֶם הַיְּהוּדִים"?',
+ opts:['הצעקה מופנית אל האויבים שמחוץ לחומה','במקרא הצעקה היא לשונם של המדוכאים — וכאן הנוגשים הם האחים עצמם; בעוד נחמיה נלחם באויבים מבחוץ, החברה מתפוררת מבפנים','הצעקה מופנית אל המלך הפרסי','זו צעקת שמחה על בניית החומה'],
+ ans:1,
+ explain:`במקרא "צעקה" היא זעקת המדוכאים — "וְאֶת צַעֲקָתָם שָׁמַעְתִּי מִפְּנֵי נֹגְשָׂיו" (שמות ג׳, ז). כאן הצעקה מופנית אל האחים היהודים עצמם: המשבר אינו חיצוני אלא פנימי. בעוד נחמיה עוסק בבניית החומה ובהדיפת סנבלט וטוביה, הקהילה שבתוך החומה מתפוררת.`,
+ teacherNote:`ההקבלה לשמות ג׳ חדה: מי שיצא מעבדות מצרים משעבד עכשיו את אחיו.`},
+
+{id:'q02',type:'mc',section:'א',ref:'נחמיה ה׳, ב–ד',
+ q:'אילו שלוש קבוצות מתלוננות, ומה סדר הופעתן?',
+ opts:['שלוש קבוצות של כוהנים','שלוש קבוצות של אויבים מבחוץ','הכתוב אינו מפרט קבוצות','משפחות גדולות שאין להן אוכל; מי שמשכנו שדות, כרמים ובתים לקניית תבואה ברעב; ומי שלווה כסף לתשלום מס המלך — בסדר עולה בחומרתו'],
+ ans:3,
+ explain:`(1) "בָּנֵינוּ וּבְנֹתֵינוּ אֲנַחְנוּ רַבִּים וְנִקְחָה דָגָן וְנֹאכְלָה וְנִחְיֶה" (ב); (2) "שְׂדֹתֵינוּ וּכְרָמֵינוּ וּבָתֵּינוּ אֲנַחְנוּ עֹרְבִים וְנִקְחָה דָגָן בָּרָעָב" (ג); (3) "לָוִינוּ כֶסֶף לְמִדַּת הַמֶּלֶךְ שְׂדֹתֵינוּ וּכְרָמֵינוּ" (ד). הסדר עולה: מרעב, דרך משכון הרכוש, ועד חוב שאין ממנו מוצא.`,
+ teacherNote:`שווה לשרטט את שלוש הקבוצות כשלוש שורות — ההסלמה נראית מיד.`},
+
+{id:'q03',type:'mc',section:'א',ref:'נחמיה ה׳, ה',
+ q:'מהי הטענה שבפסוק ה, ומהי האירוניה שבמצב?',
+ opts:['הטענה היא טענת שוויון — "כִּבְשַׂר אַחֵינוּ בְּשָׂרֵנוּ כִּבְנֵיהֶם בָּנֵינוּ"; והאירוניה: עם ששב מגלות בבל אל חירותו משעבד את בניו לאחיו','הטענה היא שאין מספיק פועלים לחומה','הטענה היא שהמס גבוה מדי','אין בפסוק טענה אלא תיאור בלבד'],
+ ans:0,
+ explain:`הטענה אינה כלכלית אלא ערכית: אנחנו מאותו בשר, וילדינו כילדיהם — ובכל זאת "וְהִנֵּה אֲנַחְנוּ כֹבְשִׁים אֶת בָּנֵינוּ וְאֶת בְּנֹתֵינוּ לַעֲבָדִים, וְיֵשׁ מִבְּנֹתֵינוּ נִכְבָּשׁוֹת, וְאֵין לְאֵל יָדֵנוּ". השורש כב״ש חוזר פעמיים. והאירוניה חריפה: קהילה שזה עתה שבה מן הגלות מחזירה את בניה לעבדות — הפעם בידי אחיהם.`,
+ teacherNote:`"וְאֵין לְאֵל יָדֵנוּ" — אין בכוחנו לעשות דבר; ביטוי של חוסר אונים מוחלט.`},
+
+{id:'q04',type:'tf',section:'א',ref:'נחמיה ה׳, ו–ז',
+ q:'נחמיה כועס כששומע את הצעקה, אך אינו פועל מיד מתוך הכעס.',
+ ans:true,
+ explain:`"וַיִּחַר לִי מְאֹד כַּאֲשֶׁר שָׁמַעְתִּי אֶת זַעֲקָתָם" (ו), ומיד אחר כך "וַיִּמָּלֵךְ לִבִּי עָלַי" (ז) — כלומר נמלכתי בדעתי, שקלתי בדבר. הכתוב טורח למסור את שני השלבים: הכעס אינו מגונה, אך הוא אינו מספיק. רק אחרי השיקול נחמיה מגיב.`,
+ teacherNote:`נקודת מנהיגות מרכזית: כעס מוסרי בתוספת שיקול דעת, ולא במקומו.`},
+
+{id:'q05',type:'mc',section:'א',ref:'נחמיה ה׳, ז',
+ q:'מול מי יוצא נחמיה, וכיצד הוא עושה זאת?',
+ opts:['מול העם החלש, בשיחה פרטית','מול סנבלט וטוביה, במכתב','מול "הַחֹרִים וְהַסְּגָנִים" — בעלי המעמד — ובאסיפה פומבית: "וָאֶתֵּן עֲלֵיהֶם קְהִלָּה גְדוֹלָה"','מול הכוהנים בלבד'],
+ ans:2,
+ explain:`"וָאָרִיבָה אֶת הַחֹרִים וְאֶת הַסְּגָנִים וָאֹמְרָה לָהֶם מַשָּׁא אִישׁ בְּאָחִיו אַתֶּם נֹשִׁים, וָאֶתֵּן עֲלֵיהֶם קְהִלָּה גְדוֹלָה" (ז). נחמיה מתעמת דווקא עם בעלי הכוח, והתוכחה נעשית לעיני הכול ולא בשיחה פרטית מאחורי דלתיים.`,
+ teacherNote:`שווה לשאול מדוע דווקא בפומבי — התשובה קשורה גם לאכיפה וגם למסר לכלל הקהילה.`},
+
+{id:'q06',type:'mc',section:'א',ref:'נחמיה ה׳, ח',
+ q:'מהו הטיעון שבפסוק ח, ומהי תגובת החורים והסגנים?',
+ opts:['הטיעון: אנחנו פודים יהודים שנמכרו לגויים — ואתם מוכרים את אחיכם כך שניאלץ לפדותם שוב, מכם; ותגובתם: "וַיַּחֲרִישׁוּ וְלֹא מָצְאוּ דָּבָר"','הטיעון הוא שהמלך יעניש אותם, והם הבטיחו לשלם','הטיעון הוא שאין די תבואה, והם התווכחו','הכתוב אינו מוסר את תגובתם'],
+ ans:0,
+ explain:`"אֲנַחְנוּ קָנִינוּ אֶת אַחֵינוּ הַיְּהוּדִים הַנִּמְכָּרִים לַגּוֹיִם כְּדֵי בָנוּ, וְגַם אַתֶּם תִּמְכְּרוּ אֶת אֲחֵיכֶם וְנִמְכְּרוּ לָנוּ" — מעגל אבסורדי: הקהילה פודה יהודים מעבדות אצל הגויים, והחורים מוכרים את אחיהם כך שיהיה צורך לפדותם מחדש. התגובה נמסרת בשלוש מילים בלבד: "וַיַּחֲרִישׁוּ וְלֹא מָצְאוּ דָּבָר".`,
+ teacherNote:`השתיקה היא ההודאה. שווה לעצור על כך שהכתוב אינו מוסר להם שום תשובה.`},
+
+{id:'q07',type:'mc',section:'א',ref:'נחמיה ה׳, ט; טו',
+ q:'אילו שני נימוקים נותן נחמיה בפסוק ט, והיכן חוזר אחד מהם?',
+ opts:['נימוק כלכלי ונימוק צבאי','שני נימוקים משפטיים בלבד','נימוק אחד בלבד — פחד מן המלך','"בְּיִרְאַת אֱלֹהֵינוּ תֵּלֵכוּ" — נימוק פנימי ומוסרי; ו"מֵחֶרְפַּת הַגּוֹיִם אוֹיְבֵינוּ" — נימוק חיצוני; והראשון חוזר בפסוק טו ביחס לנחמיה עצמו'],
+ ans:3,
+ explain:`"לֹא טוֹב הַדָּבָר אֲשֶׁר אַתֶּם עֹשִׂים, הֲלוֹא בְּיִרְאַת אֱלֹהֵינוּ תֵּלֵכוּ מֵחֶרְפַּת הַגּוֹיִם אוֹיְבֵינוּ" (ט). ובפסוק טו נחמיה מודד את עצמו באותה אמת מידה: "וַאֲנִי לֹא עָשִׂיתִי כֵן מִפְּנֵי יִרְאַת אֱלֹהִים". אין אמת מידה אחת למנהיג ואחת לנתינים.`,
+ teacherNote:`"חרפת הגויים" עוסקת במוניטין של הקהילה ובחילול השם, ולא באמירה על גויים.`},
+
+{id:'q08',type:'mc',section:'א',ref:'נחמיה ה׳, י',
+ q:'מה מיוחד בניסוח "נַעַזְבָה נָּא אֶת הַמַּשָּׁא הַזֶּה" (י)?',
+ opts:['נחמיה מצווה על העם החלש לוותר','נחמיה מודה שגם הוא ואנשיו הלוו, ומנסח בגוף ראשון רבים — "נעזבה" ולא "עִזבו" — ומציב את עצמו בתוך הקבוצה שנדרשת לוותר','נחמיה מבקש מן המלך לבטל את המס','נחמיה מוותר על תפקידו'],
+ ans:1,
+ explain:`"וְגַם אֲנִי אַחַי וּנְעָרַי נֹשִׁים בָּהֶם כֶּסֶף וְדָגָן — נַעַזְבָה נָּא אֶת הַמַּשָּׁא הַזֶּה". זהו הרגע שבו התוכחה נעשית אמינה: נחמיה אינו דורש מאחרים מה שאינו דורש מעצמו, והוא מודה בכך בפומבי.`,
+ teacherNote:`הלב הפדגוגי של השיעור. שווה לשאול מה היה קורה לתוכחה אילו אמר "עִזבו".`},
+
+{id:'q09',type:'mc',section:'א',ref:'נחמיה ה׳, יא–יב',
+ q:'מהי הדרישה המעשית של נחמיה, ומה הוא עושה אחרי שהחורים מסכימים?',
+ opts:['הוא דורש פריסת תשלומים, ומסתפק בהבטחתם','הוא דורש להוריד את הריבית בלבד, ורושם זאת במגילה','הוא דורש להשיב את השדות, הכרמים, הזיתים והבתים <em>וגם</em> לוותר על החוב — ואינו מסתפק בהסכמה אלא מזמן כוהנים ומשביע אותם','הוא דורש שהחורים יעזבו את ירושלים'],
+ ans:2,
+ explain:`"הָשִׁיבוּ נָא לָהֶם כְּהַיּוֹם שְׂדֹתֵיהֶם, כַּרְמֵיהֶם, זֵיתֵיהֶם וּבָתֵּיהֶם, וּמְאַת הַכֶּסֶף וְהַדָּגָן..." (יא) — השבת בסיס הפרנסה ומחיקת החוב גם יחד. וכשהם עונים "נָשִׁיב... כֵּן נַעֲשֶׂה", נחמיה אינו מסתפק: "וָאֶקְרָא אֶת הַכֹּהֲנִים וָאַשְׁבִּיעֵם לַעֲשׂוֹת כַּדָּבָר הַזֶּה" (יב) — הבטחה בעל פה הופכת להתחייבות מחייבת בפני עדים.`,
+ teacherNote:`מנהיג שיודע שהתלהבות חולפת ומעגן את ההסכמה במנגנון.`},
+
+{id:'q10',type:'tf',section:'א',ref:'נחמיה ה׳, יג',
+ q:'ניעור החוצן שנחמיה עושה בפסוק יג הוא פעולה מעשית שנועדה לנקות את בגדו.',
+ ans:false,
+ explain:`זהו מעשה סמלי — סוגה מוכרת מן הנביאים, שבה פעולה גופנית ממחישה מסר. "חֹצֶן" הוא קפל הבגד שנשאו בו חפצים, ונחמיה מנער אותו לעיני הקהל: "כָּכָה יְנַעֵר הָאֱלֹהִים אֶת כָּל הָאִישׁ אֲשֶׁר לֹא יָקִים אֶת הַדָּבָר הַזֶּה מִבֵּיתוֹ וּמִיגִיעוֹ, וְכָכָה יִהְיֶה נָעוּר וָרֵק". התגובה בשלושה שלבים: "וַיֹּאמְרוּ כָל הַקָּהָל אָמֵן, וַיְהַלְלוּ אֶת יְהוָה, וַיַּעַשׂ הָעָם כַּדָּבָר הַזֶּה".`,
+ teacherNote:`שווה להצביע על השלב השלישי — לא די באמירה ובהודיה; הכתוב מדגיש שהעם עשה.`},
+
+{id:'q11',type:'mc',section:'א',ref:'נחמיה ה׳, יד–טו',
+ q:'מהו "לֶחֶם הַפֶּחָה", ומה עשה נחמיה בעניינו?',
+ opts:['קצבת המזון והכספים המגיעה למושל מטעם המלך — ונחמיה לא נטל אותה במשך שתים עשרה שנה','מנחה שהוקרבה במקדש','מס מיוחד שהוטל על הכוהנים','לחם שחולק לעניים בשער העיר'],
+ ans:0,
+ explain:`"גַּם מִיּוֹם אֲשֶׁר צִוָּה אוֹתִי לִהְיוֹת פֶּחָם בְּאֶרֶץ יְהוּדָה... שָׁנִים שְׁתֵּים עֶשְׂרֵה, אֲנִי וְאַחַי לֶחֶם הַפֶּחָה לֹא אָכַלְתִּי" (יד). לעומתו: "וְהַפַּחוֹת הָרִאשֹׁנִים אֲשֶׁר לְפָנַי הִכְבִּידוּ עַל הָעָם וַיִּקְחוּ מֵהֶם בְּלֶחֶם וָיַיִן אַחַר כֶּסֶף שְׁקָלִים אַרְבָּעִים, גַּם נַעֲרֵיהֶם שָׁלְטוּ עַל הָעָם" (טו).`,
+ teacherNote:`שתים עשרה שנה — לא מחווה חד-פעמית אלא מדיניות ארוכת טווח.`},
+
+{id:'q12',type:'mc',section:'א',ref:'נחמיה ה׳, ג; טז',
+ q:'מדוע חד במיוחד הפרט "וְשָׂדֶה לֹא קָנִינוּ" (טז)?',
+ opts:['משום שנחמיה לא ידע לעבד אדמה','משום שהיה אסור למושל לקנות קרקע','משום שלא היו שדות למכירה','משום שבאותו פרק בדיוק אנשים ממשכנים ומוכרים שדות מחמת הרעב והחובות — ומושל היה יכול לרכוש בזול וכחוק; נחנמיה נמנע גם ממה שמותר, מפני שהוא יוצר ניגוד עניינים'],
+ ans:3,
+ explain:`בפסוק ג נאמר "שְׂדֹתֵינוּ וּכְרָמֵינוּ וּבָתֵּינוּ אֲנַחְנוּ עֹרְבִים". פֶּחָה — המושל מטעם המלך — היה יכול לנצל את המצוקה ולרכוש קרקעות בזול, וזה היה חוקי לחלוטין. נחמיה נמנע: הוא אינו רק נמנע מלקחת מן העם, אלא נמנע גם ממה שמותר לו, משום שהוא יוצר ניגוד עניינים.`,
+ teacherNote:`ההבחנה בין "אסור" ובין "לא ראוי למי שמחזיק בשלטון" — נקודה חזקה לדיון.`},
+
+{id:'q13',type:'mc',section:'א',ref:'נחמיה ה׳, יז–יט',
+ q:'מה מלמדים פסוקים יז–יט על נחמיה?',
+ opts:['שהוא דרש מן העם לממן את שולחנו','שהוא נשא מכיסו בהוצאה ציבורית כבדה — 150 איש ואורחים על שולחנו — ובכל זאת לא ביקש את לחם הפחה, "כִּי כָבְדָה הָעֲבֹדָה עַל הָעָם הַזֶּה"','שהוא הפסיק לארח לגמרי','שהוא ביקש מן המלך תוספת תקציב'],
+ ans:1,
+ explain:`"וְהַיְּהוּדִים וְהַסְּגָנִים מֵאָה וַחֲמִשִּׁים אִישׁ וְהַבָּאִים אֵלֵינוּ מִן הַגּוֹיִם... עַל שֻׁלְחָנִי" (יז), ופירוט המזון בפסוק יח — ובכל זאת "וְעִם זֶה לֶחֶם הַפֶּחָה לֹא בִקַּשְׁתִּי, כִּי כָבְדָה הָעֲבֹדָה עַל הָעָם הַזֶּה". והפרק נחתם ב"זָכְרָה לִּי אֱלֹהַי לְטוֹבָה כֹּל אֲשֶׁר עָשִׂיתִי עַל הָעָם הַזֶּה" (יט) — בקשת שכר משמים ולא הכרה מבני אדם.`,
+ teacherNote:`"תפילות הזיכרון" חוזרות לאורך ספר נחמיה; אפשר לציין זאת בקצרה.`},
+
+{id:'q14',type:'mc',section:'א',ref:'ויקרא כ״ה, לו; דברים כ״ג, כ — נחמיה ה׳, ז',
+ q:'אילו חוקי תורה עומדים ברקע תוכחתו של נחמיה?',
+ opts:['חוקי הקרבנות','חוקי טומאה וטהרה','איסורי הריבית — "לֹא תְשִׂימוּן עָלָיו נֶשֶׁךְ" (שמות כ״ב, כד), "אַל תִּקַּח מֵאִתּוֹ נֶשֶׁךְ וְתַרְבִּית וְיָרֵאתָ מֵאֱלֹהֶיךָ" (ויקרא כ״ה, לו), "לֹא תַשִּׁיךְ לְאָחִיךָ" (דברים כ״ג, כ)','חוקי המלחמה'],
+ ans:2,
+ explain:`שימו לב לשתי נקודות: (1) המילה "אָחִיךָ" חוזרת בכל המקורות — וזו בדיוק המילה שנחמיה נאחז בה, "מַשָּׁא אִישׁ בְּאָחִיו אַתֶּם נֹשִׁים" (ז); (2) הצירוף "וְיָרֵאתָ מֵאֱלֹהֶיךָ" שבויקרא כ״ה, לו הוא בדיוק הנימוק שנחמיה נותן בפסוקים ט ו-טו. נחמיה אינו מחדש דין — הוא מחזיר לתוקף דין קיים שהופר.`,
+ teacherNote:`אפשר לחבר גם לדברים ט״ו שנלמד ביחידת חוק וחברה — "לֹא תְאַמֵּץ אֶת לְבָבְךָ".`},
+
+{id:'q15',type:'mc',section:'א',ref:'נחמיה ה׳ — סיכום',
+ q:'כיצד אפשר לסכם את מודל המנהיגות שבפרק?',
+ opts:['מנהיג שפועל מיד מתוך כעס','מנהיג שמסתפק בנאום פומבי','מנהיג שנמנע מעימות עם בעלי הכוח','שומע → כועס → שוקל → מוכיח בפומבי מול בעלי הכוח → כולל את עצמו → מעגן בשבועה ובמעשה סמלי → מדגים לאורך שתים עשרה שנה'],
+ ans:3,
+ explain:`שבעת השלבים: (1) שומע את הצעקה ואינו מתעלם; (2) "וַיִּחַר לִי מְאֹד"; (3) "וַיִּמָּלֵךְ לִבִּי עָלַי"; (4) "קְהִלָּה גְדוֹלָה" מול החורים והסגנים; (5) "וְגַם אֲנִי... נַעַזְבָה נָּא"; (6) שבועה לפני כוהנים ומעשה ניעור החוצן; (7) שתים עשרה שנה בלי לחם הפחה. הסרת אחד מן השלבים הייתה מחלישה את כל השאר.`,
+ teacherNote:`שאלה טובה לכיתה: איזה מן השלבים הוא הקשה ביותר, ומה היה קורה אילו דילג על אחד מהם?`},
+
+{id:'q16',type:'bagrut',section:'ב',ref:'שמות ג׳, ז — נחמיה ה׳, א–ה',
+ excerpt:`קרא/י את נחמיה ה׳, א–ה שלפניך.`,
+ q:`בעיצומה של בניית החומה נעצרת העלילה, והמבט מופנה פנימה.`,
+ parts:[
+  {label:'א',text:`הצג/י את שלוש קבוצות המתלוננים ואת מצוקתן, והסבר/י מה מלמד הסדר שבו הן מופיעות.`,points:5,
+   rubric:{model:`(1) "בָּנֵינוּ וּבְנֹתֵינוּ אֲנַחְנוּ רַבִּים וְנִקְחָה דָגָן וְנֹאכְלָה וְנִחְיֶה" (ב) — משפחות גדולות שאין להן די מזון, מצוקת קיום בסיסית. (2) "שְׂדֹתֵינוּ וּכְרָמֵינוּ וּבָתֵּינוּ אֲנַחְנוּ עֹרְבִים וְנִקְחָה דָגָן בָּרָעָב" (ג) — מי שכבר משכנו את בסיס הפרנסה ואת קורת הגג כדי לקנות תבואה. (3) "לָוִינוּ כֶסֶף לְמִדַּת הַמֶּלֶךְ שְׂדֹתֵינוּ וּכְרָמֵינוּ" (ד) — מי שלווה כדי לשלם את מס המלך הפרסי, כלומר חוב שנכפה עליו מלמעלה. הסדר עולה בחומרתו: מרעב, דרך אובדן הרכוש, ועד חוב שאין ממנו מוצא — וכל שלב מוליד את הבא אחריו. הצטברות שלוש הקבוצות מציגה משבר מערכתי ולא מקרה בודד.`,full:`שלוש הקבוצות בציטוט + ניתוח הסדר העולה = ניקוד מלא`,partial:`שתי קבוצות, או שלוש בלי ניתוח הסדר = ניקוד חלקי`}},
+  {label:'ב',text:`הסבר/י את הטענה שבפסוק ה ואת האירוניה שבמצב, והתייחס/י למשמעות המילה "צְעָקָה" בפסוק א.`,points:5,
+   rubric:{model:`הטענה בפסוק ה אינה כלכלית אלא ערכית — טענת שוויון: "וְעַתָּה כִּבְשַׂר אַחֵינוּ בְּשָׂרֵנוּ, כִּבְנֵיהֶם בָּנֵינוּ" — אנחנו מאותו בשר וילדינו כילדיהם, ואף על פי כן "וְהִנֵּה אֲנַחְנוּ כֹבְשִׁים אֶת בָּנֵינוּ וְאֶת בְּנֹתֵינוּ לַעֲבָדִים, וְיֵשׁ מִבְּנֹתֵינוּ נִכְבָּשׁוֹת, וְאֵין לְאֵל יָדֵנוּ". השורש כב״ש חוזר פעמיים, והסיום מבטא חוסר אונים מוחלט. האירוניה: קהילה שזה עתה שבה מגלות בבל אל חירותה מחזירה את בניה לעבדות — והפעם בידי אחיהם ולא בידי אויב. "צְעָקָה": במקרא זו לשונם של המדוכאים — "וְאֶת צַעֲקָתָם שָׁמַעְתִּי מִפְּנֵי נֹגְשָׂיו" (שמות ג׳, ז) — וכאן היא מופנית "אֶל אֲחֵיהֶם הַיְּהוּדִים": הנוגשים הם האחים. כלומר בעוד נחמיה נלחם באויבים שמחוץ לחומה, החברה שבתוכה מתפוררת.`,full:`הטענה בציטוט + ניסוח האירוניה + משמעות "צעקה" עם ההקבלה לשמות ג׳ = ניקוד מלא`,partial:`שניים מתוך שלושת המרכיבים = ניקוד חלקי`}}
+ ]},
+
+{id:'q17',type:'bagrut',section:'ב',ref:'נחמיה ה׳, ו–ט',
+ excerpt:`קרא/י את נחמיה ה׳, ו–ט.`,
+ q:`תגובתו של נחמיה בנויה בשלבים מדודים.`,
+ parts:[
+  {label:'א',text:`הסבר/י את שני השלבים שבפסוקים ו–ז ("וַיִּחַר לִי מְאֹד" ו"וַיִּמָּלֵךְ לִבִּי עָלַי"), ומה מלמד הדבר על מנהיגותו.`,points:5,
+   rubric:{model:`השלב הראשון הוא רגשי: "וַיִּחַר לִי מְאֹד כַּאֲשֶׁר שָׁמַעְתִּי אֶת זַעֲקָתָם" (ו) — נחמיה שומע וכועס, ואינו אדיש. השלב השני הוא שכלי: "וַיִּמָּלֵךְ לִבִּי עָלַי" (ז), כלומר נמלכתי בדעתי ושקלתי בדבר. הכתוב טורח למסור את שניהם, ובסדר הזה: הכעס המוסרי הוא הכרחי — בלעדיו לא הייתה תגובה כלל — אך הוא אינו מספיק, ואינו הופך מיד למעשה. מנהיגותו של נחמיה בנויה על הצירוף: הוא אינו אדיש ואינו נסחף. אפשר להוסיף שהתוצאה נראית מיד — במקום התפרצות הוא בונה הליך: מוכיח את החורים והסגנים, מכנס "קְהִלָּה גְדוֹלָה", ומציג טיעון מנומק.`,full:`הסבר שני השלבים בציטוט + מסקנה מנוסחת על המנהיגות = ניקוד מלא`,partial:`ציטוט בלי מסקנה, או מסקנה בלי ציטוט = ניקוד חלקי`}},
+  {label:'ב',text:`נתח/י את הטיעון שבפסוק ח ואת תגובת החורים, והסבר/י את שני הנימוקים שבפסוק ט.`,points:5,
+   rubric:{model:`הטיעון (ח): "אֲנַחְנוּ קָנִינוּ אֶת אַחֵינוּ הַיְּהוּדִים הַנִּמְכָּרִים לַגּוֹיִם כְּדֵי בָנוּ, וְגַם אַתֶּם תִּמְכְּרוּ אֶת אֲחֵיכֶם וְנִמְכְּרוּ לָנוּ?" — נחמיה מציג מעגל אבסורדי: הקהילה משקיעה משאבים בפדיון יהודים שנמכרו לעבדות אצל הגויים, ובה בעת החורים מוכרים את אחיהם — כך שיהיה צורך לפדותם שוב, מהם. התגובה נמסרת בשלוש מילים: "וַיַּחֲרִישׁוּ וְלֹא מָצְאוּ דָּבָר" — שתקו ולא הייתה להם תשובה; השתיקה היא ההודאה. שני הנימוקים (ט): "הֲלוֹא <em>בְּיִרְאַת אֱלֹהֵינוּ</em> תֵּלֵכוּ" — נימוק פנימי ומוסרי, המחיל על ההתנהגות הכלכלית אמת מידה דתית; ו"<em>מֵחֶרְפַּת הַגּוֹיִם אוֹיְבֵינוּ</em>" — נימוק חיצוני, הנוגע למוניטין של הקהילה בעיני העמים שסביב ולחילול השם שבדבר. שימו לב שהנימוק הראשון יחזור בפסוק טו, שם נחמיה מודד בו את עצמו.`,full:`ניתוח הטיעון + השתיקה + שני הנימוקים, הכול בציטוט = ניקוד מלא`,partial:`הטיעון בלי הנימוקים, או להפך = ניקוד חלקי`}}
+ ]},
+
+{id:'q18',type:'bagrut',section:'ב',ref:'נחמיה ה׳, י–יג',
+ excerpt:`קרא/י את נחמיה ה׳, י–י״ג.`,
+ q:`נאום הופך לרפורמה בשלושה מהלכים.`,
+ parts:[
+  {label:'א',text:`מה מיוחד בניסוח "נַעַזְבָה נָּא אֶת הַמַּשָּׁא הַזֶּה" (י), ומהי הדרישה המעשית שבפסוק י״א?`,points:5,
+   rubric:{model:`הניסוח: נחמיה פותח בהודאה — "וְגַם אֲנִי אַחַי וּנְעָרַי נֹשִׁים בָּהֶם כֶּסֶף וְדָגָן" — כלומר גם הוא ואנשיו הלוו; ואז הוא אומר "<em>נַעַזְבָה</em> נָּא" בגוף ראשון רבים, ולא "עִזבו" בגוף שני. הוא מציב את עצמו בתוך הקבוצה שנדרשת לוותר, ובכך הופך את התוכחה לאמינה: הוא אינו דורש מאחרים מה שאינו דורש מעצמו. הדרישה המעשית (יא): "הָשִׁיבוּ נָא לָהֶם כְּהַיּוֹם שְׂדֹתֵיהֶם, כַּרְמֵיהֶם, זֵיתֵיהֶם וּבָתֵּיהֶם, וּמְאַת הַכֶּסֶף וְהַדָּגָן הַתִּירוֹשׁ וְהַיִּצְהָר אֲשֶׁר אַתֶּם נֹשִׁים בָּהֶם" — כפולה: להשיב את הנכסים, כלומר את בסיס הפרנסה, וגם לוותר על החוב עצמו. אין כאן פריסת תשלומים או הקלה אלא השבה ומחיקה.`,full:`ניתוח "נעזבה" בגוף ראשון + הדרישה הכפולה בציטוט = ניקוד מלא`,partial:`אחד משני החלקים בלבד = ניקוד חלקי`}},
+  {label:'ב',text:`מדוע אין נחמיה מסתפק בהסכמת החורים, ומהו המעשה הסמלי שבפסוק י״ג? התייחס/י גם לתגובת הקהל.`,points:5,
+   rubric:{model:`החורים עונים "נָשִׁיב וּמֵהֶם לֹא נְבַקֵּשׁ, כֵּן נַעֲשֶׂה כַּאֲשֶׁר אַתָּה אוֹמֵר" (יב) — ונחמיה אינו מסתפק: "וָאֶקְרָא אֶת הַכֹּהֲנִים וָאַשְׁבִּיעֵם לַעֲשׂוֹת כַּדָּבָר הַזֶּה". הוא הופך הבטחה שבעל פה להתחייבות מחייבת בפני עדים, משום שהתלהבות של רגע חולפת ואילו החוב נשאר. המעשה הסמלי (יג): "גַּם חָצְנִי נָעַרְתִּי וָאֹמְרָה: כָּכָה יְנַעֵר הָאֱלֹהִים אֶת כָּל הָאִישׁ אֲשֶׁר לֹא יָקִים אֶת הַדָּבָר הַזֶּה מִבֵּיתוֹ וּמִיגִיעוֹ, וְכָכָה יִהְיֶה נָעוּר וָרֵק". "חֹצֶן" הוא קפל הבגד שנשאו בו חפצים, וניעורו לעיני הקהל ממחיש את העונש: כשם שהקפל מתרוקן כך יתרוקן המפר. זוהי סוגה מוכרת מן הנביאים — מעשה סמלי שבו פעולה גופנית ממחישה את המסר. ותגובת הקהל בשלושה שלבים: "וַיֹּאמְרוּ כָל הַקָּהָל אָמֵן, וַיְהַלְלוּ אֶת יְהוָה, <em>וַיַּעַשׂ הָעָם כַּדָּבָר הַזֶּה</em>" — אמירה, הודיה, ובעיקר ביצוע בפועל.`,full:`הסבר השבועה + המעשה הסמלי + שלושת שלבי תגובת הקהל, בציטוט = ניקוד מלא`,partial:`שניים מתוך שלושת המרכיבים = ניקוד חלקי`}}
+ ]},
+
+{id:'q19',type:'bagrut',section:'ב',ref:'נחמיה ה׳, ג; ט — נחמיה ה׳, יד–יט',
+ excerpt:`קרא/י את נחמיה ה׳, י״ד–י״ט.`,
+ q:`הפרק אינו נחתם ברפורמה אלא בחשבון אישי, והוא ארוך ממנה.`,
+ parts:[
+  {label:'א',text:`השווה/י בין נחמיה ובין הפחות שקדמו לו, וציין/י שלוש נקודות. מה מיוחד בפרט "וְשָׂדֶה לֹא קָנִינוּ" (טז)?`,points:5,
+   rubric:{model:`ההשוואה: (1) לחם הפחה — "וְהַפַּחוֹת הָרִאשֹׁנִים אֲשֶׁר לְפָנַי הִכְבִּידוּ עַל הָעָם וַיִּקְחוּ מֵהֶם בְּלֶחֶם וָיַיִן אַחַר כֶּסֶף שְׁקָלִים אַרְבָּעִים" (טו), מול "אֲנִי וְאַחַי לֶחֶם הַפֶּחָה לֹא אָכַלְתִּי" — שתים עשרה שנה (יד). (2) הנערים — "גַּם נַעֲרֵיהֶם שָׁלְטוּ עַל הָעָם" (טו), מול "וְכָל נְעָרַי קְבוּצִים שָׁם עַל הַמְּלָאכָה" (טז): אנשיו עובדים ואינם שולטים. (3) רכוש — הפחות ניצלו את מעמדם, ואילו נחמיה "וְשָׂדֶה לֹא קָנִינוּ". מה מיוחד בפרט האחרון: באותו פרק בדיוק אנשים ממשכנים ומוכרים שדות מחמת הרעב והחובות — "שְׂדֹתֵינוּ וּכְרָמֵינוּ וּבָתֵּינוּ אֲנַחְנוּ עֹרְבִים" (ג). מושל מטעם המלך היה יכול לרכוש קרקעות בזול, וזה היה חוקי לחלוטין. נחמיה נמנע לא רק ממה שאסור אלא גם ממה שמותר, משום שהוא יוצר ניגוד עניינים בין תפקידו הציבורי לרווחו הפרטי.`,full:`שלוש נקודות השוואה בציטוט + ניתוח "ושדה לא קנינו" = ניקוד מלא`,partial:`שתי נקודות, או השוואה בלי ניתוח הפרט = ניקוד חלקי`}},
+  {label:'ב',text:`מדוע לדעתך מקדיש הכתוב לדוגמה האישית של נחמיה מקום רב יותר מאשר לרפורמה עצמה? נמק/י את עמדתך.`,points:5,reflective:true,
+   rubric:{model:`תשובה פתוחה. מצופה שהתלמיד יעגן את עמדתו בפסוקים. כיוונים אפשריים: הרפורמה מצליחה דווקא משום שנחמיה כלל את עצמו — "וְגַם אֲנִי... נַעַזְבָה נָּא" (י) — ולכן החשבון האישי אינו נספח אלא הבסיס שעליו נשענת התוכחה כולה; או שהכתוב מבקש להראות שצדק חברתי אינו הוראה חד-פעמית אלא דרך חיים הנמדדת לאורך שתים עשרה שנה; או שהאמת מידה שנחמיה מציב לעצמו זהה לזו שהציב לאחרים — "בְּיִרְאַת אֱלֹהֵינוּ תֵּלֵכוּ" (ט) מול "מִפְּנֵי יִרְאַת אֱלֹהִים" (טו) — ובכך נשלל הפער שבין מטיף למקיים; או שהכתוב מבקש למנוע את הטענה שנחמיה נהנה מן הרפורמה. אפשר גם לקשור ל"זָכְרָה לִּי אֱלֹהַי לְטוֹבָה" (יט): נחמיה מבקש שכר משמים ולא הכרה מבני אדם, ולכן הפירוט אינו התרברבות. אין תשובה אחת נכונה — מעריכים את עומק ההנמקה ואת עיגונה בפסוקים.`,full:`עמדה מנומקת + עיגון מפורש בפסוק י או בהשוואה בין ט ל-טו = ניקוד מלא`,partial:`אמירה כללית על דוגמה אישית בלי עיגון בכתוב = ניקוד חלקי`}}
+ ]},
+
+{id:'q20',type:'bagrut',section:'ב',ref:'עיון — שמות כ״ב, כד; ויקרא כ״ה, לה–לז; דברים ט״ו, ז–ח — נחמיה ה׳',
+ excerpt:`קרא/י: "אִם כֶּסֶף תַּלְוֶה אֶת עַמִּי אֶת הֶעָנִי עִמָּךְ, לֹא תִהְיֶה לוֹ כְּנֹשֶׁה, לֹא תְשִׂימוּן עָלָיו נֶשֶׁךְ" (שמות כ״ב, כ״ד); "אַל תִּקַּח מֵאִתּוֹ נֶשֶׁךְ וְתַרְבִּית וְיָרֵאתָ מֵאֱלֹהֶיךָ וְחֵי אָחִיךָ עִמָּךְ" (ויקרא כ״ה, ל״ו).`,
+ q:`נחמיה אינו מצטט פסוק אחד — ובכל זאת כל תוכחתו עומדת על חוקי התורה.`,
+ parts:[
+  {label:'א',text:`הראה/י כיצד תוכחתו של נחמיה נשענת על חוקי התורה שלפניך. התייחס/י לפחות לשתי נקודות לשוניות משותפות.`,points:6,
+   rubric:{model:`(1) המילה "אָח": כל איסורי הריבית מנוסחים ביחס לאח — "אַל תִּקַּח מֵאִתּוֹ נֶשֶׁךְ וְתַרְבִּית... <em>וְחֵי אָחִיךָ עִמָּךְ</em>" (ויקרא כ״ה, לו); "לֹא תַשִּׁיךְ <em>לְאָחִיךָ</em>" (דברים כ״ג, כ); "לֹא תִקְפֹּץ אֶת יָדְךָ <em>מֵאָחִיךָ הָאֶבְיוֹן</em>" (דברים ט״ו, ז). וזו בדיוק המילה שנחמיה נאחז בה: "מַשָּׁא <em>אִישׁ בְּאָחִיו</em> אַתֶּם נֹשִׁים" (ז), וכן "אֲנַחְנוּ קָנִינוּ אֶת <em>אַחֵינוּ</em> הַיְּהוּדִים... וְגַם אַתֶּם תִּמְכְּרוּ אֶת <em>אֲחֵיכֶם</em>" (ח). הטענה כולה בנויה על כך שהיחסים אינם בין נושה ללווה אלא בין אחים. (2) "יראת אלוהים": ויקרא כ״ה, לו מנמק את איסור הריבית ב"וְיָרֵאתָ מֵאֱלֹהֶיךָ" — וזה בדיוק הנימוק שנחמיה נותן, "הֲלוֹא בְּיִרְאַת אֱלֹהֵינוּ תֵּלֵכוּ" (ט), וששב ומחיל על עצמו, "מִפְּנֵי יִרְאַת אֱלֹהִים" (טו). (3) אפשר להוסיף את השורש נש״ה/נש״ך, החוזר בחוק ובפרק כאחד. המסקנה: נחמיה אינו מחדש דין אלא מחזיר לתוקף דין קיים שהופר.`,full:`שתי נקודות לשוניות לפחות, מבוססות בציטוט מן החוק ומן הפרק + מסקנה = ניקוד מלא`,partial:`נקודה אחת, או ציטוטים בלי מסקנה = ניקוד חלקי`}},
+  {label:'ב',text:`סכם/י את מודל המנהיגות העולה מן הפרק, וציין/י איזה שלב לדעתך הוא המכריע. נמק/י.`,points:4,reflective:true,
+   rubric:{model:`תשובה פתוחה, אך יש לצפות לרשימת השלבים: (1) שומע את הצעקה ואינו מתעלם (ו); (2) כועס — "וַיִּחַר לִי מְאֹד"; (3) שוקל ואינו נסחף — "וַיִּמָּלֵךְ לִבִּי עָלַי" (ז); (4) מוכיח בפומבי ומול בעלי הכוח דווקא — "וָאָרִיבָה אֶת הַחֹרִים וְאֶת הַסְּגָנִים... וָאֶתֵּן עֲלֵיהֶם קְהִלָּה גְדוֹלָה"; (5) כולל את עצמו — "וְגַם אֲנִי... נַעַזְבָה נָּא" (י); (6) מעגן במנגנון — שבועה לפני כוהנים ומעשה סמלי (יב–יג); (7) מדגים לאורך זמן — שתים עשרה שנה (יד–יט). באשר לשלב המכריע, כל בחירה מנומקת קבילה: יש שיטענו שהשלב החמישי הוא הלב, שכן בלעדיו התוכחה אינה אמינה; יש שיצביעו על השלישי, שכן בלעדיו התגובה הייתה התפרצות; ויש שיטענו שהשישי הוא המכריע, משום שבלי מנגנון ההסכמה מתפוגגת. מעריכים את איכות ההנמקה ואת עיגונה בפסוקים.`,full:`רשימת השלבים + בחירה מנומקת ומעוגנת בכתוב = ניקוד מלא`,partial:`רשימת שלבים בלי בחירה מנומקת = ניקוד חלקי`}}
+ ]}
+];
+
+const POOLS=[{id:'poolA',title:'מאגר בחירה — שאלות בגרות',answer:3,of:5,member:['q16','q17','q18','q19','q20']}];
+
+
+const SECTIONS={'א':{tag:'חלק א׳',title:'תרגול הבנה',note:'שאלות סגורות לתרגול ולבדיקה עצמית. נכללות באחוז ההצלחה — אך אינן בפורמט בגרות.',cls:''},'ב':{tag:'חלק ב׳',title:'סימולציית בגרות · שאלון 1261',note:'שאלות פתוחות בפורמט הבגרות. ענה/י על 3 מתוך 5 השאלות; בכל שאלה ענה/י על כל הסעיפים ובסס/י את דבריך על הכתוב. כל שאלה שווה 10 נק׳ — 30 נק׳ בסך הכול. נבדקות ומנוקדות ע״י המורה.',cls:'sec-b'}};
+
+const QS={answers:{},submitted:false};
+
+function closedQuestions(){return QUESTIONS.filter(q=>q.type==='mc'||q.type==='tf');}
+function bagrutQuestions(){return QUESTIONS.filter(q=>q.type==='bagrut');}
+function poolOf(qid){return POOLS.find(p=>p.member.includes(qid));}
+function isBagrutAnswered(qid){const a=QS.answers[qid];return !!(a&&a.parts&&Object.keys(a.parts).length>0);}
+function poolAnsweredCount(p){return p.member.filter(id=>isBagrutAnswered(id)).length;}
+function qPoints(q){return (q.parts||[]).reduce((s,p)=>s+(p.points||0),0);}
+function requiredCount(){let n=closedQuestions().length;POOLS.forEach(p=>n+=p.answer);return n;}
+function countedAnswered(){let n=closedQuestions().filter(q=>QS.answers[q.id]!==undefined).length;POOLS.forEach(p=>n+=Math.min(poolAnsweredCount(p),p.answer));return n;}
+
+function switchTab(t){['theory','practice','answers'].forEach(x=>{document.getElementById('pane-'+x)?.classList.toggle('active',x===t);document.getElementById('btn-'+x)?.classList.toggle('active',x===t);document.getElementById('btn-'+x+'-student')?.classList.toggle('active',x===t);});if(t==='practice'&&USER_ROLE==='teacher'){document.getElementById('student-gate')?.classList.add('hidden');const tw=document.getElementById('practice-content-wrap');if(tw)tw.style.display='';}if(t==='practice'&&USER_ROLE==='student'){const dd=document.getElementById('gate-date-display');if(dd)dd.textContent=new Date().toLocaleDateString('he-IL',{weekday:'long',year:'numeric',month:'long',day:'numeric'});const gate=document.getElementById('student-gate'),conf=document.getElementById('gate-confirmed'),wrap=document.getElementById('practice-content-wrap');const ne=document.getElementById('gate-name'),ce=document.getElementById('gate-class');if(!_gateConfirmed){if(ne&&STUDENT_NAME&&STUDENT_NAME!=='תלמיד/ה')ne.value=STUDENT_NAME;if(ce&&STUDENT_CLASS)ce.value=STUDENT_CLASS;if(gate)gate.classList.remove('hidden');if(conf)conf.classList.add('hidden');if(wrap)wrap.style.display='none';}else{if(gate)gate.classList.add('hidden');if(conf)conf.classList.remove('hidden');if(wrap)wrap.style.display='';}}}
+
+function confirmGate(){const ne=document.getElementById('gate-name'),ce=document.getElementById('gate-class');const nv=(ne?.value||'').trim(),cv=ce?.value||'';let ok=true;if(nv.split(/\s+/).filter(Boolean).length<2){ne?.classList.add('err');document.getElementById('gate-name-err')?.classList.add('show');ok=false;}else{ne?.classList.remove('err');document.getElementById('gate-name-err')?.classList.remove('show');}if(!cv){ce?.classList.add('err');document.getElementById('gate-class-err')?.classList.add('show');ok=false;}else{ce?.classList.remove('err');document.getElementById('gate-class-err')?.classList.remove('show');}if(!ok)return;STUDENT_NAME=nv;STUDENT_CLASS=cv;LS.set('tanakh2_uname',nv);LS.set('tanakh2_class',cv);_gateConfirmed=true;const av=document.getElementById('gc-avatar'),nm=document.getElementById('gc-name-display'),mt=document.getElementById('gc-meta-display');if(av)av.textContent=nv[0].toUpperCase();if(nm)nm.textContent=nv;if(mt)mt.textContent='כיתה '+cv+' · '+new Date().toLocaleDateString('he-IL');document.getElementById('student-gate')?.classList.add('hidden');document.getElementById('gate-confirmed')?.classList.remove('hidden');const wrap=document.getElementById('practice-content-wrap');if(wrap){wrap.style.display='';wrap.scrollIntoView({behavior:'smooth',block:'start'});}}
+function reopenGate(){_gateConfirmed=false;document.getElementById('gate-confirmed')?.classList.add('hidden');const g=document.getElementById('student-gate');if(g){g.classList.remove('hidden');g.scrollIntoView({behavior:'smooth',block:'start'});}}
+
+function renderQuestions(){const c=document.getElementById('questions-container');if(!c)return;let html='',curSec=null,poolsSeen={},closedNum=0,bagrutNum=0;QUESTIONS.forEach(q=>{const sec=q.section||'א';if(sec!==curSec){curSec=sec;const s=SECTIONS[sec];html+=`<div class="section-divider ${s.cls}"><span class="sd-tag">${s.tag}</span><div class="sd-title">${s.title}</div><div class="sd-note">${s.note}</div></div>`;}const p=poolOf(q.id);if(p&&!poolsSeen[p.id]){poolsSeen[p.id]=true;html+=poolBanner(p);}let label;if(q.type==='bagrut'){bagrutNum++;label='שאלה '+bagrutNum;}else{closedNum++;label='שאלה '+closedNum;}html+=buildCard(q,label);});c.innerHTML=html;renderAnswers();updateProgress();}
+
+function poolBanner(p){return `<div class="pool-banner"><span class="pb-icon">🎯</span><div class="pb-text"><div class="pb-title">${p.title}</div><div class="pb-desc">כמו בבגרות: ענה/י על <strong>${p.answer}</strong> מתוך <strong>${p.of}</strong> השאלות הבאות (מותר יותר — ייבדקו הטובות). כל שאלה שווה 10 נק׳.</div></div><span class="pool-counter" id="poolc-${p.id}">0 / ${p.answer}</span></div>`;}
+
+function buildCard(q,label){let input='';const L=['א','ב','ג','ד'];if(q.type==='mc'){input=`<div class="mc-wrap">${q.opts.map((o,oi)=>`<button class="mc-btn" id="${q.id}_o${oi}" onclick="pickMC('${q.id}',${oi})"><span class="mc-letter">${L[oi]}</span><span>${o}</span></button>`).join('')}</div>`;}else if(q.type==='tf'){input=`<div class="tf-row"><button class="tf-btn" id="${q.id}_t" onclick="pickTF('${q.id}',true)">✅ נכון</button><button class="tf-btn" id="${q.id}_f" onclick="pickTF('${q.id}',false)">❌ לא נכון</button></div>`;}else if(q.type==='bagrut'){const exc=q.excerpt?`<div class="q-excerpt">${q.excerpt}</div>`:'';const based=q.based?`<div class="bagrut-based">📖 ${q.based} · ענה/י על כל הסעיפים · בסס/י את דבריך על הכתוב</div>`:'';const stem=q.q?`<div class="bagrut-stem">${q.q}</div>`:'';const parts=q.parts.map((p,pi)=>`<div class="bagrut-part"><div class="part-head"><span class="part-label">${p.label}</span><span class="part-text">${p.text}</span>${p.reflective?'<span class="reflective-badge">שאלת עיון</span>':''}<span class="part-points">${p.points} נק׳</span></div><textarea class="open-textarea" id="${q.id}_p${pi}" rows="4" placeholder="תשובה לסעיף ${p.label}..." oninput="pickPart('${q.id}',${pi})"></textarea></div>`).join('');input=`${exc}${based}${stem}<div class="open-wrap">${parts}</div>`;}
+  const badge=(q.type==='bagrut')?`<span class="q-total-pts">${qPoints(q)} נק׳</span>`:'';
+  return `<div class="q-card${q.type==='bagrut'?' bagrut-q':''}" id="${q.id}_card"><div class="q-num">${label} <span class="q-type-badge">${q.ref}</span>${badge}</div>${q.type!=='bagrut'?`<div class="q-text">${q.q}</div>`:''}${input}<div class="q-feedback" id="${q.id}_fb"></div></div>`;}
+
+function pickMC(qid,idx){if(QS.submitted)return;QS.answers[qid]={sel:idx};QUESTIONS.find(x=>x.id===qid).opts.forEach((_,oi)=>{const b=document.getElementById(qid+'_o'+oi);if(b)b.classList.toggle('sel',oi===idx);});updateProgress();}
+function pickTF(qid,val){if(QS.submitted)return;QS.answers[qid]={sel:val};['t','f'].forEach(k=>{const b=document.getElementById(qid+'_'+k);if(b)b.classList.toggle('sel',k==='t'?val:!val);});updateProgress();}
+function pickPart(qid,pi){if(QS.submitted)return;const el=document.getElementById(qid+'_p'+pi);if(!el)return;if(!QS.answers[qid]||!QS.answers[qid].parts)QS.answers[qid]={parts:{}};const v=(el.value||'').trim();if(v.length>0)QS.answers[qid].parts[pi]=v;else delete QS.answers[qid].parts[pi];if(!QS.answers[qid].parts||Object.keys(QS.answers[qid].parts).length===0)delete QS.answers[qid];updateProgress();}
+
+function updateProgress(){const done=countedAnswered(),req=requiredCount(),pct=req?Math.round(done/req*100):0;document.getElementById('prog-fill')?.style.setProperty('width',Math.min(pct,100)+'%');const pt=document.getElementById('prog-txt');if(pt)pt.textContent=`${done} מתוך ${req} נענו`;const pp=document.getElementById('prog-pct');if(pp)pp.textContent=Math.min(pct,100)+'%';POOLS.forEach(p=>{const el=document.getElementById('poolc-'+p.id);if(el){const c=Math.min(poolAnsweredCount(p),p.answer);el.textContent=`${c} / ${p.answer}`;el.classList.toggle('done',c>=p.answer);}});}
+
+function submitQuiz(){const closed=closedQuestions();const cMissing=closed.filter(q=>QS.answers[q.id]===undefined);if(cMissing.length){toast(`בחלק א׳ חסרות ${cMissing.length} שאלות. ענה/י על כולן.`);return;}for(const p of POOLS){if(poolAnsweredCount(p)<p.answer){toast(`בחלק ב׳ ענה/י על לפחות ${p.answer} שאלות (כולל כל הסעיפים).`);return;}}QS.submitted=true;let correct=0;QUESTIONS.forEach(q=>{const a=QS.answers[q.id];let ok=false;if(q.type==='mc'&&a?.sel!==undefined){ok=a.sel===q.ans;q.opts.forEach((_,oi)=>{const b=document.getElementById(q.id+'_o'+oi);if(!b)return;b.disabled=true;if(oi===q.ans)b.classList.add('correct');else if(oi===a.sel&&!ok)b.classList.add('wrong');});}else if(q.type==='tf'&&a?.sel!==undefined){ok=a.sel===q.ans;['t','f'].forEach(k=>{const b=document.getElementById(q.id+'_'+k);if(!b)return;b.disabled=true;const bv=k==='t';if(bv===q.ans)b.classList.add('correct');else if(bv===a.sel&&!ok)b.classList.add('wrong');});}if((q.type==='mc'||q.type==='tf')&&ok)correct++;const fb=document.getElementById(q.id+'_fb');if(q.type==='bagrut'){(q.parts||[]).forEach((_,pi)=>{const ta=document.getElementById(q.id+'_p'+pi);if(ta)ta.disabled=true;});if(isBagrutAnswered(q.id)&&fb){fb.className='q-feedback show';fb.innerHTML='<div class="open-saved">✍️ תשובתך נשמרה ונמסרה לבדיקת המורה. המחוון ייחשף לאחר שחרור התשובות.</div>';}}else if(fb&&(q.type==='mc'||q.type==='tf')){fb.className='q-feedback show '+(ok?'ok':'wrong');fb.innerHTML=(ok?'✅ נכון! ':'❌ לא נכון. ')+q.explain;document.getElementById(q.id+'_card')?.classList.add(ok?'ok':'wrong');}});_lastCorrect=correct;_lastScore=closed.length?Math.round(correct/closed.length*100):0;const pct=_lastScore,emoji=pct>=90?'🏆':pct>=75?'⭐':pct>=60?'👍':'💪',color=pct>=90?'#15803d':pct>=75?'#0f766e':pct>=60?'#1a56db':'#dc2626';let bAns=0,bPts=0;bagrutQuestions().forEach(q=>{if(isBagrutAnswered(q.id)){bAns++;bPts+=qPoints(q);}});const rc=document.getElementById('results-container');if(rc){rc.style.display='';rc.innerHTML=`<div class="results-card"><span class="results-emoji">${emoji}</span><span class="results-score" style="color:${color}">${pct}%</span><span class="results-label">חלק א׳ (תרגול הבנה): ${correct} מתוך ${closed.length} נכונות</span><div class="results-bar"><div class="results-bar-fill" style="width:0%;background:${color}" id="res-fill"></div></div><div style="font-size:.82rem;color:var(--muted);margin-bottom:1.2rem">📝 חלק ב׳ (בגרות): ${bAns} שאלות נמסרו לבדיקת המורה (${bPts} נקודות אפשריות). אינן נכללות באחוז זה.</div><button class="btn-send" onclick="sendResults()">📤 שליחה למורה</button></div>`;}document.getElementById('submit-row')?.remove();setTimeout(()=>{const rf=document.getElementById('res-fill');if(rf)rf.style.width=pct+'%';},80);rc?.scrollIntoView({behavior:'smooth',block:'start'});}
+
+async function sendResults(){await saveScore(_lastScore,STUDENT_NAME,STUDENT_CLASS);toast('✅ התוצאה נשלחה למורה!');}
+
+function resetQuiz(){QS.answers={};QS.submitted=false;_lastScore=null;_lastCorrect=0;renderQuestions();const rc=document.getElementById('results-container');if(rc){rc.style.display='none';rc.innerHTML='';}if(!document.getElementById('submit-row')){const sw=document.getElementById('practice-content-wrap');if(sw){const d=document.createElement('div');d.id='submit-row';d.style.cssText='display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;margin-top:1.5rem';d.innerHTML='<button class="btn-submit" onclick="submitQuiz()">📤 הגשת התרגול</button><button class="btn-reset" onclick="resetQuiz()">🔄 אתחול</button>';sw.appendChild(d);}}}
+
+function renderAnswers(){const al=document.getElementById('answers-list');if(!al)return;const L=['א','ב','ג','ד'];let curSec=null,html='';QUESTIONS.forEach(q=>{const sec=q.section||'א';if(sec!==curSec){curSec=sec;const s=SECTIONS[sec];html+=`<div class="section-divider ${s.cls}"><span class="sd-tag">${s.tag}</span><div class="sd-title">${s.title}</div></div>`;}let block='';if(q.type==='mc'){block=`<div class="ans-correct">✅ ${L[q.ans]}. ${q.opts[q.ans]}</div><div class="ans-explain">💡 ${q.explain}</div>`;}else if(q.type==='tf'){block=`<div class="ans-correct">✅ ${q.ans?'נכון':'לא נכון'}</div><div class="ans-explain">💡 ${q.explain}</div>`;}else if(q.type==='bagrut'){const exc=q.excerpt?`<div class="ans-excerpt">${q.excerpt}</div>`:'';const parts=q.parts.map(p=>{const r=p.rubric||{};return `<div class="rubric-box"><div class="rubric-part-hd">סעיף ${p.label} · ${p.points} נק׳${p.reflective?' · שאלת עיון':''}</div><div class="rubric-model"><strong>תשובה לדוגמה:</strong> ${r.model||''}</div>${r.full?`<div class="rubric-band full"><span class="rb-tag">ניקוד מלא</span><span>${r.full}</span></div>`:''}${r.partial?`<div class="rubric-band partial"><span class="rb-tag">ניקוד חלקי</span><span>${r.partial}</span></div>`:''}</div>`;}).join('');const stem=q.q?`<div class="bagrut-stem">${q.q}</div>`:'';const parttexts=q.parts.map(p=>`<div style="font-size:.82rem;margin:.2rem 0;color:var(--text-mid)"><strong>${p.label}.</strong> ${p.text}</div>`).join('');block=`${exc}${stem}${parttexts}<div class="rubric-pts">ניקוד כולל לשאלה: ${qPoints(q)} נק׳</div>${parts}`;}html+=`<div class="answer-row"><div class="ans-num">${q.type==='bagrut'?'שאלת בגרות':'שאלה'} <span style="color:var(--lc)">${q.ref}</span></div>${q.type!=='bagrut'?`<div class="ans-q">${q.q}</div>`:''}${block}</div>`;});al.innerHTML=html;}
+
+function printLesson(){
+  var pw=window.open('','_blank','width=960,height=760');
+  if(!pw){alert('popup blocked');return;}
+  var isTeacher=(USER_ROLE==='teacher');
+  var L=['א','ב','ג','ד'];
+  var theoryHtml=(document.getElementById('pane-theory')||{innerHTML:''}).innerHTML||'';
+  var closedNum=0,bagrutNum=0,curSec=null;
+  var qHtml=QUESTIONS.map(function(q){
+    var secHtml='';var sec=q.section||'א';if(sec!==curSec){curSec=sec;secHtml='<div style="background:#f0fdfa;border:1px solid #ccc;border-radius:8px;padding:.5rem .8rem;margin:1rem 0 .6rem;font-weight:800;color:#0f766e;font-size:11pt">'+SECTIONS[sec].tag+' — '+SECTIONS[sec].title+'</div>';}
+    var h=secHtml+'<div style="border:1px solid #e4e7ef;border-radius:8px;padding:.7rem .9rem;margin-bottom:.6rem;break-inside:avoid">';
+    if(q.type==='bagrut'){bagrutNum++;h+='<div style="font-size:8pt;color:#ca8a04;font-weight:700">שאלה '+bagrutNum+' · '+q.ref+' · '+qPoints(q)+' נק׳</div>';if(q.excerpt)h+='<div style="background:#f8f9fb;border-right:3px solid #0891b2;border-radius:6px;padding:.4rem .7rem;font-size:8.5pt;font-style:italic;margin:.3rem 0">'+q.excerpt+'</div>';if(q.q)h+='<div style="font-size:9.5pt;font-weight:700;margin-bottom:.3rem">'+q.q+'</div>';q.parts.forEach(function(p){h+='<div style="font-size:9pt;font-weight:700;margin-top:.5rem">'+p.label+'. '+p.text+' <span style="color:#ca8a04">('+p.points+' נק׳)</span></div>';if(isTeacher){var r=p.rubric||{};h+='<div style="font-size:8.5pt;background:#f8f9fb;border:1px solid #e4e7ef;border-radius:6px;padding:.4rem .7rem;margin-top:.25rem"><strong style="color:#15803d">תשובה לדוגמה:</strong> '+(r.model||'')+(r.full?'<br><strong>מלא:</strong> '+r.full:'')+(r.partial?'<br><strong>חלקי:</strong> '+r.partial:'')+'</div>';}else{h+='<div style="border:1px dashed #cbd5e1;border-radius:6px;height:50px;margin-top:.25rem"></div>';}});}
+    else{closedNum++;h+='<div style="font-size:7.5pt;color:#0f766e">שאלה '+closedNum+' · '+q.ref+'</div><div style="font-size:9.5pt;font-weight:700;margin:.2rem 0 .3rem">'+q.q+'</div>';if(isTeacher){if(q.type==='mc')h+='<div style="font-size:9pt;padding:.3rem .65rem;background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;border-radius:6px"><strong>✅ תשובה:</strong> '+L[q.ans]+'. '+q.opts[q.ans]+'</div>';else h+='<div style="font-size:9pt;padding:.3rem .65rem;background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;border-radius:6px"><strong>✅ תשובה:</strong> '+(q.ans?'נכון':'לא נכון')+'</div>';}}
+    h+='</div>';return h;
+  }).join('');
+  var studentLine=(!isTeacher&&STUDENT_NAME&&STUDENT_NAME!=='תלמיד/ה')?'<div style="font-size:11pt;font-weight:700;margin-top:.5rem">תלמיד/ה: '+STUDENT_NAME+(STUDENT_CLASS?' | כיתה: '+STUDENT_CLASS:'')+' | '+new Date().toLocaleDateString('he-IL')+'</div>':'<div style="font-size:10pt;color:#6b7594;margin-top:.4rem">'+new Date().toLocaleDateString('he-IL')+'</div>';
+  var css='*{box-sizing:border-box;margin:0;padding:0}body{font-family:Heebo,sans-serif;direction:rtl;background:#fff;color:#0d1424;font-size:10pt;line-height:1.6}@page{margin:1.5cm 1.5cm 2.4cm;size:A4}.print-cr{position:fixed;bottom:0;left:0;right:0;text-align:center;font-size:7pt;color:#8a92a8;padding-top:.12cm;border-top:1px solid #e8ebf2;background:#fff}.doc{max-width:210mm;margin:0 auto;padding:1cm}.doc-header{text-align:center;padding-bottom:1.2rem;border-bottom:3px solid #0f766e;margin-bottom:1.5rem}.doc-header h1{font-size:18pt;color:#0f766e}.doc-header p{font-size:9pt;color:#555}.sec-title{font-size:13pt;color:#0f766e;border-bottom:2px solid #ecfeff;padding-bottom:.4rem;margin:1.5rem 0 1rem;page-break-after:avoid}.card,.box,.cmp-table,.steps-wrap,.teacher-note-box{border:1px solid #e4e7ef;border-radius:8px;padding:.7rem .9rem;margin-bottom:.6rem;break-inside:avoid}.section-hd{font-size:11pt;color:#0f766e;font-weight:800;margin:1rem 0 .5rem}.cmp-table{width:100%;border-collapse:collapse;font-size:.8rem}.cmp-table th{background:#0f766e;color:#fff;padding:.4rem .6rem;-webkit-print-color-adjust:exact;print-color-adjust:exact}.cmp-table td{padding:.4rem .6rem;border-bottom:1px solid #e4e7ef}.lesson-hero::before,.hero-badge,.hero-meta,.btn-print,.goto-practice-btn,.print-header,.sn-icon,.layer-tag,.tn-tag{display:none!important}.lesson-hero{background:#f0fdfa;border:1px solid #ccc;border-radius:10px;padding:1rem;margin-bottom:1rem}.sn{display:inline-flex;width:22px;height:22px;border-radius:50%;background:#0f766e;color:#fff;align-items:center;justify-content:center;font-size:.7rem;-webkit-print-color-adjust:exact;print-color-adjust:exact}';
+  if(!isTeacher){css+='.teacher-note-box{display:none}';}var titleTag=isTeacher?' — גרסת מורה (כולל מחוון)':'';
+  var bodyHtml='<div class="doc"><div class="doc-header"><h1>הרפורמה החברתית'+titleTag+'</h1><p>תנ״ך לתיכון · שיבת ציון · שיעור 8 · נחמיה ה׳</p>'+studentLine+'</div><div class="sec-title">חלק א — רקע ועיון</div><div>'+theoryHtml+'</div><div class="sec-title" style="page-break-before:always">חלק ב — שאלות</div>'+qHtml+'</div>';
+  var fullHtml='<!DOCTYPE html><html lang="he" dir="rtl"><head><meta charset="UTF-8"><title>הרפורמה החברתית</title><link href="https://fonts.googleapis.com/css2?family=Secular+One&family=Heebo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>'+css+'</style></head><body>'+bodyHtml+'<div class="print-cr">© 2026 זכויות יוצרים – ליאור אלמוסלינוס</div><'+'script>document.fonts.ready.then(function(){setTimeout(function(){window.print();},300);}).catch(function(){setTimeout(function(){window.print();},1200);});<'+'/script></body></html>';
+  pw.document.write(fullHtml);pw.document.close();
+}
+
+let _tt;
+function toast(m){const e=document.getElementById('toast');e.textContent=m;e.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>e.classList.remove('show'),3200);}
+function goBack(){if(window.opener){try{window.opener.postMessage({type:'lessonDone',lid:LESSON_ID},'*')}catch{}window.close();return;}window.location.href=BACK_URL;}
+function init(){initFirebase();if(USER_ROLE==='teacher'){document.body.classList.add('is-teacher');document.getElementById('role-chip')?.style.setProperty('display','');document.getElementById('btn-answers')?.style.setProperty('display','');_gateConfirmed=true;const w=document.getElementById('practice-content-wrap');if(w)w.style.display='';document.getElementById('student-gate')?.classList.add('hidden');}else{const w=document.getElementById('practice-content-wrap');if(w)w.style.display='none';if(STUDENT_NAME&&STUDENT_NAME!=='תלמיד/ה'&&STUDENT_CLASS){_gateConfirmed=true;if(w)w.style.display='';document.getElementById('student-gate')?.classList.add('hidden');const av=document.getElementById('gc-avatar'),nm=document.getElementById('gc-name-display'),mt=document.getElementById('gc-meta-display');if(av)av.textContent=STUDENT_NAME[0].toUpperCase();if(nm)nm.textContent=STUDENT_NAME;if(mt)mt.textContent='כיתה '+STUDENT_CLASS+' · '+new Date().toLocaleDateString('he-IL');document.getElementById('gate-confirmed')?.classList.remove('hidden');}}applyAnswersVisibility();renderQuestions();}
+init();
+</script>
+</body>
+</html>
