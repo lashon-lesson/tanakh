@@ -1498,7 +1498,8 @@ async function submitStudentLogin(){
   const btn=document.getElementById('scp-go-btn');
   const name=(nameEl?.value||'').trim().replace(/\s+/g,' ');
   const cls=(classEl?.value||'').trim();
-  const code=(codeEl?.value||'').trim().toUpperCase();
+  let code=(codeEl?.value||'').trim().toUpperCase().replace(/\s+/g,'');
+  if(/^[A-Z0-9]{4,8}$/.test(code)) code='TN-'+code;   // forgive a dropped prefix
   const shake=el=>{el.classList.add('shake');setTimeout(()=>el.classList.remove('shake'),360);el.focus();};
   if(!name){shake(nameEl);toast('⚠️ נא להזין שם מלא');return;}
   if(!/\s/.test(name)){shake(nameEl);toast('⚠️ נא להזין שם פרטי ושם משפחה');return;}
@@ -2757,13 +2758,16 @@ const SESS_KEY   = 'tanakh2_sess';
 const SESS_HOURS = 12;              // session lifetime
 const CODE_ALPHA = 'ACDEFGHJKLMNPQRTUVWXY3456789';  // no confusable chars
 
+/* Latin + digits only — the student never has to switch keyboard language. */
 function genClassCode(cls){
-  const g=(cls||'').replace(/[^\u05d0-\u05ea0-9]/g,'').slice(0,3)||'TNK';
   let r='';
-  const a=new Uint32Array(4); (crypto.getRandomValues?crypto.getRandomValues(a):a.fill(Math.random()*1e9));
-  for(let i=0;i<4;i++) r+=CODE_ALPHA[a[i]%CODE_ALPHA.length];
-  return (g+'-'+r).toUpperCase();
+  const a=new Uint32Array(6);
+  try{ crypto.getRandomValues(a); }catch(e){ for(let i=0;i<6;i++) a[i]=Math.floor(Math.random()*1e9); }
+  for(let i=0;i<6;i++) r+=CODE_ALPHA[a[i]%CODE_ALPHA.length];
+  return 'TN-'+r;
 }
+/* A code is valid only if it is pure Latin/digits — legacy Hebrew codes are rebuilt. */
+function _codeIsClean(c){ return typeof c==='string' && /^TN-[A-Z0-9]{4,8}$/.test(c); }
 
 function _normName(n){ return (n||'').trim().replace(/\s+/g,' '); }
 function _normCls(c){ return (c||'').trim().replace(/\s+/g,'').replace(/[׳״'"]/g,''); }
@@ -2838,11 +2842,11 @@ function forceLogout(msg){
 function getClassCodes(){ return LS.get('tanakh2_class_codes',{})||{}; }
 function _saveClassCodes(m){ LS.set('tanakh2_class_codes',m); }
 
+/* Returns TRUE only when the class document actually exists on the server.
+   Nothing is cached locally unless the write is confirmed — this is what
+   previously produced codes the teacher could see but no student could use. */
 async function publishClass(cls,code){
-  const codes=getClassCodes();
-  const old=codes[cls];
-  codes[cls]=code; _saveClassCodes(codes); try{_persistTeacherMeta();}catch(e){}
-  if(!_db) return;
+  if(!_db){ console.warn('[publishClass] no db'); return false; }
   const payload={
     cls:cls,
     teacher:S.name||'',
@@ -2853,28 +2857,62 @@ async function publishClass(cls,code){
   };
   try{
     await _db.collection('tanakh2_classes').doc(code).set(payload,{merge:true});
-    if(old&&old!==code){
-      await _db.collection('tanakh2_classes').doc(old).set({active:false},{merge:true});
-    }
-  }catch(e){ console.warn('[publishClass]',e); }
+    // read back — confirms the rules allowed it and the doc is really there
+    const chk=await _db.collection('tanakh2_classes').doc(code).get();
+    if(!chk.exists){ console.warn('[publishClass] write not visible'); return false; }
+  }catch(e){ console.warn('[publishClass]',e); return false; }
+
+  const codes=getClassCodes();
+  const old=codes[cls];
+  codes[cls]=code; _saveClassCodes(codes);
+  try{_persistTeacherMeta();}catch(e){}
+  if(old&&old!==code){
+    try{ await _db.collection('tanakh2_classes').doc(old).set({active:false},{merge:true}); }catch(e){}
+  }
+  return true;
 }
 async function rotateClassCode(cls){
   if(!confirm('להחליף את קוד הכיתה '+cls+'?\n\nכל מי שנכנס עם הקוד הישן ינותק בטעינה הבאה.\nיש למסור את הקוד החדש לתלמידים.')) return;
   const code=genClassCode(cls);
-  await publishClass(cls,code);
+  const ok=await publishClass(cls,code);
   renderRosterAll();
-  toast('🔑 קוד חדש: '+code);
+  toast(ok ? ('🔑 קוד חדש: '+code)
+           : '❌ שמירת הקוד נכשלה — בדקי חיבור לאינטרנט ונסי שוב');
+}
+/* Wait (briefly) for Firebase to finish connecting before giving up. */
+function _waitForDb(ms){
+  return new Promise(res=>{
+    if(_db) return res(true);
+    let n=0;
+    const t=setInterval(()=>{
+      if(_db){ clearInterval(t); res(true); }
+      else if(++n*200>=ms){ clearInterval(t); res(false); }
+    },200);
+  });
 }
 async function ensureClassCode(cls){
   const codes=getClassCodes();
-  if(codes[cls]) return codes[cls];
+  const cached=codes[cls];
+
+  if(!await _waitForDb(6000)){
+    return cached && _codeIsClean(cached) ? cached : null;   // offline — never invent a code
+  }
+
+  // A cached code counts only if it is clean AND really present on the server.
+  if(cached && _codeIsClean(cached)){
+    try{
+      const d=await _db.collection('tanakh2_classes').doc(cached).get();
+      if(d.exists && (d.data()||{}).active!==false) return cached;
+    }catch(e){}
+  }
+  // Otherwise (never published, legacy Hebrew code, or deleted) — rebuild.
   const code=genClassCode(cls);
-  await publishClass(cls,code);
-  return code;
+  const ok=await publishClass(cls,code);
+  return ok ? code : null;
 }
 function copyClassCode(cls){
   const code=getClassCodes()[cls];
-  if(!code) return;
+  if(!code||!_codeIsClean(code)){ toast('⚠️ אין עדיין קוד תקף לכיתה זו'); return; }
   navigator.clipboard?.writeText(code).then(()=>toast('📋 הקוד הועתק'),()=>{});
 }
 
@@ -3068,7 +3106,16 @@ function renderRosterAll(){
     // Ensure the class has a published join code, then paint it
     ensureClassCode(cls).then(code=>{
       const el=document.getElementById('rcode-'+cid);
-      if(el) el.textContent='🔑 '+code;
+      if(!el) return;
+      if(code){
+        el.textContent='🔑 '+code;
+        el.style.background=''; el.style.color=''; el.style.borderColor='';
+        el.title='לחצי להעתקה';
+      }else{
+        el.textContent='⚠️ הקוד לא נשמר';
+        el.style.background='#fee2e2'; el.style.color='#b91c1c'; el.style.borderColor='#fecaca';
+        el.title='אין חיבור לשרת — לחצי על "קוד חדש" כשהחיבור יחזור';
+      }
     });
     renderRosterBlock(cls);
   });
