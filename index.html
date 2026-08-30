@@ -1588,6 +1588,7 @@ async function doChangePass(){
     try{
       const key=S._pendingName.replace(/\s+/g,'_');
       await _db.collection('tanakh2_teachers').doc(key).set({passHash:h,tempCode:firebase.firestore.FieldValue.delete(),updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
+      try{ await upsertTeacherIndex(key, S._pendingName||S.name||'', isOwnerAdmin(S._pendingName||S.name)?'admin':'teacher'); }catch(e){}
     }catch(e){console.warn('[chpass]',e);}
   }
   LS.set('tanakh2_tpass',h);
@@ -3289,10 +3290,24 @@ async function loadUsersList(){
   if(!_db){ el.innerHTML='<div style="background:var(--amber-lt);border:1px solid #fde68a;border-radius:var(--r);padding:.6rem .9rem;font-size:.78rem;color:var(--amber)">⚠️ Firebase לא מחובר — ניהול משתמשים לא זמין כעת.</div>'; return; }
   el.innerHTML='<p style="color:var(--muted);font-size:.82rem">⏳ טוען מורים…</p>';
   try{
-    const snap=await _db.collection('tanakh2_teachers').get();
-    const teachers=snap.docs.map(d=>({key:d.id,...d.data()}))
+    // Read the lightweight index, then fetch each teacher doc BY KEY.
+    // Both are `get` operations — the collection stays unlistable.
+    await ensureSelfInIndex();
+    const idx = await readTeacherIndex();
+    const REPAIR = '<div style="margin-top:.7rem"><button onclick="repairTeacherIndex()" style="font-size:.7rem;font-weight:700;padding:.45rem .8rem;border:1.5px solid var(--border);border-radius:var(--r-pill);background:var(--surface3);color:var(--muted);cursor:pointer">🔧 הוספת מורים קיימים לרשימה</button></div>';
+    if(!idx.length){
+      el.innerHTML='<p style="color:var(--subtle);font-size:.8rem;font-style:italic">אין מורים ברשימה עדיין. הוסף/י מורה למעלה.</p>'+REPAIR;
+      return;
+    }
+    const settled = await Promise.all(idx.map(async t=>{
+      try{
+        const d = await _db.collection('tanakh2_teachers').doc(t.key).get();
+        return d.exists ? {key:t.key, ...d.data()} : null;   // stale index entry
+      }catch(e){ return {key:t.key, name:t.name, role:t.role}; }
+    }));
+    const teachers = settled.filter(Boolean)
       .sort((a,b)=>(a.name||'').localeCompare(b.name||'','he'));
-    if(!teachers.length){ el.innerHTML='<p style="color:var(--subtle);font-size:.8rem;font-style:italic">אין מורים רשומים עדיין. הוסף/י מורה למעלה.</p>'; return; }
+    if(!teachers.length){ el.innerHTML='<p style="color:var(--subtle);font-size:.8rem;font-style:italic">אין מורים רשומים עדיין. הוסף/י מורה למעלה.</p>'+REPAIR; return; }
 
     let html='';
     teachers.forEach(t=>{
@@ -3326,10 +3341,10 @@ async function loadUsersList(){
         </div>
       </div>`;
     });
-    el.innerHTML=html;
+    el.innerHTML=html+REPAIR;
   }catch(e){
     console.warn('[users]',e);
-    el.innerHTML='<div style="background:var(--red-lt);border:1px solid #fecaca;border-radius:var(--r);padding:.6rem .9rem;font-size:.78rem;color:var(--red)">❌ שגיאה בטעינה. ייתכן שחוקי ה-Firebase חוסמים קריאה לקולקשן tanakh2_teachers.</div>';
+    el.innerHTML='<div style="background:var(--red-lt);border:1px solid #fecaca;border-radius:var(--r);padding:.6rem .9rem;font-size:.78rem;color:var(--red)">❌ שגיאה בטעינת רשימת המורים.<br><span style="font-size:.72rem;opacity:.85">'+(e&&e.code?e.code:'')+'</span></div><div style="margin-top:.7rem"><button onclick="repairTeacherIndex()" style="font-size:.7rem;font-weight:700;padding:.45rem .8rem;border:1.5px solid var(--border);border-radius:var(--r-pill);background:var(--surface3);color:var(--muted);cursor:pointer">🔧 הוספת מורים קיימים לרשימה</button></div>';
   }
 }
 
@@ -3350,6 +3365,81 @@ function _showCodeDialog(title,name,code){
   </div>`;
   ov.addEventListener('click',e=>{if(e.target===ov)ov.remove();});
   document.body.appendChild(ov);
+}
+
+
+/* ════════════════════════════════════════════════
+   אינדקס מורים — tanakh2_config/teacher_index
+   מחזיק אך ורק {key,name,role}. אין וואטסאפ, אין קוד
+   כניסה ואין גיבוב סיסמה — כדי שאפשר יהיה להשאיר את
+   האוסף tanakh2_teachers חסום ל-list.
+════════════════════════════════════════════════ */
+const TIDX = 'teacher_index';
+
+async function readTeacherIndex(){
+  if(!_db) return [];
+  try{
+    const d = await _db.collection('tanakh2_config').doc(TIDX).get();
+    return d.exists ? ((d.data()||{}).list || []) : [];
+  }catch(e){ console.warn('[tidx read]',e); return []; }
+}
+async function writeTeacherIndex(list){
+  if(!_db) return false;
+  try{
+    await _db.collection('tanakh2_config').doc(TIDX)
+      .set({list:list, updated:Date.now()},{merge:true});
+    return true;
+  }catch(e){ console.warn('[tidx write]',e); return false; }
+}
+/* add / update one entry */
+async function upsertTeacherIndex(key,name,role){
+  const list = await readTeacherIndex();
+  const i = list.findIndex(t=>t.key===key);
+  const rec = {key:key,name:name||'',role:role||'teacher'};
+  if(i>=0) list[i]=rec; else list.push(rec);
+  return writeTeacherIndex(list);
+}
+async function removeFromTeacherIndex(key){
+  const list = await readTeacherIndex();
+  return writeTeacherIndex(list.filter(t=>t.key!==key));
+}
+/* Self-heal: make sure the signed-in teacher is always represented. */
+async function ensureSelfInIndex(){
+  if(!_db || !S.name) return;
+  const key = S.name.replace(/\s+/g,'_');
+  const list = await readTeacherIndex();
+  if(list.some(t=>t.key===key)) return;
+  let role = 'teacher';
+  try{
+    const d = await _db.collection('tanakh2_teachers').doc(key).get();
+    if(d.exists) role = (d.data()||{}).role || 'teacher';
+  }catch(e){}
+  if(isOwnerAdmin(S.name)) role = 'admin';
+  await upsertTeacherIndex(key, S.name, role);
+}
+/* One-time migration for teachers registered before the index existed.
+   Names are supplied by the admin, so no listing is ever needed. */
+async function repairTeacherIndex(){
+  if(!_db){ toast('⚠️ Firebase לא מחובר'); return; }
+  const raw = prompt(
+    'הזן/י את שמות המורים הרשומים, שם מלא בכל שורה.\n' +
+    'המערכת תבדוק כל שם מול השרת ותוסיף רק מורים שקיימים באמת.'
+  );
+  if(!raw) return;
+  const names = raw.split(/[\n,]+/).map(n=>n.trim().replace(/\s+/g,' ')).filter(Boolean);
+  if(!names.length) return;
+  let added=0, missing=[];
+  for(const n of names){
+    const key = n.replace(/\s+/g,'_');
+    try{
+      const d = await _db.collection('tanakh2_teachers').doc(key).get();
+      if(!d.exists){ missing.push(n); continue; }
+      await upsertTeacherIndex(key, (d.data()||{}).name || n, (d.data()||{}).role || 'teacher');
+      added++;
+    }catch(e){ missing.push(n); }
+  }
+  toast(`✅ נוספו ${added}` + (missing.length ? ` · לא נמצאו: ${missing.join(', ')}` : ''));
+  loadUsersList();
 }
 
 async function resetTeacherPassword(key,name){
@@ -3384,6 +3474,7 @@ async function addNewTeacher(){
     },{merge:true});
     document.getElementById('new-teacher-name').value='';
     document.getElementById('new-teacher-wa').value='';
+    await upsertTeacherIndex(key,name,'teacher');
     _showCodeDialog('מורה נוצר/ה — קוד כניסה',name,code);
     loadUsersList();
   }catch(e){ console.warn('[addteacher]',e); toast('❌ היצירה נכשלה — בדוק/י חוקי Firebase'); }
@@ -3397,6 +3488,7 @@ async function changeTeacherRole(key,name,newRole){
     await _db.collection('tanakh2_teachers').doc(key).set({
       role:newRole, updatedAt:firebase.firestore.FieldValue.serverTimestamp()
     },{merge:true});
+    await upsertTeacherIndex(key,name,newRole);
     toast('✅ '+name+' כעת '+label);
     loadUsersList();
   }catch(e){ console.warn('[role]',e); toast('❌ העדכון נכשל'); }
@@ -3407,6 +3499,7 @@ async function removeTeacher(key,name){
   if(!confirm(`להסיר את ${name} לצמיתות?\nהמורה לא יוכל/תוכל להתחבר עוד. פעולה זו אינה הפיכה.`)) return;
   try{
     await _db.collection('tanakh2_teachers').doc(key).delete();
+    await removeFromTeacherIndex(key);
     toast('🗑️ '+name+' הוסר/ה');
     loadUsersList();
   }catch(e){ console.warn('[remove]',e); toast('❌ ההסרה נכשלה'); }
