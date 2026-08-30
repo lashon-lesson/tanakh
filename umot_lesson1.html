@@ -4,14 +4,62 @@
 <head>
 <!-- TANAKH_GATE_V1 -->
 <script>
+/* ═══ שער אבטחה — נוצר אוטומטית. אין לערוך ידנית. ═══ */
 (function(){
   var NS='tanakh2', SESS=NS+'_sess', MAXH=12;
   function rd(k,fb){try{var v=localStorage.getItem(k);return v!==null?JSON.parse(v):fb}catch(e){return fb}}
+  function raw(k){try{return localStorage.getItem(k)}catch(e){return null}}
+
   var s=rd(SESS,null);
-  var ok = s && s.t && (Date.now()-s.t) < MAXH*3600e3 && s.name && s.role;
-  if(!ok){document.documentElement.style.visibility='hidden';try{localStorage.removeItem(SESS)}catch(e){}location.replace('index.html');return;}
-  window.__gate=s;
-  window.__gateParams={student:s.name||'',role:s.role||'student','class':s.cls||'',back:s.back||'index.html',answers_visible:String(s.answers||0)};
+  var fresh = s && s.t && (Date.now()-s.t) < MAXH*3600e3 && s.name && s.role;
+
+  /* Fallback: a real signed-in user whose dashboard predates the session
+     mechanism (stale cache / older index.html). Rebuild a session from the
+     dashboard's own keys. Someone arriving on a shared link has none of
+     these, so they are still turned away. */
+  if(!fresh){
+    var nm = rd(NS+'_uname','') || '';
+    var rl = rd(NS+'_role','')  || raw('userRole') || '';
+    if(nm && rl){
+      s = {name:nm, role:(rl==='admin'?'teacher':rl), cls:rd(NS+'_class','')||'',
+           back:'index.html', answers:0, t:Date.now(), rebuilt:1};
+      try{ localStorage.setItem(SESS, JSON.stringify(s)); }catch(e){}
+      fresh = true;
+    }
+  }
+
+  if(!fresh){
+    document.documentElement.style.visibility='hidden';
+    try{localStorage.removeItem(SESS)}catch(e){}
+    location.replace('index.html');
+    return;
+  }
+
+  window.__gate = s;
+  window.__gateParams = {
+    student: s.name || '',
+    role:    s.role  || 'student',
+    'class': s.cls   || '',
+    back:    s.back  || 'index.html',
+    answers_visible: String(s.answers || 0)
+  };
+
+  /* personal watermark — deters screenshot sharing */
+  document.addEventListener('DOMContentLoaded',function(){
+    if(s.role!=='student') return;
+    var w=document.createElement('div');
+    w.setAttribute('aria-hidden','true');
+    w.style.cssText='position:fixed;inset:0;z-index:0;pointer-events:none;user-select:none;'+
+      'display:flex;align-items:center;justify-content:center;overflow:hidden;opacity:.045';
+    var txt=(s.name||'')+' · '+(s.cls||'');
+    var inner=document.createElement('div');
+    inner.style.cssText='transform:rotate(-28deg);font:700 26px/2.6 Rubik,sans-serif;'+
+      'white-space:pre;text-align:center;color:#1e293b';
+    var line=Array(5).fill(txt).join('    ');
+    inner.textContent=Array(9).fill(line).join('\n');
+    w.appendChild(inner);
+    document.body.appendChild(w);
+  });
 })();
 </script>
 
