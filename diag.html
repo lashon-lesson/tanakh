@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>אבחון קוד כיתה</title>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<style>
+*{box-sizing:border-box}
+body{font-family:'Rubik',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;margin:0;padding:1.5rem 1rem;line-height:1.65}
+.wrap{max-width:760px;margin:0 auto}
+h1{font-size:1.35rem;margin:0 0 1.2rem;color:#fff}
+.card{background:#1e293b;border:1px solid #334155;border-radius:13px;padding:1.1rem;margin-bottom:1rem}
+.card h2{font-size:.95rem;margin:0 0 .7rem;color:#c7d2fe}
+.r{display:flex;gap:.6rem;padding:.4rem .55rem;border-radius:7px;background:#0f172a;margin-bottom:.3rem;font-size:.85rem;align-items:flex-start}
+.r .k{flex:0 0 auto;font-weight:700;min-width:8.5rem;color:#94a3b8}
+.r .v{word-break:break-all;font-family:ui-monospace,monospace}
+.ok{color:#86efac}.bad{color:#fca5a5}.warn{color:#fcd34d}.dim{color:#94a3b8}
+button{background:#4f46e5;color:#fff;border:none;border-radius:9px;padding:.6rem 1.2rem;font:700 .9rem/1 inherit;cursor:pointer;margin:.3rem .3rem 0 0}
+button:hover{background:#4338ca}
+input{background:#0f172a;border:1px solid #475569;color:#e2e8f0;border-radius:8px;padding:.5rem .7rem;font:inherit;font-size:.88rem;width:100%;margin-bottom:.5rem}
+pre{background:#020617;padding:.7rem;border-radius:8px;font-size:.75rem;overflow:auto;max-height:220px;color:#cbd5e1}
+.big{font-size:1rem;font-weight:800;padding:.7rem;border-radius:9px;text-align:center;margin-top:.6rem}
+.big.ok{background:#052e16;color:#86efac}.big.bad{background:#450a0a;color:#fca5a5}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>🔍 אבחון קוד כיתה</h1>
+
+<div class="card">
+  <h2>1 · חיבור לשרת</h2>
+  <div id="conn"><span class="dim">בודק…</span></div>
+</div>
+
+<div class="card">
+  <h2>2 · מה שמור בדפדפן הזה</h2>
+  <div id="local"></div>
+</div>
+
+<div class="card">
+  <h2>3 · האם הקודים קיימים בשרת</h2>
+  <div id="server"><span class="dim">ממתין לשלב 1…</span></div>
+</div>
+
+<div class="card">
+  <h2>4 · בדיקת כתיבה חיה</h2>
+  <p class="dim" style="font-size:.82rem;margin:0 0 .6rem">כותב מסמך בדיקה, קורא אותו <b>מהשרת בלבד</b> (עוקף מטמון), ואז מוחק.</p>
+  <button onclick="wtest()">הרץ בדיקת כתיבה</button>
+  <div id="wt"></div>
+</div>
+
+<div class="card">
+  <h2>5 · בדיקת קוד ידנית</h2>
+  <input id="q" placeholder="הדבק כאן את הקוד שהתלמיד מקליד">
+  <button onclick="qtest()">בדוק קוד זה</button>
+  <div id="qr"></div>
+</div>
+
+<div class="card">
+  <h2>דוח מלא להעתקה</h2>
+  <button onclick="copyAll()">📋 העתק דוח</button>
+  <pre id="dump">…</pre>
+</div>
+</div>
+
+<script>
+const CFG={apiKey:"AIzaSyA8QKxGi7-72Dm07VgNwLx-fJu7QTPN1Ak",authDomain:"tanakh-project.firebaseapp.com",
+projectId:"tanakh-project",storageBucket:"tanakh-project.firebasestorage.app",
+messagingSenderId:"798378782412",appId:"1:798378782412:web:99a44c6771a5afec7d1c69"};
+
+let db=null;const REPORT=[];
+const el=id=>document.getElementById(id);
+function row(host,k,v,cls){
+  const d=document.createElement('div');d.className='r';
+  d.innerHTML=`<span class="k">${k}</span><span class="v ${cls||''}">${v}</span>`;
+  el(host).appendChild(d);REPORT.push(k+': '+String(v).replace(/<[^>]+>/g,''));
+}
+function big(host,txt,ok){
+  const d=document.createElement('div');d.className='big '+(ok?'ok':'bad');d.textContent=txt;
+  el(host).appendChild(d);REPORT.push('=> '+txt);
+}
+
+/* ── 1. connection ── */
+(async()=>{
+  el('conn').innerHTML='';
+  row('conn','מקור הדף',location.origin+location.pathname,
+      location.protocol==='file:'?'bad':'ok');
+  if(location.protocol==='file:'){
+    big('conn','⚠️ פתחת את הקובץ מהמחשב. חובה להעלות לגיטהאב ולפתוח מהאתר, אחרת אין גישה לזיכרון של האפליקציה.',false);
+  }
+  try{
+    if(!firebase.apps.length) firebase.initializeApp(CFG);
+    db=firebase.firestore();
+    row('conn','Firebase SDK','נטען ✓','ok');
+  }catch(e){ row('conn','Firebase SDK','נכשל: '+e.message,'bad'); return; }
+  try{
+    await db.collection('tanakh2_config').doc('__ping').get({source:'server'});
+    row('conn','גישה לשרת','תקינה ✓','ok');
+  }catch(e){
+    row('conn','גישה לשרת',e.code+' — '+e.message,'bad');
+  }
+  showLocal(); checkServer();
+})();
+
+/* ── 2. localStorage ── */
+function showLocal(){
+  el('local').innerHTML='';
+  const keys=['tanakh2_class_codes','tanakh2_teacher_classes','tanakh2_roster','tanakh2_blocked','tanakh2_uname','tanakh2_role','tanakh2_class','tanakh2_sess'];
+  let any=false;
+  keys.forEach(k=>{
+    const raw=localStorage.getItem(k);
+    if(raw===null){ row('local',k,'— לא קיים','dim'); return; }
+    any=true; row('local',k,raw.length>200?raw.slice(0,200)+'…':raw,'ok');
+  });
+  if(!any) big('local','⚠️ אין נתונים כלל — כנראה זה לא אותו דפדפן/כתובת שבו נכנסת כמורה.',false);
+}
+
+/* ── 3. do the cached codes exist on the server ── */
+async function checkServer(){
+  el('server').innerHTML='';
+  let codes={};
+  try{ codes=JSON.parse(localStorage.getItem('tanakh2_class_codes')||'{}'); }catch(e){}
+  const entries=Object.entries(codes);
+  if(!entries.length){
+    big('server','❌ אין אף קוד שמור בדפדפן הזה. המורה לא פתחה את לשונית "כיתות", או שזה דפדפן אחר.',false);
+    dump(); return;
+  }
+  for(const [cls,code] of entries){
+    try{
+      const d=await db.collection('tanakh2_classes').doc(code).get({source:'server'});
+      if(d.exists){
+        const x=d.data()||{};
+        row('server',cls+' → '+code,
+            `קיים ✓ · כיתה="${x.cls||''}" · ${(x.names||[]).length} שמות · active=${x.active}`,'ok');
+      }else{
+        row('server',cls+' → '+code,'❌ המסמך לא קיים בשרת','bad');
+      }
+    }catch(e){
+      row('server',cls+' → '+code,'שגיאה: '+e.code,'bad');
+    }
+  }
+  dump();
+}
+
+/* ── 4. live write test ── */
+async function wtest(){
+  el('wt').innerHTML='';
+  const id='TN-DIAG'+Date.now().toString(36).toUpperCase().slice(-4);
+  try{
+    await db.collection('tanakh2_classes').doc(id).set({cls:'בדיקה',names:[],blocked:[],active:true,updated:Date.now()});
+    row('wt','כתיבה','הצליחה ✓','ok');
+  }catch(e){ row('wt','כתיבה','❌ '+e.code+' — '+e.message,'bad');
+    big('wt','הכתיבה נחסמה. זו הבעיה: בדוק את כללי Firestore.',false); dump(); return; }
+  try{
+    const d=await db.collection('tanakh2_classes').doc(id).get({source:'server'});
+    row('wt','קריאה מהשרת', d.exists?'המסמך קיים ✓':'❌ המסמך לא נמצא', d.exists?'ok':'bad');
+    big('wt', d.exists?'✅ כתיבה וקריאה תקינות — הבעיה אינה בשרת':'❌ הכתיבה לא הגיעה לשרת', !!d.exists);
+  }catch(e){ row('wt','קריאה','❌ '+e.code,'bad'); big('wt','הקריאה מהשרת נחסמה — בדוק כללי Firestore',false); }
+  try{ await db.collection('tanakh2_classes').doc(id).delete(); }catch(e){}
+  dump();
+}
+
+/* ── 5. manual code check ── */
+async function qtest(){
+  el('qr').innerHTML='';
+  let c=(el('q').value||'').trim().toUpperCase().replace(/\s+/g,'');
+  if(/^[A-Z0-9]{4,8}$/.test(c)) c='TN-'+c;
+  row('qr','הקוד שנבדק',c||'(ריק)');
+  if(!c) return;
+  try{
+    const d=await db.collection('tanakh2_classes').doc(c).get({source:'server'});
+    if(!d.exists){ big('qr','❌ אין מסמך עם הקוד הזה בשרת',false); dump(); return; }
+    const x=d.data()||{};
+    row('qr','כיתה במסמך','"'+(x.cls||'')+'"','ok');
+    row('qr','פעיל',String(x.active),x.active===false?'bad':'ok');
+    row('qr','שמות ברשימה',(x.names||[]).length?(x.names||[]).join(' | '):'(ריק — כל שם יתקבל)','ok');
+    row('qr','חסומים',(x.blocked||[]).join(' | ')||'(אין)','ok');
+    big('qr','✅ הקוד קיים בשרת',true);
+  }catch(e){ row('qr','שגיאה',e.code+' — '+e.message,'bad'); }
+  dump();
+}
+
+function dump(){ el('dump').textContent=REPORT.join('\n'); }
+function copyAll(){ navigator.clipboard.writeText(el('dump').textContent).then(()=>alert('הועתק')); }
+setTimeout(dump,2500);
+</script>
+</body>
+</html>
