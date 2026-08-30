@@ -685,8 +685,17 @@ a{text-decoration:none;color:inherit}
       <div class="tcp-row">
         <input class="tcp-input" id="sclass" type="text" placeholder='לדוגמה: י3 / יא2' maxlength="14"
                oninput="_markGradeChip(this.value)"
-               onkeydown="if(event.key==='Enter')submitStudentLogin()">
-        <button class="tcp-go scp-go" onclick="submitStudentLogin()">התחל ›</button>
+               onkeydown="if(event.key==='Enter')document.getElementById('scode').focus()">
+      </div>
+      <div style="margin-top:.8rem">
+        <label class="tcp-lbl">🔑 קוד כיתה</label>
+        <div class="tcp-row">
+          <input class="tcp-input" id="scode" type="text" placeholder="הקוד שקיבלת מהמורה" maxlength="16"
+                 autocapitalize="characters" spellcheck="false" style="letter-spacing:.08em;font-weight:700"
+                 oninput="this.value=this.value.toUpperCase()"
+                 onkeydown="if(event.key==='Enter')submitStudentLogin()">
+          <button class="tcp-go scp-go" id="scp-go-btn" onclick="submitStudentLogin()">התחל ›</button>
+        </div>
       </div>
       <p class="tcp-hint">השם והכיתה ילוו אותך בכל השיעורים — נא להזין שם מלא ומדויק</p>
       <p class="tcp-privacy">🔒 השם, הכיתה והציונים שלך יישמרו כדי שהמורה תוכל לעקוב אחרי ההתקדמות, ויימחקו בתום שנת הלימודים. <a href="privacy.html" target="_blank" rel="noopener">מדיניות הפרטיות</a></p>
@@ -1482,19 +1491,34 @@ function _markGradeChip(val){
     b.classList.toggle('active', !!val && val.replace(/\d+/g,'')===b.textContent.replace(/[׳״]/g,''));
   });
 }
-function submitStudentLogin(){
+async function submitStudentLogin(){
   const nameEl=document.getElementById('sname');
   const classEl=document.getElementById('sclass');
+  const codeEl=document.getElementById('scode');
+  const btn=document.getElementById('scp-go-btn');
   const name=(nameEl?.value||'').trim().replace(/\s+/g,' ');
   const cls=(classEl?.value||'').trim();
+  const code=(codeEl?.value||'').trim().toUpperCase();
   const shake=el=>{el.classList.add('shake');setTimeout(()=>el.classList.remove('shake'),360);el.focus();};
   if(!name){shake(nameEl);toast('⚠️ נא להזין שם מלא');return;}
   if(!/\s/.test(name)){shake(nameEl);toast('⚠️ נא להזין שם פרטי ושם משפחה');return;}
   if(!cls){shake(classEl);toast('⚠️ נא לבחור / להזין כיתה');return;}
+  if(!code){shake(codeEl);toast('⚠️ נא להזין את קוד הכיתה');return;}
+
+  if(btn){btn.disabled=true;btn.textContent='בודק…';}
+  const res=await verifyClassCode(code,cls,name);
+  if(btn){btn.disabled=false;btn.textContent='התחל ›';}
+
+  if(!res.ok){
+    shake(res.field==='name'?nameEl:(res.field==='class'?classEl:codeEl));
+    toast(res.msg);
+    return;
+  }
   LS.set('tanakh2_role','student');
   LS.set('tanakh2_uname',name);
   LS.set('tanakh2_class',cls);
   localStorage.setItem('userRole','student');
+  writeSession('student',name,cls,code);
   fadeLogin(()=>enterApp('student',name));
 }
 // legacy alias — now opens the student registration panel
@@ -2177,14 +2201,18 @@ function openLesson(lid,file,uid){
   if(!file){toast('🚧 שיעור זה בפיתוח');return}
   const backUrl=uid?'index.html?unit='+uid:'index.html';
   const isStaff=(S.role==='teacher'||S.role==='admin');
-  const params=new URLSearchParams({
-    student:S.name,
-    role: isStaff?'teacher':S.role,
-    class:S.className||'',
-    back:backUrl,
-    answers_visible: isStaff ? '1' : (isAnswersVisible(lid) ? '1' : '0')
-  });
-  window.location.href=file+'?'+params.toString();
+  // Permissions are written to the same-origin session, NOT to the URL.
+  // A shared link therefore carries no identity and no answer-key access.
+  const sess=LS.get(SESS_KEY,{})||{};
+  sess.role      = isStaff?'teacher':'student';
+  sess.name      = S.name;
+  sess.cls       = S.className||'';
+  sess.back      = backUrl;
+  sess.lesson    = lid;
+  sess.answers   = isStaff ? 1 : (isAnswersVisible(lid) ? 1 : 0);
+  sess.t         = Date.now();
+  LS.set(SESS_KEY,sess);
+  window.location.href=file;
 }
 
 /* ════════════════════════════════════════════════
@@ -2678,7 +2706,16 @@ function confirmLogout(){
   ov.id='logout-confirm-overlay';
   ov.style.cssText='position:fixed;inset:0;z-index:800;background:rgba(0,0,0,.52);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:1.5rem;animation:fadeInOv .18s ease';
   ov.innerHTML=`
-  <style>@keyframes fadeInOv{from{opacity:0}to{opacity:1}}@keyframes cardPop{from{opacity:0;transform:scale(.92) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}</style>
+  <style>@keyframes fadeInOv{from{opacity:0}to{opacity:1}}@keyframes cardPop{from{opacity:0;transform:scale(.92) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+/* ── security layer ── */
+.rs-code{font-size:.68rem;font-weight:800;letter-spacing:.06em;background:var(--acc-lt,#eef2ff);color:var(--acc,#4338ca);
+  border:1px solid var(--acc-lt,#c7d2fe);border-radius:7px;padding:.15rem .45rem;cursor:pointer;white-space:nowrap}
+.rs-code:hover{filter:brightness(.95)}
+.roster-student-item.rs-blocked{opacity:.55;background:#fef2f2}
+.rs-btag{font-size:.6rem;font-weight:800;color:#b91c1c;background:#fee2e2;border-radius:5px;padding:.05rem .3rem;margin-inline-start:.3rem}
+.roster-student-block{background:none;border:none;cursor:pointer;font-size:.8rem;padding:.1rem .3rem;border-radius:6px;opacity:.65;transition:opacity .13s}
+.roster-student-block:hover{opacity:1}
+</style>
   <div style="background:var(--surface);border-radius:var(--r-xl);box-shadow:var(--sh3);padding:1.8rem 1.6rem;text-align:center;max-width:320px;width:100%;border:1px solid var(--border);animation:cardPop .22s cubic-bezier(.34,1.56,.64,1)">
     <div style="font-size:2.4rem;margin-bottom:.65rem">👋</div>
     <div style="font-family:'Rubik',sans-serif;font-size:1rem;color:var(--text);margin-bottom:.4rem">יציאה / החלפת משתמש</div>
@@ -2710,13 +2747,166 @@ window.addEventListener('message',e=>{
     renderGrid();renderDashboard();renderExams();toast('✅ שיעור הושלם!');
   }
 });
+
+/* ════════════════════════════════════════════════
+   שכבת אבטחה — קוד כיתה, session, חסימה
+   Firestore: tanakh2_classes/{CODE}
+     { cls, teacher, names:[], blocked:[], active:true, updated }
+════════════════════════════════════════════════ */
+const SESS_KEY   = 'tanakh2_sess';
+const SESS_HOURS = 12;              // session lifetime
+const CODE_ALPHA = 'ACDEFGHJKLMNPQRTUVWXY3456789';  // no confusable chars
+
+function genClassCode(cls){
+  const g=(cls||'').replace(/[^\u05d0-\u05ea0-9]/g,'').slice(0,3)||'TNK';
+  let r='';
+  const a=new Uint32Array(4); (crypto.getRandomValues?crypto.getRandomValues(a):a.fill(Math.random()*1e9));
+  for(let i=0;i<4;i++) r+=CODE_ALPHA[a[i]%CODE_ALPHA.length];
+  return (g+'-'+r).toUpperCase();
+}
+
+function _normName(n){ return (n||'').trim().replace(/\s+/g,' '); }
+function _normCls(c){ return (c||'').trim().replace(/\s+/g,'').replace(/[׳״'"]/g,''); }
+
+/* ── session ── */
+function writeSession(role,name,cls,code){
+  LS.set(SESS_KEY,{role,name,cls,code,t:Date.now(),answers:0});
+}
+function readSession(){
+  const s=LS.get(SESS_KEY,null);
+  if(!s||!s.t) return null;
+  if(Date.now()-s.t > SESS_HOURS*3600e3){ LS.del(SESS_KEY); return null; }
+  return s;
+}
+function clearSession(){ LS.del(SESS_KEY); }
+
+/* ── student-side verification against Firestore ── */
+async function verifyClassCode(code,cls,name){
+  if(!_db) return {ok:false,field:'code',msg:'⚠️ אין חיבור לשרת — נסה שוב בעוד רגע'};
+  let doc;
+  try{ doc=await _db.collection('tanakh2_classes').doc(code).get(); }
+  catch(e){ return {ok:false,field:'code',msg:'⚠️ שגיאת תקשורת — נסה שוב'}; }
+  if(!doc.exists)          return {ok:false,field:'code',msg:'❌ קוד כיתה שגוי'};
+  const d=doc.data()||{};
+  if(d.active===false)     return {ok:false,field:'code',msg:'🔒 הקוד הזה כבר לא בתוקף — פני/פנה למורה'};
+  if(_normCls(d.cls)!==_normCls(cls))
+                           return {ok:false,field:'class',msg:'❌ הקוד אינו מתאים לכיתה שהוזנה'};
+  const nm=_normName(name);
+  const blocked=(d.blocked||[]).map(_normName);
+  if(blocked.includes(nm)) return {ok:false,field:'name',msg:'🚫 הגישה שלך נחסמה — פני/פנה למורה'};
+  const names=(d.names||[]).map(_normName);
+  if(names.length && !names.includes(nm))
+                           return {ok:false,field:'name',msg:'❌ השם אינו מופיע ברשימת הכיתה — בדוק/בדקי איות מלא'};
+  // stamp last seen (best effort, never blocks login)
+  try{
+    _db.collection('tanakh2_classes').doc(code)
+       .collection('seen').doc(nm.replace(/[\/\.]/g,'_'))
+       .set({name:nm,last:Date.now()},{merge:true});
+  }catch(e){}
+  return {ok:true};
+}
+
+/* ── revalidate an existing student session on every app load ── */
+async function revalidateSession(){
+  const s=readSession();
+  if(!s||s.role!=='student'||!s.code) return;
+  if(!_db) return;
+  try{
+    const doc=await _db.collection('tanakh2_classes').doc(s.code).get();
+    let kick=null;
+    if(!doc.exists) kick='🔒 קוד הכיתה הוחלף — יש להזין קוד חדש';
+    else{
+      const d=doc.data()||{};
+      if(d.active===false) kick='🔒 קוד הכיתה כבר לא בתוקף';
+      else if((d.blocked||[]).map(_normName).includes(_normName(s.name)))
+        kick='🚫 הגישה שלך נחסמה על ידי המורה';
+    }
+    if(kick){ forceLogout(kick); }
+  }catch(e){}
+}
+function forceLogout(msg){
+  clearSession();
+  LS.del('tanakh2_role'); LS.del('tanakh2_uname'); LS.del('tanakh2_class');
+  try{ localStorage.removeItem('userRole'); }catch(e){}
+  alert(msg||'הגישה הופסקה');
+  window.location.href='index.html';
+}
+
+/* ════════════════════════════════════════════════
+   TEACHER SIDE — class codes
+════════════════════════════════════════════════ */
+function getClassCodes(){ return LS.get('tanakh2_class_codes',{})||{}; }
+function _saveClassCodes(m){ LS.set('tanakh2_class_codes',m); }
+
+async function publishClass(cls,code){
+  const codes=getClassCodes();
+  const old=codes[cls];
+  codes[cls]=code; _saveClassCodes(codes); try{_persistTeacherMeta();}catch(e){}
+  if(!_db) return;
+  const payload={
+    cls:cls,
+    teacher:S.name||'',
+    names:getRoster(cls)||[],
+    blocked:getBlocked(cls)||[],
+    active:true,
+    updated:Date.now()
+  };
+  try{
+    await _db.collection('tanakh2_classes').doc(code).set(payload,{merge:true});
+    if(old&&old!==code){
+      await _db.collection('tanakh2_classes').doc(old).set({active:false},{merge:true});
+    }
+  }catch(e){ console.warn('[publishClass]',e); }
+}
+async function rotateClassCode(cls){
+  if(!confirm('להחליף את קוד הכיתה '+cls+'?\n\nכל מי שנכנס עם הקוד הישן ינותק בטעינה הבאה.\nיש למסור את הקוד החדש לתלמידים.')) return;
+  const code=genClassCode(cls);
+  await publishClass(cls,code);
+  renderRosterAll();
+  toast('🔑 קוד חדש: '+code);
+}
+async function ensureClassCode(cls){
+  const codes=getClassCodes();
+  if(codes[cls]) return codes[cls];
+  const code=genClassCode(cls);
+  await publishClass(cls,code);
+  return code;
+}
+function copyClassCode(cls){
+  const code=getClassCodes()[cls];
+  if(!code) return;
+  navigator.clipboard?.writeText(code).then(()=>toast('📋 הקוד הועתק'),()=>{});
+}
+
+/* ── blocked list ── */
+function getBlocked(cls){ const all=LS.get('tanakh2_blocked',{})||{}; return all[cls]||[]; }
+function setBlocked(cls,arr){
+  const all=LS.get('tanakh2_blocked',{})||{}; all[cls]=arr; LS.set('tanakh2_blocked',all); try{_persistTeacherMeta();}catch(e){}
+  const code=getClassCodes()[cls];
+  if(_db&&code) _db.collection('tanakh2_classes').doc(code).set({blocked:arr,updated:Date.now()},{merge:true}).catch(()=>{});
+}
+function toggleBlockStudent(cls,name){
+  const arr=getBlocked(cls);
+  const i=arr.indexOf(name);
+  if(i>=0){ arr.splice(i,1); toast('✅ החסימה הוסרה'); }
+  else    { arr.push(name);  toast('🚫 '+name+' נחסם/ה'); }
+  setBlocked(cls,arr);
+  renderRosterBlock(cls);
+}
+/* keep the published roster in sync whenever the teacher edits it */
+function syncClassRoster(cls){
+  const code=getClassCodes()[cls];
+  if(_db&&code) _db.collection('tanakh2_classes').doc(code)
+    .set({names:getRoster(cls)||[],updated:Date.now()},{merge:true}).catch(()=>{});
+}
+
 function initApp(){
   buildStars();initFirebase();
   const r=LS.get('tanakh2_role',''),n=LS.get('tanakh2_uname','');
   const c=LS.get('tanakh2_class','');
   // Students must have a recorded full name + class; otherwise stay on the login for registration
   if(r==='student'&&(!n||n==='תלמיד/ה'||!c)){ return; }
-  if(r&&n){document.getElementById('login-screen').style.display='none';enterApp(r,n);return}
+  if(r&&n){document.getElementById('login-screen').style.display='none';enterApp(r,n);setTimeout(revalidateSession,1200);return}
   const lr=localStorage.getItem('userRole');
   if(lr==='teacher'){const ln=LS.get('tanakh_uname','')||'מורה';document.getElementById('login-screen').style.display='none';enterApp(lr,ln)}
 }
@@ -2738,6 +2928,14 @@ function _saveTeacherClasses(arr){
        .set({classes: arr},{merge:true}).catch(()=>{});
   }
 }
+function _persistTeacherMeta(){
+  if(!_db || !S.name) return;
+  const key = S.name.replace(/\s+/g,'_');
+  _db.collection('tanakh2_teachers').doc(key).set({
+    codes:   getClassCodes(),
+    blocked: LS.get('tanakh2_blocked',{})||{}
+  },{merge:true}).catch(()=>{});
+}
 
 /* ── Roster (per-class student list) ── */
 function getRoster(cls){
@@ -2748,6 +2946,7 @@ function setRoster(cls, students){
   const all = LS.get('tanakh2_roster',{}) || {};
   all[cls] = students;
   LS.set('tanakh2_roster', all);
+  try{ syncClassRoster(cls); }catch(e){}
   // Push to Firebase
   if(_db && S.name){
     const key = S.name.replace(/\s+/g,'_');
@@ -2817,12 +3016,16 @@ function renderRosterBlock(cls){
     <div class="roster-student-list">
       ${students.length===0
         ? '<div class="roster-empty">אין תלמידים ברשימה עדיין.</div>'
-        : students.map((n,i)=>`
-          <div class="roster-student-item">
+        : students.map((n,i)=>{
+            const esc=n.replace(/'/g,"\\'");
+            const isB=(getBlocked(cls)||[]).includes(n);
+            return `
+          <div class="roster-student-item${isB?' rs-blocked':''}">
             <span class="rs-num">${i+1}</span>
-            <span class="rs-name">${n}</span>
-            <button class="roster-student-del" onclick="removeStudentFromClass('${cls}','${n.replace(/'/g,"\\'")}')">✕</button>
-          </div>`).join('')
+            <span class="rs-name">${n}${isB?' <span class="rs-btag">חסום</span>':''}</span>
+            <button class="roster-student-block" title="${isB?'הסרת חסימה':'חסימת גישה'}" onclick="toggleBlockStudent('${cls}','${esc}')">${isB?'🔓':'🚫'}</button>
+            <button class="roster-student-del" onclick="removeStudentFromClass('${cls}','${esc}')">✕</button>
+          </div>`;}).join('')
       }
     </div>`;
 }
@@ -2850,6 +3053,8 @@ function renderRosterAll(){
         <div class="roster-class-hd" onclick="toggleRosterBlock('${cls}')">
           <span class="roster-class-name">🏫 ${cls}<span class="roster-class-count" id="rcount-${cid}">${students.length} תלמידים</span></span>
           <div style="display:flex;gap:.5rem;align-items:center">
+            <span class="rs-code" id="rcode-${cid}" onclick="event.stopPropagation();copyClassCode('${cls}')" title="לחצי להעתקה">🔑 …</span>
+            <button onclick="event.stopPropagation();rotateClassCode('${cls}')" style="background:none;border:none;cursor:pointer;color:var(--subtle);font-size:.75rem;padding:.1rem .4rem;border-radius:6px;transition:all .13s" onmouseover="this.style.color='var(--acc)'" onmouseout="this.style.color='var(--subtle)'" title="החלפת קוד תנתק את כל מי שאינו ברשימה">🔄 קוד חדש</button>
             <button onclick="event.stopPropagation();removeTeacherClass('${cls}')" style="background:none;border:none;cursor:pointer;color:var(--subtle);font-size:.75rem;padding:.1rem .4rem;border-radius:6px;transition:all .13s" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--subtle)'">🗑️ הסר</button>
             <span id="rchev-${cid}" style="font-size:.68rem;color:var(--subtle);transition:transform .2s">▼</span>
           </div>
@@ -2860,6 +3065,11 @@ function renderRosterAll(){
     // Update count badge
     const cnt = document.getElementById('rcount-'+cid);
     if(cnt) cnt.textContent = getRoster(cls).length + ' תלמידים';
+    // Ensure the class has a published join code, then paint it
+    ensureClassCode(cls).then(code=>{
+      const el=document.getElementById('rcode-'+cid);
+      if(el) el.textContent='🔑 '+code;
+    });
     renderRosterBlock(cls);
   });
   // Remove blocks for deleted classes
@@ -2886,6 +3096,8 @@ function loadTeacherClassesFromFirebase(){
     const data = doc.data();
     if(data.classes) LS.set('tanakh2_teacher_classes', data.classes);
     if(data.roster)  LS.set('tanakh2_roster', data.roster);
+    if(data.codes)   LS.set('tanakh2_class_codes', data.codes);
+    if(data.blocked) LS.set('tanakh2_blocked', data.blocked);
     renderRosterAll();
   }).catch(()=>{});
 }
