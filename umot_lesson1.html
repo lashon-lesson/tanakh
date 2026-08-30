@@ -2,6 +2,19 @@
 <!-- @copyright-line | © 2026 זכויות יוצרים – ליאור אלמוסלינוס | כל הזכויות שמורות. אין להעתיק, לשכפל או להפיץ ללא אישור בכתב. -->
 <html lang="he" dir="rtl">
 <head>
+<!-- TANAKH_GATE_V1 -->
+<script>
+(function(){
+  var NS='tanakh2', SESS=NS+'_sess', MAXH=12;
+  function rd(k,fb){try{var v=localStorage.getItem(k);return v!==null?JSON.parse(v):fb}catch(e){return fb}}
+  var s=rd(SESS,null);
+  var ok = s && s.t && (Date.now()-s.t) < MAXH*3600e3 && s.name && s.role;
+  if(!ok){document.documentElement.style.visibility='hidden';try{localStorage.removeItem(SESS)}catch(e){}location.replace('index.html');return;}
+  window.__gate=s;
+  window.__gateParams={student:s.name||'',role:s.role||'student','class':s.cls||'',back:s.back||'index.html',answers_visible:String(s.answers||0)};
+})();
+</script>
+
 <meta charset="UTF-8">
 <meta name="copyright" content="© 2026 זכויות יוצרים – ליאור אלמוסלינוס">
 <meta name="author" content="ליאור אלמוסלינוס">
@@ -443,7 +456,7 @@ const LESSON_ID='umot_l1',LESSON_TITLE='בני ישראל במצרים — גז�
 function initFirebase(){try{if(typeof firebase==='undefined')return;if(!firebase.apps.length)firebase.initializeApp(FB_CFG);_db=firebase.firestore();_db.enablePersistence().catch(()=>{});_db.collection('lessons').doc(LESSON_ID).onSnapshot(doc=>{const val=doc.exists?doc.data()?.showAnswers===true:false;const av=LS.get('tanakh2_answers_visible',{});av[LESSON_ID]=val;LS.set('tanakh2_answers_visible',av);ANSWERS_VISIBLE=val;applyAnswersVisibility();});}catch(e){}}
 async function saveScore(score,sn,sc){if(!_db)return;const now=new Date();try{await _db.collection('tanakh2_submissions').add({lessonId:LESSON_ID,lessonTitle:LESSON_TITLE,score,studentName:sn||'תלמיד/ה',className:sc||'',ts:firebase.firestore.FieldValue.serverTimestamp(),submissionDate:now.toLocaleDateString('he-IL'),submissionTime:now.toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'}),read:false,correct:typeof _lastCorrect==='number'?_lastCorrect:undefined,wrong:typeof _lastCorrect==='number'?closedQuestions().length-_lastCorrect:undefined,totalQuestions:closedQuestions().length});await _db.collection('tanakh2_live').doc('latest').set({lessonId:LESSON_ID,score,studentName:sn,className:sc,ts:firebase.firestore.FieldValue.serverTimestamp()});}catch(e){}}
 const LS={get(k,fb=null){try{const v=localStorage.getItem(k);return v!==null?JSON.parse(v):fb}catch{return fb}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}};
-const _p=new URLSearchParams(location.search);
+const _p=(window.__gateParams?{get:function(k){return (k in window.__gateParams)?window.__gateParams[k]:null}}:new URLSearchParams(location.search));
 let STUDENT_NAME=_p.get('student')||LS.get('tanakh2_uname','')||'תלמיד/ה';
 let STUDENT_CLASS=_p.get('class')||LS.get('tanakh2_class','')||'';
 const USER_ROLE=_p.get('role')||LS.get('tanakh2_role','')||localStorage.getItem('userRole')||'student';
