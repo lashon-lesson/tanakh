@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tanakh-v4';
+const CACHE_NAME = 'tanakh-v5';
 const BASE = '/tanakh/';
 
 // קבצים לשמירה במטמון לשימוש offline
@@ -14,7 +14,7 @@ const PRECACHE = [
 ];
 
 // התקנה — שמירת קבצים במטמון
-// גרסה v4 — שכבת אבטחה (שער בקבצי השיעורים + session)
+// גרסה v5 — תיקון נעילת התשובות בקבצי השיעורים
 // כל שינוי בקבצים מחייב העלאת המספר, אחרת משתמשים ימשיכו לקבל גרסה ישנה.
 
 self.addEventListener('install', event => {

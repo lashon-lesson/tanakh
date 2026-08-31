@@ -44,6 +44,43 @@
     answers_visible: String(s.answers || 0)
   };
 
+  /* When the teacher re-locks the answers, actively move the student off the
+     answers tab instead of only hiding its contents. Without this the pane
+     stays open until the next page load.
+     The lock state is read from the DOM rather than from the page's own
+     visibility flag: that flag is declared with `let` at top level and is
+     therefore not reachable as a property of the global object. Older files
+     name the renderer renderAnswersTab, newer ones applyAnswersVisibility,
+     so whichever one exists gets wrapped. */
+  document.addEventListener('DOMContentLoaded',function(){
+    if(s.role==='teacher') return;
+    var names=['applyAnswersVisibility','renderAnswersTab'], tries=0;
+    var iv=setInterval(function(){
+      var found=names.filter(function(n){return typeof window[n]==='function'});
+      if(!found.length){
+        if(++tries>40) clearInterval(iv);
+        return;
+      }
+      clearInterval(iv);
+      found.forEach(function(n){
+        var orig=window[n];
+        window[n]=function(){
+          var r=orig.apply(this,arguments);
+          try{
+            var pane=document.getElementById('pane-answers');
+            var vis=document.getElementById('answers-visible-content');
+            if(pane && pane.classList.contains('active') &&
+               vis && vis.style.display==='none' &&
+               typeof window.switchTab==='function'){
+              window.switchTab('theory');
+            }
+          }catch(e){}
+          return r;
+        };
+      });
+    },150);
+  });
+
   /* personal watermark — deters screenshot sharing */
   document.addEventListener('DOMContentLoaded',function(){
     if(s.role!=='student') return;
