@@ -413,8 +413,8 @@ a{text-decoration:none;color:inherit}
 .roster-class-count{font-size:.68rem;font-weight:700;color:var(--muted);background:var(--surface3);border:1px solid var(--border);border-radius:var(--r-pill);padding:.12rem .6rem}
 .roster-class-body{display:none;padding:.75rem .85rem .9rem}
 .roster-class-body.open{display:block}
-.roster-add-row{display:flex;gap:.5rem;margin-bottom:.7rem}
-.roster-name-inp{flex:1;padding:.62rem .85rem;border:1.5px solid var(--border);border-radius:var(--r);background:var(--surface2);font-size:.84rem;color:var(--text);outline:none;transition:border-color .15s}
+.roster-add-row{display:flex;gap:.5rem;margin-bottom:.7rem;align-items:flex-start}
+.roster-name-inp{flex:1;padding:.62rem .85rem;border:1.5px solid var(--border);border-radius:var(--r);background:var(--surface2);font-size:.84rem;color:var(--text);outline:none;transition:border-color .15s;font-family:inherit;line-height:1.5;resize:vertical;min-height:2.6rem;max-height:14rem;overflow-y:auto}
 .roster-name-inp:focus{border-color:var(--acc);background:#fff}
 .roster-add-btn{padding:.62rem 1rem;border:none;border-radius:var(--r-pill);background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;font-size:.78rem;font-weight:700;cursor:pointer;white-space:nowrap;transition:transform .13s}
 .roster-add-btn:hover{transform:translateY(-1px)}
@@ -2993,6 +2993,11 @@ function setRoster(cls, students){
        .set({roster: all},{merge:true}).catch(()=>{});
   }
 }
+function _rosterAutoGrow(el){
+  if(!el) return;
+  el.style.height='auto';
+  el.style.height=Math.min(el.scrollHeight,224)+'px';
+}
 function addStudentToClass(cls){
   const inp = document.getElementById('roster-inp-'+_cid(cls));
   const raw = (inp?.value||'').trim();
@@ -3006,7 +3011,7 @@ function addStudentToClass(cls){
   });
   if(!added){ toast('השמות כבר ברשימה'); inp.value=''; return; }
   setRoster(cls, arr);
-  inp.value='';
+  inp.value=''; _rosterAutoGrow(inp);
   renderRosterBlock(cls);
   toast('✅ נוסף' + (names.length>1?' '+added+' תלמידים':': '+names[0]));
 }
@@ -3046,12 +3051,13 @@ function renderRosterBlock(cls){
   if(!body) return;
   body.innerHTML = `
     <div class="roster-add-row">
-      <input class="roster-name-inp" id="roster-inp-${_cid(cls)}"
-        type="text" placeholder="שם תלמיד/ה (אפשר להדביק כמה שורות)"
-        onkeydown="if(event.key==='Enter')addStudentToClass('${cls}')">
+      <textarea class="roster-name-inp" id="roster-inp-${_cid(cls)}"
+        rows="1" placeholder="שם תלמיד/ה (אפשר להדביק כמה שורות)"
+        oninput="_rosterAutoGrow(this)"
+        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();addStudentToClass('${cls}')}"></textarea>
       <button class="roster-add-btn" onclick="addStudentToClass('${cls}')">+ הוסף</button>
     </div>
-    <p class="roster-paste-hint">💡 ניתן להדביק רשימה שלמה (שם בכל שורה) ולחץ הוסף</p>
+    <p class="roster-paste-hint">💡 ניתן להדביק רשימה שלמה — שם בכל שורה — וללחוץ "+ הוסף". Shift+Enter פותח שורה חדשה.</p>
     <div class="roster-student-list">
       ${students.length===0
         ? '<div class="roster-empty">אין תלמידים ברשימה עדיין.</div>'
