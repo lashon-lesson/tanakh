@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tanakh-v6';
+const CACHE_NAME = 'tanakh-v7';
 const BASE = '/tanakh/';
 
 // קבצים לשמירה במטמון לשימוש offline
@@ -14,7 +14,7 @@ const PRECACHE = [
 ];
 
 // התקנה — שמירת קבצים במטמון
-// גרסה v6 — שדה הרשימה השמית הוסב ל-textarea, ובחירת שם מרשימה במסך ההרשמה
+// גרסה v7 — קשירת שם למכשיר (tanakh2_classes/{code}/devices) + הידוק כללי Firestore
 // כל שינוי בקבצים מחייב העלאת המספר, אחרת משתמשים ימשיכו לקבל גרסה ישנה.
 
 self.addEventListener('install', event => {

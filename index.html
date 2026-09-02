@@ -942,6 +942,10 @@ a{text-decoration:none;color:inherit}
         </div>
       </div>
       <button class="m-btn" onclick="changePass()">🔐 שנה קוד</button>
+      <p style="font-size:.72rem;color:var(--amber);margin-top:.5rem;line-height:1.6">
+        🔒 שינוי הקוד נשמר מקומית בלבד. כללי האבטחה חוסמים דריסת סיסמה קיימת בשרת —
+        אחרת כל אדם שמכיר את שמך היה יכול להחליף אותה. לאיפוס אמיתי יש לפנות למנהל/ת המערכת.
+      </p>
       <div class="m-section">Firebase</div>
       <div id="fb-settings-status" style="font-size:.78rem;color:var(--muted)">בודק…</div>
     </div>
@@ -963,6 +967,14 @@ a{text-decoration:none;color:inherit}
       </div>
       <div id="roster-blocks"></div>
       <p id="teacher-classes-empty" style="font-size:.76rem;color:var(--subtle);display:none">לא נוספו כיתות עדיין. הוסיפי כיתה למעלה.</p>
+      <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:var(--r);padding:.7rem .95rem;font-size:.76rem;color:#075985;margin-top:1rem;line-height:1.65">
+        <strong>📱 קשירת שם למכשיר</strong><br>
+        בכניסה הראשונה, שם התלמיד/ה נקשר למכשיר שממנו נכנסו. תלמיד/ה שינסה/תנסה להיכנס
+        <strong>באותו שם ממכשיר אחר</strong> יידחה/תידחה — כך קוד הכיתה לבדו לא מאפשר להתחזות לחבר/ה.
+        ליד כל שם קשור יופיע התג <span class="rs-dtag">📱 מכשיר</span>, ולחיצה על 📱 משחררת את הקשירה.<br>
+        <strong>מתי לשחרר:</strong> מעבר למכשיר חדש, ניקוי היסטוריית הדפדפן, או כניסה קודמת בגלישה פרטית.
+        החלפת קוד הכיתה (🔄 קוד חדש) מאפסת ממילא את כל הקשירות של אותה כיתה.
+      </div>
       <p style="font-size:.65rem;color:var(--subtle);margin-top:.9rem">הכיתות והרשימות השמיות נשמרות ב-Firebase.</p>
     </div>
 
@@ -1013,7 +1025,12 @@ a{text-decoration:none;color:inherit}
     <!-- User Management (admin only) -->
     <div class="m-pane" id="tab-users">
       <div style="background:var(--indigo-lt);border:1.5px solid rgba(99,102,241,.25);border-radius:var(--r);padding:.85rem 1.05rem;font-size:.8rem;color:var(--text-mid);margin-bottom:1.1rem;line-height:1.6">
-        <strong style="color:var(--indigo)">👥 ניהול מורים:</strong> כאן ניתן להוסיף מורים, לאפס סיסמה למי ששכח, לשנות תפקיד ולהסיר. <strong>אי אפשר לראות סיסמה</strong> — איפוס מייצר קוד כניסה אישי חד-פעמי שהמורה מחליף בכניסה.
+        <strong style="color:var(--indigo)">👥 ניהול מורים:</strong> כאן ניתן <strong>להוסיף</strong> מורה חדש/ה ולקבל עבורו/ה קוד כניסה אישי חד-פעמי. <strong>אי אפשר לראות סיסמה</strong> — הסיסמה נשמרת מגובבת בלבד.
+      </div>
+      <div style="background:var(--amber-lt);border:1px solid #fde68a;border-radius:var(--r);padding:.7rem .95rem;font-size:.76rem;color:var(--amber);margin-bottom:1.1rem;line-height:1.6">
+        🔒 <strong>איפוס סיסמה, שינוי תפקיד והסרת מורה מתבצעים בקונסולת Firebase בלבד.</strong>
+        כללי האבטחה חוסמים כתיבה של <code>passHash</code> ו-<code>role</code> מהדפדפן — בלי התחברות מזוהה,
+        כל הרשאה שתאפשר זאת למנהל תאפשר זאת גם לזר. הכפתורים כאן ייכשלו במכוון.
       </div>
 
       <div class="m-section">הוספת מורה חדש/ה</div>
@@ -1640,14 +1657,22 @@ async function finishStudentLogin(rawName){
   if(!name){_spickShake(nameEl);toast('⚠️ נא להזין שם מלא');return;}
   if(!/\s/.test(name)){_spickShake(nameEl);toast('⚠️ נא להזין שם פרטי ושם משפחה');return;}
 
+  // The button stays on "בודק…" across BOTH server round-trips and is
+  // released exactly once, after the second one.
   if(btn){btn.disabled=true;btn.textContent='בודק…';}
   const res=await verifyClassCode(code,cls,name);
+  const dev=res.ok ? await claimDevice(code,name) : {ok:true};
   if(btn){btn.disabled=false;btn.textContent='התחל ›';}
 
   if(!res.ok){
     if(res.field==='name'&&_spick.names.length){ toast(res.msg); }
     else _spickShake(res.field==='name'?nameEl:(res.field==='class'?classEl:codeEl));
     toast(res.msg);
+    return;
+  }
+  if(!dev.ok){
+    if(!_spick.names.length) _spickShake(nameEl);
+    toast(dev.msg);
     return;
   }
   LS.set('tanakh2_role','student');
@@ -2406,7 +2431,7 @@ async function changePass(){
     }catch(e){}
   }
   document.getElementById('cfg-pass').value='';
-  toast('🔐 קוד שונה ונשמר ב-Firebase!');
+  toast('🔐 הקוד עודכן במכשיר זה');
 }
 
 /* ════════════════════════════════════════════════
@@ -2852,6 +2877,9 @@ function confirmLogout(){
 .rs-btag{font-size:.6rem;font-weight:800;color:#b91c1c;background:#fee2e2;border-radius:5px;padding:.05rem .3rem;margin-inline-start:.3rem}
 .roster-student-block{background:none;border:none;cursor:pointer;font-size:.8rem;padding:.1rem .3rem;border-radius:6px;opacity:.65;transition:opacity .13s}
 .roster-student-block:hover{opacity:1}
+.rs-dtag{font-size:.6rem;font-weight:800;color:#0369a1;background:#e0f2fe;border-radius:5px;padding:.05rem .3rem;margin-inline-start:.3rem}
+.roster-student-dev{background:none;border:none;cursor:pointer;font-size:.8rem;padding:.1rem .3rem;border-radius:6px;opacity:.65;transition:opacity .13s}
+.roster-student-dev:hover{opacity:1}
 </style>
   <div style="background:var(--surface);border-radius:var(--r-xl);box-shadow:var(--sh3);padding:1.8rem 1.6rem;text-align:center;max-width:320px;width:100%;border:1px solid var(--border);animation:cardPop .22s cubic-bezier(.34,1.56,.64,1)">
     <div style="font-size:2.4rem;margin-bottom:.65rem">👋</div>
@@ -2919,6 +2947,57 @@ function readSession(){
   return s;
 }
 function clearSession(){ LS.del(SESS_KEY); }
+
+/* ════════════════════════════════════════════════
+   DEVICE BINDING
+   A name inside a class is claimed by the first device that logs in with
+   it. Another device trying the same name is refused until the teacher
+   releases it. Deterrence, not authentication — claimDevice runs on the
+   student's machine and can be bypassed in DevTools.
+════════════════════════════════════════════════ */
+const DID_KEY='tanakh2_did';
+function getDeviceId(){
+  const cur=LS.get(DID_KEY,'');
+  if(typeof cur==='string' && /^[0-9a-f]{32}$/.test(cur)) return cur;
+  let hex='';
+  try{
+    const a=new Uint8Array(16);
+    crypto.getRandomValues(a);
+    hex=Array.from(a).map(b=>b.toString(16).padStart(2,'0')).join('');
+  }catch(e){
+    hex=(Date.now().toString(16)+Math.random().toString(16).slice(2)+Math.random().toString(16).slice(2))
+        .replace(/[^0-9a-f]/g,'').padEnd(32,'0').slice(0,32);
+  }
+  LS.set(DID_KEY,hex);
+  return hex;
+}
+/* Same shape as the doc id used by `seen`, plus the characters Firestore
+   forbids in a document path. */
+function _devKey(name){ return _normName(name).replace(/[\/\.\#\$\[\]]/g,'_'); }
+
+async function claimDevice(code,name){
+  if(!_db) return {ok:false,msg:'⚠️ אין חיבור לשרת — נסה שוב בעוד רגע'};
+  const nm=_normName(name), did=getDeviceId();
+  const ref=_db.collection('tanakh2_classes').doc(code)
+               .collection('devices').doc(_devKey(nm));
+  let doc;
+  // enablePersistence() is active — a plain get() would answer a security
+  // check from the local mirror. Security checks must hit the server.
+  try{ doc=await ref.get({source:'server'}); }
+  catch(e){ return {ok:false,msg:'⚠️ שגיאת תקשורת — נסה שוב'}; }
+
+  if(doc.exists){
+    const d=doc.data()||{};
+    if(d.did && d.did!==did)
+      return {ok:false,msg:'🔒 השם הזה כבר רשום למכשיר אחר — פני/פנה למורה לשחרור'};
+    try{ await ref.set({last:Date.now()},{merge:true}); }
+    catch(e){ return {ok:false,msg:'⚠️ שגיאת תקשורת — נסה שוב'}; }
+    return {ok:true};
+  }
+  try{ await ref.set({name:nm,did:did,first:Date.now(),last:Date.now()}); }
+  catch(e){ return {ok:false,msg:'⚠️ שגיאת תקשורת — נסה שוב'}; }
+  return {ok:true};
+}
 
 /* ── student-side verification against Firestore ── */
 async function verifyClassCode(code,cls,name){
@@ -3067,6 +3146,35 @@ function toggleBlockStudent(cls,name){
   setBlocked(cls,arr);
   renderRosterBlock(cls);
 }
+/* ── device bindings (teacher side) ── */
+const _devMap={};   // cls → { normalisedName: {name,did,first,last} }
+/* Best effort only: if the rules ever forbid listing the sub-collection the
+   tags simply do not appear, and releasing still works. */
+async function loadDeviceMap(cls){
+  const code=getClassCodes()[cls];
+  if(!_db||!code) return;
+  try{
+    const snap=await _db.collection('tanakh2_classes').doc(code)
+                        .collection('devices').get();
+    const m={};
+    snap.forEach(d=>{ const v=d.data()||{}; if(v.name) m[_normName(v.name)]=v; });
+    _devMap[cls]=m;
+    renderRosterBlock(cls);
+  }catch(e){ /* silent by design */ }
+}
+async function releaseDevice(cls,name){
+  const code=getClassCodes()[cls];
+  if(!_db||!code){ toast('⚠️ אין חיבור לשרת'); return; }
+  if(!confirm('לשחרר את קשירת המכשיר של '+name+'?\nהכניסה הבאה — מכל מכשיר שהוא — תתפוס את השם מחדש.')) return;
+  try{
+    await _db.collection('tanakh2_classes').doc(code)
+             .collection('devices').doc(_devKey(name)).delete();
+    if(_devMap[cls]) delete _devMap[cls][_normName(name)];
+    renderRosterBlock(cls);
+    toast('📱 המכשיר שוחרר — '+name);
+  }catch(e){ console.warn('[releaseDevice]',e); toast('❌ השחרור נכשל'); }
+}
+
 /* keep the published roster in sync whenever the teacher edits it */
 function syncClassRoster(cls){
   const code=getClassCodes()[cls];
@@ -3199,15 +3307,23 @@ function renderRosterBlock(cls){
         : students.map((n,i)=>{
             const esc=n.replace(/'/g,"\\'");
             const isB=(getBlocked(cls)||[]).includes(n);
+            const isD=!!(_devMap[cls]||{})[_normName(n)];
             return `
           <div class="roster-student-item${isB?' rs-blocked':''}">
             <span class="rs-num">${i+1}</span>
-            <span class="rs-name">${n}${isB?' <span class="rs-btag">חסום</span>':''}</span>
+            <span class="rs-name">${n}${isB?' <span class="rs-btag">חסום</span>':''}${isD?' <span class="rs-dtag">📱 מכשיר</span>':''}</span>
+            ${isD?`<button class="roster-student-dev" data-i="${i}" title="שחרור קשירת המכשיר">📱</button>`:''}
             <button class="roster-student-block" title="${isB?'הסרת חסימה':'חסימת גישה'}" onclick="toggleBlockStudent('${cls}','${esc}')">${isB?'🔓':'🚫'}</button>
             <button class="roster-student-del" onclick="removeStudentFromClass('${cls}','${esc}')">✕</button>
           </div>`;}).join('')
       }
     </div>`;
+  // Wired by index, not by an inline handler holding the name — apostrophes
+  // in names (חג'ג', ג'אנה) break hand-rolled escaping.
+  body.querySelectorAll('.roster-student-dev').forEach(b=>{
+    const nm=students[Number(b.dataset.i)];
+    b.addEventListener('click',()=>releaseDevice(cls,nm));
+  });
 }
 
 function renderRosterAll(){
@@ -3275,6 +3391,7 @@ function toggleRosterBlock(cls){
   const isOpen = body.classList.contains('open');
   body.classList.toggle('open',!isOpen);
   if(chev) chev.style.transform = isOpen ? '' : 'rotate(180deg)';
+  if(!isOpen) loadDeviceMap(cls);   // opening — refresh the 📱 tags
 }
 
 function loadTeacherClassesFromFirebase(){
